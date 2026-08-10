@@ -1,6 +1,6 @@
 /**
  * Sky Multirotor Squad - Main JavaScript Engine
- * Provides responsiveness, telemetry widgets, interactive modals, and flight utilities.
+ * Provides responsiveness, telemetry widgets, interactive modals, flight utilities, and dynamic event calendar.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFlightCalculator();
   initModals();
   initFilterTabs();
+  initEventCalendar();
 });
 
 /* -------------------------------------------------------------------------- */
@@ -100,7 +101,6 @@ function initTelemetryStatus() {
 
   if (!windEl) return;
 
-  // Base realistic simulation
   const conditions = [
     { wind: '8 km/h NW', sat: '18 Sats (3D Fix)', kp: 'KP 1.8 (Good)', status: 'FLYING CONDITIONS OPTIMAL', good: true },
     { wind: '11 km/h W', sat: '20 Sats (Galileo/GPS)', kp: 'KP 2.1 (Good)', status: 'FLYING CONDITIONS OPTIMAL', good: true },
@@ -132,7 +132,7 @@ function initFlightCalculator() {
   const form = document.getElementById('calc-form');
   if (!form) return;
 
-  const capacityInput = document.getElementById('calc-capacity'); // in mAh
+  const capacityInput = document.getElementById('calc-capacity');
   const droneTypeSelect = document.getElementById('calc-type');
   const flightStyleSelect = document.getElementById('calc-style');
   const resultTime = document.getElementById('calc-result-time');
@@ -144,15 +144,13 @@ function initFlightCalculator() {
     const droneType = droneTypeSelect.value;
     const flightStyle = flightStyleSelect.value;
 
-    // Average current draw lookup in Amperes
-    let baseDraw = 20; // 5 inch freestyle average
+    let baseDraw = 20;
     if (droneType === 'cinewhoop') baseDraw = 14;
     else if (droneType === 'fpv5') baseDraw = 22;
     else if (droneType === 'cinelifter') baseDraw = 45;
     else if (droneType === 'longrange') baseDraw = 8;
     else if (droneType === 'aeromodel') baseDraw = 12;
 
-    // Multiplier for flight style
     let styleMultiplier = 1.0;
     if (flightStyle === 'chill') styleMultiplier = 0.75;
     else if (flightStyle === 'racing') styleMultiplier = 1.65;
@@ -160,7 +158,6 @@ function initFlightCalculator() {
     else if (flightStyle === 'freestyle') styleMultiplier = 1.25;
 
     const totalAverageAmp = baseDraw * styleMultiplier;
-    // 80% rule for LiPo battery safety
     const usableCapacityAh = (capacity * 0.80) / 1000;
     const flightTimeMinutes = (usableCapacityAh / totalAverageAmp) * 60;
 
@@ -216,7 +213,6 @@ function initModals() {
     });
   });
 
-  // ESC key to close any active modal
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       modalBackdrops.forEach(modal => {
@@ -242,7 +238,6 @@ function initFilterTabs() {
     btn.addEventListener('click', () => {
       const category = btn.getAttribute('data-category');
 
-      // Update button active states
       filterBtns.forEach(b => {
         b.classList.remove('bg-primary-container', 'text-on-primary', 'font-bold');
         b.classList.add('bg-surface-container', 'text-on-surface-variant');
@@ -251,7 +246,6 @@ function initFilterTabs() {
       btn.classList.remove('bg-surface-container', 'text-on-surface-variant');
       btn.classList.add('bg-primary-container', 'text-on-primary', 'font-bold');
 
-      // Filter elements
       filterItems.forEach(item => {
         const itemCategory = item.getAttribute('data-category');
         if (category === 'all' || itemCategory === category) {
@@ -264,4 +258,392 @@ function initFilterTabs() {
       });
     });
   });
+}
+
+/* -------------------------------------------------------------------------- */
+/* Full Function Interactive Event Calendar                                   */
+/* -------------------------------------------------------------------------- */
+function initEventCalendar() {
+  const calendarGrid = document.getElementById('cal-days-grid');
+  if (!calendarGrid) return;
+
+  const monthTitleEl = document.getElementById('cal-month-title');
+  const prevBtn = document.getElementById('cal-prev-btn');
+  const nextBtn = document.getElementById('cal-next-btn');
+  const todayBtn = document.getElementById('cal-today-btn');
+  const eventCountEl = document.getElementById('cal-event-count');
+  const eventsContainer = document.getElementById('cal-events-container');
+  const listTitleEl = document.getElementById('cal-list-title');
+  const resetFilterBtn = document.getElementById('cal-reset-filter-btn');
+
+  const MONTH_NAMES = [
+    'JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI',
+    'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'
+  ];
+
+  // Official Community Events Database
+  const EVENTS = [
+    {
+      id: 'ev-1',
+      date: '2026-05-15',
+      displayDate: '15 Mei 2026',
+      badge: '15 MEI',
+      title: 'Regional FPV Race Banten 2026',
+      category: 'KOMPETISI',
+      categoryBadge: 'bg-primary-container text-on-primary',
+      location: 'Sirkuit Ecopark Citra Garden BMW, Serang',
+      time: '08:00 - 17:00 WIB',
+      description: 'Kompetisi balap drone FPV tingkat regional yang mempertemukan pilot-pilot terbaik di Sirkuit Citra BMW. Kategori: 5" Open Pro & 3.5" Beginner Class.',
+      slots: '8 Slot Tersisa'
+    },
+    {
+      id: 'ev-2',
+      date: '2026-05-24',
+      displayDate: '24 Mei 2026',
+      badge: '24 MEI',
+      title: 'Fun Fly & Setup Gate FPV Mingguan',
+      category: 'GATHERING',
+      categoryBadge: 'bg-surface-bright text-white',
+      location: 'Ecopark Citra Garden BMW, Serang',
+      time: '14:30 - 18:00 WIB',
+      description: 'Latihan bersama setup LED gate, uji timing system LapRF, dan terbang santai sambil sharing seputar perakitan drone.',
+      slots: 'Terbuka Untuk Umum (Gratis)'
+    },
+    {
+      id: 'ev-3',
+      date: '2026-06-07',
+      displayDate: '07 Juni 2026',
+      badge: '07 JUN',
+      title: 'Fixed Wing & Aeromodeling Sunday Fly',
+      category: 'AEROMODEL',
+      categoryBadge: 'bg-surface-bright text-white',
+      location: 'Bandara Banten Fly Zone / Citra BMW',
+      time: '07:00 - 11:30 WIB',
+      description: 'Sesi terbang khusus pesawat sayap tetap (Fixed Wing), Glider, Bixler, dan pesawat model skala dengan runway luas.',
+      slots: 'Bawa Pesawat / Spectator'
+    },
+    {
+      id: 'ev-4',
+      date: '2026-06-22',
+      displayDate: '22 Juni 2026',
+      badge: '22 JUN',
+      title: 'Charity Flight Mission Pulau Sangiang',
+      category: 'CHARITY',
+      categoryBadge: 'bg-primary-container text-on-primary',
+      location: 'Pulau Sangiang, Selat Sunda',
+      time: '2 Hari 1 Malam (Camp & Fly)',
+      description: 'Misi terbang amal penggalangan dana sosial sekaligus dokumentasi sinematik aerial panorama keindahan alam Pulau Sangiang.',
+      slots: 'Pendaftaran Terbuka'
+    },
+    {
+      id: 'ev-5',
+      date: '2026-07-12',
+      displayDate: '12 Juli 2026',
+      badge: '12 JUL',
+      title: 'Workshop Betaflight 4.5 & PID Tuning',
+      category: 'WORKSHOP',
+      categoryBadge: 'bg-surface-bright text-white',
+      location: 'SMS Basecamp, Kramatwatu, Serang',
+      time: '13:00 - 17:00 WIB',
+      description: 'Bedah tuntas konfigurasi filter gyro, D-term, RPM filtering, ELRS 3.x, dan tuning responsif tanpa osilasi motor panas.',
+      slots: 'Maks 15 Peserta'
+    },
+    {
+      id: 'ev-6',
+      date: '2026-08-10',
+      displayDate: '10 Agustus 2026',
+      badge: '10 AGU',
+      title: 'Aero-Tech & Drone Assembly Meetup',
+      category: 'TEKNOLOGI',
+      categoryBadge: 'bg-surface-bright text-white',
+      location: 'SMS Workshop & Lab Serang',
+      time: '10:00 - 16:00 WIB',
+      description: 'Pertemuan teknis membahas inovasi motor brushless, soldering aman, manajemen voltase baterai LiPo/Li-Ion, dan 3D printing custom TPU parts.',
+      slots: 'Gratis Anggota'
+    },
+    {
+      id: 'ev-7',
+      date: '2026-08-17',
+      displayDate: '17 Agustus 2026',
+      badge: '17 AGU',
+      title: 'Pengibaran Bendera Merah Putih di Udara',
+      category: 'SPECIAL',
+      categoryBadge: 'bg-primary-container text-on-primary',
+      location: 'Pantai Anyer & Ecopark Citra BMW',
+      time: '08:00 - 12:00 WIB',
+      description: 'Formasi terbang spektakuler membawa bendera merah putih oleh skuad multirotor dan pesawat aeromodeling memperingati HUT Kemerdekaan RI.',
+      slots: 'All Members Mandatory Fly'
+    }
+  ];
+
+  // Calendar State
+  let currentYear = 2026;
+  let currentMonth = 4; // May (0-indexed)
+  let selectedDateStr = null; // YYYY-MM-DD format
+
+  function getEventsForMonth(year, month) {
+    return EVENTS.filter(ev => {
+      const d = new Date(ev.date);
+      return d.getFullYear() === year && d.getMonth() === month;
+    });
+  }
+
+  function getEventsForDate(dateStr) {
+    return EVENTS.filter(ev => ev.date === dateStr);
+  }
+
+  // Render Days Grid
+  function renderCalendar() {
+    if (monthTitleEl) {
+      monthTitleEl.textContent = `${MONTH_NAMES[currentMonth]} ${currentYear}`;
+    }
+
+    const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
+
+    const monthEvents = getEventsForMonth(currentYear, currentMonth);
+    if (eventCountEl) {
+      eventCountEl.textContent = `${monthEvents.length} Event Bulan Ini`;
+    }
+
+    calendarGrid.innerHTML = '';
+
+    // Prev Month Days
+    for (let i = firstDayIndex - 1; i >= 0; i--) {
+      const dayNum = daysInPrevMonth - i;
+      const dayEl = document.createElement('div');
+      dayEl.className = 'py-2 sm:py-2.5 text-on-surface-variant/30 text-xs sm:text-sm select-none';
+      dayEl.textContent = dayNum;
+      calendarGrid.appendChild(dayEl);
+    }
+
+    // Current Month Days
+    const today = new Date();
+    const isCurrentActualMonth = (today.getFullYear() === currentYear && today.getMonth() === currentMonth);
+    const todayDateNum = today.getDate();
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const dayEvents = getEventsForDate(dayStr);
+      const hasEvent = dayEvents.length > 0;
+      const isSelected = (selectedDateStr === dayStr);
+      const isToday = isCurrentActualMonth && (todayDateNum === day);
+
+      const dayButton = document.createElement('button');
+      dayButton.type = 'button';
+      dayButton.setAttribute('data-date', dayStr);
+
+      let classes = 'relative py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 flex flex-col items-center justify-center ';
+
+      if (isSelected) {
+        classes += 'bg-primary-container text-on-primary font-bold shadow-[0_0_12px_rgba(255,199,0,0.6)] scale-105 z-10';
+      } else if (hasEvent) {
+        classes += 'bg-primary-container/20 text-primary-container border border-primary-container/60 hover:bg-primary-container hover:text-on-primary font-bold';
+      } else if (isToday) {
+        classes += 'border border-outline text-white hover:bg-surface-container-high';
+      } else {
+        classes += 'text-on-surface hover:bg-surface-container-high/80 hover:text-primary-container';
+      }
+
+      dayButton.className = classes;
+      dayButton.textContent = day;
+
+      // Event indicator dot
+      if (hasEvent && !isSelected) {
+        const dot = document.createElement('span');
+        dot.className = 'absolute bottom-1 w-1.5 h-1.5 rounded-full bg-primary-container';
+        dayButton.appendChild(dot);
+      }
+
+      dayButton.addEventListener('click', () => {
+        if (selectedDateStr === dayStr) {
+          selectedDateStr = null; // Toggle off
+        } else {
+          selectedDateStr = dayStr;
+        }
+        renderCalendar();
+        renderEventList();
+      });
+
+      calendarGrid.appendChild(dayButton);
+    }
+
+    // Next Month Days (to fill out 35 or 42 grid slots)
+    const totalRendered = firstDayIndex + daysInMonth;
+    const remainingSlots = (totalRendered <= 35) ? (35 - totalRendered) : (42 - totalRendered);
+
+    for (let nextDay = 1; nextDay <= remainingSlots; nextDay++) {
+      const dayEl = document.createElement('div');
+      dayEl.className = 'py-2 sm:py-2.5 text-on-surface-variant/30 text-xs sm:text-sm select-none';
+      dayEl.textContent = nextDay;
+      calendarGrid.appendChild(dayEl);
+    }
+  }
+
+  // Render Right Events List
+  function renderEventList() {
+    if (!eventsContainer) return;
+    eventsContainer.innerHTML = '';
+
+    let displayedEvents = [];
+
+    if (selectedDateStr) {
+      displayedEvents = getEventsForDate(selectedDateStr);
+      const [y, m, d] = selectedDateStr.split('-');
+      const formattedDate = `${parseInt(d)} ${MONTH_NAMES[parseInt(m) - 1]} ${y}`;
+      if (listTitleEl) listTitleEl.textContent = `AGENDA TANGGAL: ${formattedDate}`;
+      if (resetFilterBtn) resetFilterBtn.classList.remove('hidden');
+    } else {
+      displayedEvents = getEventsForMonth(currentYear, currentMonth);
+      if (listTitleEl) listTitleEl.textContent = `DAFTAR AGENDA ${MONTH_NAMES[currentMonth]} ${currentYear}`;
+      if (resetFilterBtn) resetFilterBtn.classList.add('hidden');
+    }
+
+    if (displayedEvents.length === 0) {
+      const emptyCard = document.createElement('div');
+      emptyCard.className = 'p-6 rounded-lg bg-surface-container border border-surface-variant text-center flex flex-col items-center justify-center gap-3';
+      emptyCard.innerHTML = `
+        <span class="material-symbols-outlined text-4xl text-on-surface-variant/60">event_busy</span>
+        <div>
+          <h4 class="text-white font-bold font-stats-lg text-base mb-1">Tidak Ada Jadwal Resmi Khusus</h4>
+          <p class="text-on-surface-variant text-xs max-w-md mx-auto">
+            ${selectedDateStr ? 'Tidak ada kompetisi/gathering resmi pada tanggal ini.' : 'Belum ada agenda besar terjadwal untuk bulan ini.'} 
+            Gathering santai mingguan SMS tetap berlangsung setiap <strong>Minggu pagi / sore</strong> di Markas Ecopark Citra Garden BMW.
+          </p>
+        </div>
+        <button onclick="openModal('join-modal')" class="mt-2 text-xs font-label-caps text-primary-container border border-primary-container px-4 py-2 hover:bg-primary-container hover:text-on-primary transition-all font-bold slant-btn">
+          IKUT TERBANG MINGGUAN
+        </button>
+      `;
+      eventsContainer.appendChild(emptyCard);
+      return;
+    }
+
+    displayedEvents.forEach(ev => {
+      const card = document.createElement('div');
+      card.className = 'flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 bg-surface-container border border-surface-variant hover:border-primary-container/60 transition-all group rounded-lg shadow-md';
+      
+      card.innerHTML = `
+        <div class="flex-grow">
+          <div class="flex flex-wrap items-center gap-2 mb-1.5">
+            <span class="${ev.categoryBadge} font-label-caps text-[10px] px-2 py-0.5 font-bold rounded-sm">${ev.badge}</span>
+            <span class="text-[10px] font-label-caps text-primary-container border border-primary-container/30 px-2 py-0.5 rounded-sm">${ev.category}</span>
+            <span class="text-[11px] text-on-surface-variant/80 font-label-caps ml-auto sm:ml-0 flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">schedule</span> ${ev.time}
+            </span>
+          </div>
+          <h3 class="text-white font-bold font-stats-lg text-base sm:text-lg group-hover:text-primary-container transition-colors mb-1">
+            ${ev.title}
+          </h3>
+          <p class="text-on-surface-variant text-xs sm:text-sm font-body-md line-clamp-2 mb-2 leading-relaxed">
+            ${ev.description}
+          </p>
+          <div class="flex items-center gap-1 text-[11px] font-label-caps text-on-surface-variant/80">
+            <span class="material-symbols-outlined text-xs text-primary-container">location_on</span>
+            <span>${ev.location}</span>
+          </div>
+        </div>
+
+        <div class="flex sm:flex-col gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-surface-variant/60">
+          <button data-event-id="${ev.id}" class="cal-detail-btn w-full sm:w-auto text-primary-container border border-primary-container px-4 py-2 font-label-caps text-xs hover:bg-primary-container hover:text-on-primary transition-all font-bold slant-btn flex items-center justify-center gap-1">
+            DETAIL &amp; RSVP
+          </button>
+        </div>
+      `;
+
+      eventsContainer.appendChild(card);
+    });
+
+    // Attach click listeners to Detail buttons
+    eventsContainer.querySelectorAll('.cal-detail-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const evId = btn.getAttribute('data-event-id');
+        const evData = EVENTS.find(e => e.id === evId);
+        if (evData) openEventModal(evData);
+      });
+    });
+  }
+
+  // Open Event Modal with Dynamic Data
+  function openEventModal(eventData) {
+    const modalCategory = document.getElementById('event-modal-category');
+    const modalTitle = document.getElementById('event-modal-title');
+    const modalDate = document.getElementById('event-modal-date');
+    const modalTime = document.getElementById('event-modal-time');
+    const modalLocation = document.getElementById('event-modal-location');
+    const modalDesc = document.getElementById('event-modal-desc');
+    const modalRsvpBtn = document.getElementById('event-modal-rsvp-btn');
+    const modalMapsBtn = document.getElementById('event-modal-maps-btn');
+
+    if (modalCategory) modalCategory.textContent = eventData.category;
+    if (modalTitle) modalTitle.textContent = eventData.title;
+    if (modalDate) modalDate.textContent = eventData.displayDate;
+    if (modalTime) modalTime.textContent = eventData.time;
+    if (modalLocation) modalLocation.textContent = eventData.location;
+    if (modalDesc) modalDesc.textContent = eventData.description;
+
+    if (modalRsvpBtn) {
+      const msg = encodeURIComponent(`Halo Admin Sky Multirotor Squad, saya ingin mendaftar / bertanya seputar acara "${eventData.title}" (${eventData.displayDate}).`);
+      modalRsvpBtn.href = `https://wa.me/6287772272928?text=${msg}`;
+    }
+
+    if (modalMapsBtn) {
+      modalMapsBtn.href = `https://maps.google.com/?q=${encodeURIComponent(eventData.location)}`;
+    }
+
+    if (window.openModal) {
+      window.openModal('event-modal');
+    }
+  }
+
+  // Event Listeners
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      currentMonth--;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      }
+      selectedDateStr = null;
+      renderCalendar();
+      renderEventList();
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      currentMonth++;
+      if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+      selectedDateStr = null;
+      renderCalendar();
+      renderEventList();
+    });
+  }
+
+  if (todayBtn) {
+    todayBtn.addEventListener('click', () => {
+      const now = new Date();
+      currentYear = 2026;
+      currentMonth = 4; // May 2026 (or now.getMonth())
+      selectedDateStr = '2026-05-15';
+      renderCalendar();
+      renderEventList();
+    });
+  }
+
+  if (resetFilterBtn) {
+    resetFilterBtn.addEventListener('click', () => {
+      selectedDateStr = null;
+      renderCalendar();
+      renderEventList();
+    });
+  }
+
+  // Initial Render
+  renderCalendar();
+  renderEventList();
 }
