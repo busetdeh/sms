@@ -517,6 +517,15 @@ function initEventCalendar() {
     });
   }
 
+  function getNextUpcomingEvent() {
+    const now = new Date();
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+    return [...EVENTS]
+      .filter(ev => (ev.end_date || ev.date) >= todayStr)
+      .sort((a, b) => a.date.localeCompare(b.date))[0] || null;
+  }
+
   function renderCalendar() {
     if (monthTitleEl) {
       monthTitleEl.textContent = `${MONTH_NAMES[currentMonth]} ${currentYear}`;
@@ -622,7 +631,35 @@ function initEventCalendar() {
       if (resetFilterBtn) resetFilterBtn.classList.add('hidden');
     }
 
-    if (displayedEvents.length === 0) {
+    const nextEvent = !selectedDateStr ? getNextUpcomingEvent() : null;
+    if (nextEvent) {
+      const nextCard = document.createElement('div');
+      nextCard.className = 'p-4 sm:p-5 rounded-lg border-2 border-primary-container bg-primary-container/10 shadow-[0_0_20px_rgba(255,199,0,0.16)] relative overflow-hidden';
+      nextCard.innerHTML = `
+        <div class="absolute top-0 right-0 px-3 py-1 bg-primary-container text-on-primary text-[10px] font-label-caps font-bold tracking-widest rounded-bl">NEXT EVENT</div>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pr-0 sm:pr-24">
+          <div class="flex-grow">
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span class="${nextEvent.categoryBadge} font-label-caps text-[10px] px-2 py-0.5 font-bold rounded-sm">${nextEvent.badge}</span>
+              <span class="text-[10px] font-label-caps text-primary-container border border-primary-container/50 px-2 py-0.5 rounded-sm">${nextEvent.category}</span>
+            </div>
+            <h3 class="text-white font-bold font-stats-lg text-base sm:text-lg mb-1">${nextEvent.title}</h3>
+            <p class="text-on-surface-variant text-xs sm:text-sm leading-relaxed mb-2">${nextEvent.displayDate} · ${nextEvent.time}</p>
+            <div class="flex items-center gap-1 text-[11px] font-label-caps text-on-surface-variant/80">
+              <span class="material-symbols-outlined text-xs text-primary-container">location_on</span>
+              <span>${nextEvent.location}</span>
+            </div>
+          </div>
+          <button data-event-id="${nextEvent.id}" class="cal-detail-btn w-full sm:w-auto text-on-primary bg-primary-container border border-primary-container px-4 py-2 font-label-caps text-xs hover:bg-yellow-400 transition-all font-bold slant-btn flex items-center justify-center gap-1">
+            DETAIL &amp; RSVP
+          </button>
+        </div>
+      `;
+      eventsContainer.appendChild(nextCard);
+      displayedEvents = displayedEvents.filter(ev => ev.id !== nextEvent.id);
+    }
+
+    if (displayedEvents.length === 0 && !nextEvent) {
       const emptyCard = document.createElement('div');
       emptyCard.className = 'p-6 rounded-lg bg-surface-container border border-surface-variant text-center flex flex-col items-center justify-center gap-3';
       emptyCard.innerHTML = `
