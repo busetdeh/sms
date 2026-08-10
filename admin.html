@@ -580,15 +580,42 @@
           <input id="pilot-input-interests" type="text" placeholder="FPV Freestyle, Aeromodeling, 7-inch Long Range" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block font-label-caps text-primary-container mb-1">PATH / URL FOTO *</label>
-            <input id="pilot-input-photo" type="text" required placeholder="/pilot/juang.webp" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+        <!-- Photo Upload & URL Section -->
+        <div class="p-3.5 bg-surface-container-high/60 border border-surface-variant rounded-lg space-y-3">
+          <label class="block font-label-caps text-primary-container text-xs font-bold">FOTO PROFIL PILOT *</label>
+          
+          <div class="flex flex-col sm:flex-row items-center gap-4">
+            <!-- Live Photo Thumbnail Preview -->
+            <div class="relative group shrink-0">
+              <img id="pilot-photo-preview" src="/logo.png" alt="Preview Foto Pilot" class="w-20 h-20 rounded-full object-cover border-2 border-primary-container shadow-lg bg-surface-dim"/>
+              <span id="pilot-photo-badge" class="absolute bottom-0 right-0 bg-primary-container text-black text-[9px] font-bold px-1.5 py-0.5 rounded-full font-label-caps uppercase shadow">PREVIEW</span>
+            </div>
+
+            <!-- Upload Area & Drag-and-Drop Zone -->
+            <div class="flex-grow w-full">
+              <input type="file" id="pilot-file-input" accept="image/*" class="hidden"/>
+              <div id="pilot-dropzone" class="border-2 border-dashed border-surface-variant hover:border-primary-container rounded-lg p-3 text-center cursor-pointer transition-all bg-surface-container/50 hover:bg-surface-container flex flex-col items-center justify-center gap-1 group">
+                <span class="material-symbols-outlined text-primary-container text-2xl group-hover:scale-110 transition-transform">cloud_upload</span>
+                <span class="text-xs text-white font-bold font-label-caps">KLIK / DRAG &amp; DROP FILE FOTO DI SINI</span>
+                <span class="text-[10px] text-on-surface-variant font-mono-data">Mendukung format JPG, PNG, WEBP (Maks 5MB)</span>
+              </div>
+              <div id="pilot-upload-status" class="hidden text-[11px] text-primary-container font-label-caps mt-1.5 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-xs animate-spin">progress_activity</span>
+                <span>Mengunggah file foto...</span>
+              </div>
+            </div>
           </div>
+
+          <!-- Manual URL / Path fallback input -->
           <div>
-            <label class="block font-label-caps text-primary-container mb-1">INSTAGRAM HANDLE</label>
-            <input id="pilot-input-ig" type="text" placeholder="@pilot_instagram" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+            <label class="block font-label-caps text-[10px] text-on-surface-variant mb-1">ATAU GUNAKAN PATH / URL FOTO LANGSUNG:</label>
+            <input id="pilot-input-photo" type="text" required placeholder="/pilot/nama_pilot.webp atau https://..." class="w-full bg-surface-container border border-surface-variant rounded px-3 py-2 text-white font-mono-data text-xs focus:border-primary-container focus:outline-none"/>
           </div>
+        </div>
+
+        <div>
+          <label class="block font-label-caps text-primary-container mb-1">INSTAGRAM HANDLE</label>
+          <input id="pilot-input-ig" type="text" placeholder="@pilot_instagram" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
         </div>
 
         <div class="pt-3 flex justify-end gap-2 border-t border-surface-variant">

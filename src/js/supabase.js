@@ -331,6 +331,41 @@ export async function deleteSupabaseContact(id) {
 }
 
 /* -------------------------------------------------------------------------- */
+/* STORAGE FILE UPLOAD                                                        */
+/* -------------------------------------------------------------------------- */
+
+export async function uploadSupabaseFile(bucketName, file, customFolder = 'pilots') {
+  try {
+    const fileExt = file.name.split('.').pop();
+    const cleanFileName = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-zA-Z0-9_-]/g, '_');
+    const filePath = `${customFolder}/${Date.now()}_${cleanFileName}.${fileExt}`;
+
+    const { data, error } = await supabase.storage
+      .from(bucketName)
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: true
+      });
+
+    if (error) {
+      console.warn(`Supabase Storage upload error for bucket '${bucketName}':`, error.message);
+      return { success: false, error: error.message };
+    }
+
+    const { data: publicData } = supabase.storage
+      .from(bucketName)
+      .getPublicUrl(filePath);
+
+    return {
+      success: true,
+      path: filePath,
+      publicUrl: publicData.publicUrl
+    };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+/* -------------------------------------------------------------------------- */
 /* REALTIME SUBSCRIPTION                                                      */
 /* -------------------------------------------------------------------------- */
 

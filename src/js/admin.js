@@ -26,6 +26,7 @@ import {
   deleteSupabaseGalleryItem,
   getSupabaseContacts,
   deleteSupabaseContact,
+  uploadSupabaseFile,
   subscribeToTable
 } from './supabase.js';
 
@@ -561,6 +562,8 @@ function initModalListeners() {
   document.getElementById('btn-add-pilot')?.addEventListener('click', () => openPilotModal());
   document.getElementById('btn-add-spot')?.addEventListener('click', () => openSpotModal());
   document.getElementById('btn-add-gallery')?.addEventListener('click', () => openGalleryModal());
+
+  initPilotPhotoUploadListeners();
 }
 
 // Event Modal
@@ -592,17 +595,140 @@ function openPilotModal(pilotData = null) {
   const form = document.getElementById('form-pilot');
   if (!modal || !form) return;
 
+  const photoInput = document.getElementById('pilot-input-photo');
+  const photoPreview = document.getElementById('pilot-photo-preview');
+  const fileInput = document.getElementById('pilot-file-input');
+  const uploadStatus = document.getElementById('pilot-upload-status');
+
   document.getElementById('pilot-form-id').value = pilotData ? pilotData.id : '';
   document.getElementById('pilot-input-name').value = pilotData ? pilotData.name : '';
   document.getElementById('pilot-input-callsign').value = pilotData ? (pilotData.callsign || '') : '';
   document.getElementById('pilot-input-division').value = pilotData ? pilotData.division : 'FPV PILOT';
   document.getElementById('pilot-input-interests').value = pilotData ? (pilotData.interests || '') : '';
-  document.getElementById('pilot-input-photo').value = pilotData ? pilotData.photo_url : '/pilot/juang.webp';
+  
+  const photoUrl = pilotData ? (pilotData.photo_url || '') : '';
+  if (photoInput) photoInput.value = photoUrl;
+  if (photoPreview) {
+    photoPreview.src = photoUrl || '/logo.png';
+    photoPreview.onerror = () => { photoPreview.src = '/logo.png'; };
+  }
+  if (fileInput) fileInput.value = '';
+  if (uploadStatus) uploadStatus.classList.add('hidden');
+
   document.getElementById('pilot-input-ig').value = pilotData ? (pilotData.instagram_handle || '') : '';
   document.getElementById('pilot-input-order').value = pilotData ? (pilotData.display_order || 0) : 0;
 
   document.getElementById('pilot-modal-heading').textContent = pilotData ? 'EDIT PILOT SKUAD' : 'TAMBAH PILOT BARU';
   modal.classList.add('active');
+}
+
+/* -------------------------------------------------------------------------- */
+/* PILOT PHOTO UPLOAD & DRAG-AND-DROP CONTROLLER                              */
+/* -------------------------------------------------------------------------- */
+function initPilotPhotoUploadListeners() {
+  const fileInput = document.getElementById('pilot-file-input');
+  const dropzone = document.getElementById('pilot-dropzone');
+  const photoInput = document.getElementById('pilot-input-photo');
+  const photoPreview = document.getElementById('pilot-photo-preview');
+  const uploadStatus = document.getElementById('pilot-upload-status');
+
+  if (!fileInput || !dropzone) return;
+
+  // 1. Text input live preview sync
+  if (photoInput && photoPreview) {
+    const updatePreviewFromInput = () => {
+      const val = photoInput.value.trim();
+      photoPreview.src = val || '/logo.png';
+      photoPreview.onerror = () => { photoPreview.src = '/logo.png'; };
+    };
+    photoInput.addEventListener('input', updatePreviewFromInput);
+    photoInput.addEventListener('change', updatePreviewFromInput);
+  }
+
+  // 2. File Upload Handler
+  async function handleFileSelected(file) {
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      showToast('File harus berupa gambar (JPG, PNG, WEBP, dll).', 'error');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Ukuran file maksimal 5 MB.', 'error');
+      return;
+    }
+
+    // Instant local preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (photoPreview) photoPreview.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+
+    // Show upload progress
+    if (uploadStatus) uploadStatus.classList.remove('hidden');
+
+    try {
+      // Attempt upload to Supabase Storage 'pilots' bucket
+      const uploadResult = await uploadSupabaseFile('pilots', file, 'profiles');
+
+      if (uploadResult.success && uploadResult.publicUrl) {
+        if (photoInput) photoInput.value = uploadResult.publicUrl;
+        if (photoPreview) photoPreview.src = uploadResult.publicUrl;
+        showToast('Foto profil pilot berhasil diunggah ke storage!', 'success');
+      } else {
+        // Graceful Fallback: Convert to Base64 data string if bucket is not yet configured
+        const base64Data = await fileToBase64(file);
+        if (photoInput) photoInput.value = base64Data;
+        showToast('Foto berhasil dimuat dan siap disimpan ke profil pilot.', 'info');
+      }
+    } catch (err) {
+      console.warn('Upload error fallback to base64:', err);
+      const base64Data = await fileToBase64(file);
+      if (photoInput) photoInput.value = base64Data;
+      showToast('Foto berhasil dimuat.', 'info');
+    } finally {
+      if (uploadStatus) uploadStatus.classList.add('hidden');
+    }
+  }
+
+  // Helper for Base64 conversion
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onload = () => resolve(fr.result);
+      fr.onerror = reject;
+      fr.readAsDataURL(file);
+    });
+  }
+
+  // File input change
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFileSelected(e.target.files[0]);
+    }
+  });
+
+  // Drag and Drop support
+  dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.classList.add('border-primary-container', 'bg-surface-container-high');
+  });
+
+  ['dragleave', 'dragend'].forEach(type => {
+    dropzone.addEventListener(type, () => {
+      dropzone.classList.remove('border-primary-container', 'bg-surface-container-high');
+    });
+  });
+
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('border-primary-container', 'bg-surface-container-high');
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileSelected(e.dataTransfer.files[0]);
+    }
+  });
 }
 
 // Spot Modal
