@@ -5,10 +5,6 @@
   "rewrites": [
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/pages/admin", "destination": "/pages/admin.html" },
-    { "source": "/sms-fly-through-history", "destination": "/benteng-speelwijk.html" },
-    { "source": "/pages/sms-fly-through-history", "destination": "/pages/benteng-speelwijk.html" },
-    { "source": "/benteng-speelwijk", "destination": "/benteng-speelwijk.html" },
-    { "source": "/pages/benteng-speelwijk", "destination": "/pages/benteng-speelwijk.html" },
     { "source": "/tentang-kami", "destination": "/pages/tentang-kami.html" },
     { "source": "/galeri", "destination": "/pages/galeri.html" },
     { "source": "/spot-terbang", "destination": "/pages/spot-terbang.html" },
@@ -18,6 +14,8 @@
     { "source": "/pages/galeri", "destination": "/pages/galeri.html" },
     { "source": "/pages/spot-terbang", "destination": "/pages/spot-terbang.html" },
     { "source": "/pages/kontak", "destination": "/pages/kontak.html" },
-    { "source": "/pages/artikel", "destination": "/pages/artikel.html" }
+    { "source": "/pages/artikel", "destination": "/pages/artikel.html" },
+    { "source": "/pages/:slug([a-zA-Z0-9_-]+)", "destination": "/pages/benteng-speelwijk.html" },
+    { "source": "/:slug([a-zA-Z0-9_-]+)", "destination": "/benteng-speelwijk.html" }
   ]
 }

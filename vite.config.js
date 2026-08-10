@@ -37,6 +37,13 @@ function cleanUrlsPlugin() {
           req.url = pathname + '.html' + urlObj.search;
         } else if (existsSync(pagesFile)) {
           req.url = '/pages' + pathname + '.html' + urlObj.search;
+        } else {
+          // Dynamic speelwijk slug fallback (e.g. custom slug)
+          if (pathname.startsWith('/pages/')) {
+            req.url = '/pages/benteng-speelwijk.html' + urlObj.search;
+          } else {
+            req.url = '/benteng-speelwijk.html' + urlObj.search;
+          }
         }
       }
     }
