@@ -670,7 +670,7 @@ function renderSpeelwijkRegistrations() {
 
     const cleanPhone = (reg.phone || '').replace(/\D/g, '');
     const waPhone = cleanPhone.startsWith('0') ? '62' + cleanPhone.substring(1) : cleanPhone;
-    const waUrl = `https://wa.me/${waPhone}?text=${encodeURIComponent(`Halo Pilot ${reg.name} (${reg.callsign || 'Speelwijk Fest'}), panitia Sky Multirotor Squad mengonfirmasi status slot Anda: ${reg.status}.`)}`;
+    const waUrl = `https://wa.me/${waPhone}?text=${encodeURIComponent(`Halo Pilot ${reg.name} (${reg.callsign || 'Speelwijk Drone Fest'}), panitia Sky Multirotor Squad mengonfirmasi status slot Anda: ${reg.status}.`)}`;
 
     let statusBadge = '<span class="px-2 py-0.5 rounded bg-yellow-500/20 text-yellow-400 font-label-caps text-[10px] font-bold border border-yellow-500/40">PENDING</span>';
     if (reg.status === 'LUNAS') {
