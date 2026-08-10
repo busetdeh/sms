@@ -412,7 +412,8 @@ function initEventCalendar() {
       time: dbEvent.time || '08:00 - Selesai WIB',
       description: dbEvent.description || '',
       slots: dbEvent.slots || 'Terbuka Untuk Umum',
-      maps_url: dbEvent.maps_url
+      maps_url: dbEvent.maps_url,
+      custom_link: dbEvent.custom_link || ''
     };
   }
 
@@ -615,6 +616,7 @@ function initEventCalendar() {
     const modalDesc = document.getElementById('event-modal-desc');
     const modalRsvpBtn = document.getElementById('event-modal-rsvp-btn');
     const modalMapsBtn = document.getElementById('event-modal-maps-btn');
+    const modalCustomLinkBtn = document.getElementById('event-modal-custom-link-btn');
 
     if (modalCategory) modalCategory.textContent = eventData.category;
     if (modalTitle) modalTitle.textContent = eventData.title;
@@ -622,6 +624,23 @@ function initEventCalendar() {
     if (modalTime) modalTime.textContent = eventData.time;
     if (modalLocation) modalLocation.textContent = eventData.location;
     if (modalDesc) modalDesc.textContent = eventData.description;
+
+    if (modalCustomLinkBtn) {
+      if (eventData.custom_link && eventData.custom_link.trim() !== '') {
+        modalCustomLinkBtn.classList.remove('hidden');
+        modalCustomLinkBtn.href = eventData.custom_link.trim();
+        // If external link, open in new tab
+        if (eventData.custom_link.startsWith('http')) {
+          modalCustomLinkBtn.target = '_blank';
+          modalCustomLinkBtn.rel = 'noopener noreferrer';
+        } else {
+          modalCustomLinkBtn.removeAttribute('target');
+          modalCustomLinkBtn.removeAttribute('rel');
+        }
+      } else {
+        modalCustomLinkBtn.classList.add('hidden');
+      }
+    }
 
     if (modalRsvpBtn) {
       const msg = encodeURIComponent(`Halo Admin Sky Multirotor Squad, saya ingin mendaftar / bertanya seputar acara "${eventData.title}" (${eventData.displayDate}).`);

@@ -573,6 +573,7 @@ function openEventModal(eventData = null) {
   document.getElementById('event-input-badge').value = eventData ? eventData.badge : '';
   document.getElementById('event-input-slots').value = eventData ? eventData.slots : 'Terbuka Untuk Umum';
   document.getElementById('event-input-maps').value = eventData ? (eventData.maps_url || '') : '';
+  document.getElementById('event-input-link').value = eventData ? (eventData.custom_link || '') : '';
   document.getElementById('event-input-desc').value = eventData ? eventData.description : '';
 
   document.getElementById('event-modal-heading').textContent = eventData ? 'EDIT JADWAL ACARA' : 'TAMBAH ACARA BARU';
@@ -653,9 +654,10 @@ function initFormSubmissions() {
     const badge = document.getElementById('event-input-badge').value.trim();
     const slots = document.getElementById('event-input-slots').value.trim();
     const maps_url = document.getElementById('event-input-maps').value.trim();
+    const custom_link = document.getElementById('event-input-link').value.trim();
     const description = document.getElementById('event-input-desc').value.trim();
 
-    const payload = { title, date, time, location, category, badge, slots, maps_url, description };
+    const payload = { title, date, time, location, category, badge, slots, maps_url, custom_link, description };
 
     let res;
     if (id) {
