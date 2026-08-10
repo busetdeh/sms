@@ -265,11 +265,16 @@ async function loadEvents() {
   cachedEvents.forEach(ev => {
     const tr = document.createElement('tr');
     tr.className = 'border-b border-surface-variant hover:bg-surface-container-high/50 transition-colors text-xs font-body-md';
+    const dateDisplay = ev.end_date && ev.end_date !== ev.date 
+      ? `<div class="font-bold text-primary-container font-stats-lg text-xs leading-tight">${ev.date}</div><div class="text-[10px] text-on-surface-variant font-label-caps">s/d ${ev.end_date}</div>` 
+      : `<div class="font-bold text-primary-container font-stats-lg">${ev.date}</div>`;
+
     tr.innerHTML = `
-      <td class="p-3.5 font-bold text-primary-container font-stats-lg">${ev.date}</td>
+      <td class="p-3.5">${dateDisplay}</td>
       <td class="p-3.5">
         <div class="font-bold text-white text-sm">${ev.title}</div>
         <div class="text-[11px] text-on-surface-variant font-label-caps">${ev.location}</div>
+        ${ev.custom_link ? `<a href="${ev.custom_link}" target="_blank" class="inline-flex items-center gap-0.5 text-[10px] text-primary-container hover:underline mt-0.5"><span class="material-symbols-outlined text-xs">link</span> ${ev.custom_link}</a>` : ''}
       </td>
       <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-surface-container font-label-caps text-[10px] text-primary-container border border-primary-container/40">${ev.category}</span></td>
       <td class="p-3.5 text-on-surface-variant">${ev.time}</td>
@@ -567,6 +572,7 @@ function openEventModal(eventData = null) {
   document.getElementById('event-form-id').value = eventData ? eventData.id : '';
   document.getElementById('event-input-title').value = eventData ? eventData.title : '';
   document.getElementById('event-input-date').value = eventData ? eventData.date : '';
+  document.getElementById('event-input-end-date').value = eventData ? (eventData.end_date || '') : '';
   document.getElementById('event-input-time').value = eventData ? eventData.time : '08:00 - 17:00 WIB';
   document.getElementById('event-input-location').value = eventData ? eventData.location : 'Ecopark Citra Garden BMW, Serang';
   document.getElementById('event-input-category').value = eventData ? eventData.category : 'GATHERING';
@@ -648,6 +654,7 @@ function initFormSubmissions() {
     const id = document.getElementById('event-form-id').value;
     const title = document.getElementById('event-input-title').value.trim();
     const date = document.getElementById('event-input-date').value;
+    const end_date = document.getElementById('event-input-end-date').value || null;
     const time = document.getElementById('event-input-time').value.trim();
     const location = document.getElementById('event-input-location').value.trim();
     const category = document.getElementById('event-input-category').value;
@@ -657,7 +664,7 @@ function initFormSubmissions() {
     const custom_link = document.getElementById('event-input-link').value.trim();
     const description = document.getElementById('event-input-desc').value.trim();
 
-    const payload = { title, date, time, location, category, badge, slots, maps_url, custom_link, description };
+    const payload = { title, date, end_date, time, location, category, badge, slots, maps_url, custom_link, description };
 
     let res;
     if (id) {

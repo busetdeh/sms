@@ -400,10 +400,24 @@ function initEventCalendar() {
     const shortMonth = month.substring(0, 3);
     const isSpecial = dbEvent.category === 'KOMPETISI' || dbEvent.category === 'SPECIAL' || dbEvent.category === 'CHARITY';
 
+    let displayDate = `${day} ${month} ${year}`;
+    if (dbEvent.end_date && dbEvent.end_date !== dbEvent.date) {
+      const endD = new Date(dbEvent.end_date);
+      const endDay = endD.getDate();
+      const endMonth = MONTH_NAMES[endD.getMonth()];
+      const endYear = endD.getFullYear();
+      if (endMonth === month && endYear === year) {
+        displayDate = `${day} - ${endDay} ${month} ${year}`;
+      } else {
+        displayDate = `${day} ${month} - ${endDay} ${endMonth} ${endYear}`;
+      }
+    }
+
     return {
       id: dbEvent.id,
       date: dbEvent.date,
-      displayDate: `${day} ${month} ${year}`,
+      end_date: dbEvent.end_date || null,
+      displayDate,
       badge: dbEvent.badge || `${day < 10 ? '0' : ''}${day} ${shortMonth}`,
       title: dbEvent.title,
       category: dbEvent.category || 'GATHERING',
@@ -428,14 +442,23 @@ function initEventCalendar() {
   }
 
   function getEventsForMonth(year, month) {
+    const monthStart = `${year}-${String(month + 1).padStart(2, '0')}-01`;
+    const lastDay = new Date(year, month + 1, 0).getDate();
+    const monthEnd = `${year}-${String(month + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+
     return EVENTS.filter(ev => {
-      const [y, m] = ev.date.split('-');
-      return parseInt(y) === year && parseInt(m) - 1 === month;
+      const evStart = ev.date;
+      const evEnd = ev.end_date || ev.date;
+      return evStart <= monthEnd && evEnd >= monthStart;
     });
   }
 
   function getEventsForDate(dateStr) {
-    return EVENTS.filter(ev => ev.date === dateStr);
+    return EVENTS.filter(ev => {
+      const evStart = ev.date;
+      const evEnd = ev.end_date || ev.date;
+      return dateStr >= evStart && dateStr <= evEnd;
+    });
   }
 
   function renderCalendar() {
