@@ -474,6 +474,129 @@
     </div>
   </section>
 
+  <!-- Jadwal Acara Section -->
+  <section class="px-margin-mobile md:px-margin-desktop py-xl bg-surface border-y border-surface-variant">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex justify-between items-end mb-lg border-b border-surface-variant pb-xs">
+        <div class="flex flex-col">
+          <div class="font-label-caps text-xs text-primary-container uppercase tracking-widest mb-1">Agenda Gathering &amp; Kompetisi</div>
+          <h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-white uppercase font-bold">JADWAL ACARA</h2>
+        </div>
+        <a href="/pages/galeri" class="text-primary-container font-label-caps text-label-caps hover:text-white transition-colors flex items-center gap-xs">
+          LIHAT SEMUA ACARA <span class="material-symbols-outlined text-sm">arrow_forward</span>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-10 gap-lg">
+        <!-- Calendar Card (4 cols) -->
+        <div class="lg:col-span-4 bg-surface-container border border-surface-variant p-lg rounded-lg shadow-xl">
+          <div class="flex items-center justify-between mb-md">
+            <h3 class="text-white font-bold font-headline-md">MEI 2026</h3>
+            <div class="flex gap-sm">
+              <button class="p-1 text-primary-container hover:bg-surface-container-high rounded transition-colors" aria-label="Bulan Sebelumnya">
+                <span class="material-symbols-outlined">chevron_left</span>
+              </button>
+              <button class="p-1 text-primary-container hover:bg-surface-container-high rounded transition-colors" aria-label="Bulan Berikutnya">
+                <span class="material-symbols-outlined">chevron_right</span>
+              </button>
+            </div>
+          </div>
+          <div class="grid grid-cols-7 gap-xs text-center mb-sm">
+            <div class="text-on-surface-variant font-label-caps text-[10px]">S</div>
+            <div class="text-on-surface-variant font-label-caps text-[10px]">M</div>
+            <div class="text-on-surface-variant font-label-caps text-[10px]">T</div>
+            <div class="text-on-surface-variant font-label-caps text-[10px]">W</div>
+            <div class="text-on-surface-variant font-label-caps text-[10px]">T</div>
+            <div class="text-on-surface-variant font-label-caps text-[10px]">F</div>
+            <div class="text-on-surface-variant font-label-caps text-[10px]">S</div>
+          </div>
+          <div class="grid grid-cols-7 gap-xs text-center">
+            <div class="py-sm text-on-surface-variant opacity-40">28</div>
+            <div class="py-sm text-on-surface-variant opacity-40">29</div>
+            <div class="py-sm text-on-surface-variant opacity-40">30</div>
+            <div class="py-sm text-white">1</div>
+            <div class="py-sm text-white">2</div>
+            <div class="py-sm text-white">3</div>
+            <div class="py-sm text-white">4</div>
+            <div class="py-sm text-white">5</div>
+            <div class="py-sm text-white">6</div>
+            <div class="py-sm text-white">7</div>
+            <div class="py-sm text-white">8</div>
+            <div class="py-sm text-white">9</div>
+            <div class="py-sm text-white">10</div>
+            <div class="py-sm text-white">11</div>
+            <div class="py-sm text-white">12</div>
+            <div class="py-sm text-white">13</div>
+            <div class="py-sm text-white">14</div>
+            <div class="py-sm bg-primary-container text-on-primary font-bold rounded-full shadow-[0_0_10px_rgba(255,199,0,0.5)]">15</div>
+            <div class="py-sm text-white">16</div>
+            <div class="py-sm text-white">17</div>
+            <div class="py-sm text-white">18</div>
+            <div class="py-sm text-white">19</div>
+            <div class="py-sm text-white">20</div>
+            <div class="py-sm text-white">21</div>
+            <div class="py-sm border border-primary-container text-primary-container font-bold rounded-full">22</div>
+            <div class="py-sm text-white">23</div>
+            <div class="py-sm text-white">24</div>
+            <div class="py-sm text-white">25</div>
+            <div class="py-sm text-white">26</div>
+            <div class="py-sm text-white">27</div>
+            <div class="py-sm text-white">28</div>
+            <div class="py-sm text-white">29</div>
+            <div class="py-sm text-white">30</div>
+            <div class="py-sm text-white">31</div>
+            <div class="py-sm text-on-surface-variant opacity-40">1</div>
+          </div>
+        </div>
+
+        <!-- Events List (6 cols) -->
+        <div class="lg:col-span-6 flex flex-col gap-md">
+          <!-- Event 1 -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-md p-md bg-surface-container border border-surface-variant hover:border-primary-container/50 transition-colors group rounded">
+            <div class="flex-grow">
+              <div class="flex items-center gap-sm mb-xs">
+                <span class="bg-primary-container text-on-primary font-label-caps text-[10px] px-2 py-0.5 font-bold rounded-sm">15 MEI</span>
+                <h3 class="text-white font-bold font-stats-lg text-lg group-hover:text-primary-container transition-colors">Regional FPV Race Banten 2026</h3>
+              </div>
+              <p class="text-on-surface-variant text-sm font-body-md">Kompetisi balap drone FPV tingkat regional yang mempertemukan pilot-pilot terbaik di Sirkuit Citra BMW.</p>
+            </div>
+            <button onclick="openModal('join-modal')" class="self-start sm:self-center text-primary-container border border-primary-container px-md py-2 font-label-caps text-xs hover:bg-primary-container hover:text-on-primary transition-all font-bold slant-btn shrink-0">
+              DAFTAR
+            </button>
+          </div>
+
+          <!-- Event 2 -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-md p-md bg-surface-container border border-surface-variant hover:border-primary-container/50 transition-colors group rounded">
+            <div class="flex-grow">
+              <div class="flex items-center gap-sm mb-xs">
+                <span class="bg-surface-bright text-white border border-surface-variant font-label-caps text-[10px] px-2 py-0.5 font-bold rounded-sm">22 JUN</span>
+                <h3 class="text-white font-bold font-stats-lg text-lg group-hover:text-primary-container transition-colors">Charity Flight Mission Pulau Sangiang</h3>
+              </div>
+              <p class="text-on-surface-variant text-sm font-body-md">Misi terbang amal untuk penggalangan dana sosial sekaligus edukasi teknologi drone bersama warga pesisir.</p>
+            </div>
+            <a href="/pages/galeri" class="self-start sm:self-center text-primary-container border border-primary-container px-md py-2 font-label-caps text-xs hover:bg-primary-container hover:text-on-primary transition-all font-bold slant-btn shrink-0">
+              DETAIL
+            </a>
+          </div>
+
+          <!-- Event 3 -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-md p-md bg-surface-container border border-surface-variant hover:border-primary-container/50 transition-colors group rounded">
+            <div class="flex-grow">
+              <div class="flex items-center gap-sm mb-xs">
+                <span class="bg-surface-bright text-white border border-surface-variant font-label-caps text-[10px] px-2 py-0.5 font-bold rounded-sm">10 AGU</span>
+                <h3 class="text-white font-bold font-stats-lg text-lg group-hover:text-primary-container transition-colors">Aero-Tech &amp; PID Tuning Meetup</h3>
+              </div>
+              <p class="text-on-surface-variant text-sm font-body-md">Pertemuan teknis membahas inovasi terbaru dalam dunia aeromodeling, perakitan drone, dan fine-tuning Betaflight.</p>
+            </div>
+            <a href="/pages/kontak" class="self-start sm:self-center text-primary-container border border-primary-container px-md py-2 font-label-caps text-xs hover:bg-primary-container hover:text-on-primary transition-all font-bold slant-btn shrink-0">
+              DETAIL
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Social & Contact CTA Section -->
   <section class="grid grid-cols-1 md:grid-cols-2 bg-primary-container text-on-primary">
     <!-- Instagram -->
