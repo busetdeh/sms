@@ -1,7 +1,17 @@
 /**
  * Sky Multirotor Squad - Main JavaScript Engine
- * Provides responsiveness, telemetry widgets, interactive modals, flight utilities, and dynamic event calendar.
+ * Provides responsiveness, telemetry widgets, interactive modals, flight utilities,
+ * dynamic event calendar with Supabase integration, and realtime synchronization.
  */
+
+import {
+  getSupabaseEvents,
+  getSupabasePilots,
+  getSupabaseSpots,
+  getSupabaseGallery,
+  submitSupabaseContact,
+  subscribeToTable
+} from './supabase.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   initNavbar();
@@ -12,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initModals();
   initFilterTabs();
   initEventCalendar();
+  initContactForm();
 });
 
 /* -------------------------------------------------------------------------- */
@@ -63,7 +74,6 @@ function initMobileDrawer() {
   if (closeBtn) closeBtn.addEventListener('click', () => toggleMenu(false));
   if (overlay) overlay.addEventListener('click', () => toggleMenu(false));
 
-  // Close when clicking nav links inside drawer
   const drawerLinks = drawer.querySelectorAll('a');
   drawerLinks.forEach(link => {
     link.addEventListener('click', () => toggleMenu(false));
@@ -261,7 +271,7 @@ function initFilterTabs() {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Full Function Interactive Event Calendar                                   */
+/* Full Function Interactive Event Calendar with Supabase Integration         */
 /* -------------------------------------------------------------------------- */
 function initEventCalendar() {
   const calendarGrid = document.getElementById('cal-days-grid');
@@ -281,8 +291,8 @@ function initEventCalendar() {
     'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'
   ];
 
-  // Official Community Events Database
-  const EVENTS = [
+  // Fallback Local Events
+  let EVENTS = [
     {
       id: 'ev-1',
       date: '2026-05-15',
@@ -381,10 +391,44 @@ function initEventCalendar() {
   let currentMonth = 4; // May (0-indexed)
   let selectedDateStr = null; // YYYY-MM-DD format
 
+  function formatSupabaseEvent(dbEvent) {
+    const d = new Date(dbEvent.date);
+    const day = d.getDate();
+    const month = MONTH_NAMES[d.getMonth()];
+    const year = d.getFullYear();
+    const shortMonth = month.substring(0, 3);
+    const isSpecial = dbEvent.category === 'KOMPETISI' || dbEvent.category === 'SPECIAL' || dbEvent.category === 'CHARITY';
+
+    return {
+      id: dbEvent.id,
+      date: dbEvent.date,
+      displayDate: `${day} ${month} ${year}`,
+      badge: dbEvent.badge || `${day < 10 ? '0' : ''}${day} ${shortMonth}`,
+      title: dbEvent.title,
+      category: dbEvent.category || 'GATHERING',
+      categoryBadge: isSpecial ? 'bg-primary-container text-on-primary' : 'bg-surface-bright text-white',
+      location: dbEvent.location || 'Ecopark Citra Garden BMW, Serang',
+      time: dbEvent.time || '08:00 - Selesai WIB',
+      description: dbEvent.description || '',
+      slots: dbEvent.slots || 'Terbuka Untuk Umum',
+      maps_url: dbEvent.maps_url
+    };
+  }
+
+  // Load from Supabase asynchronously
+  async function loadSupabaseEventsData() {
+    const data = await getSupabaseEvents();
+    if (data && data.length > 0) {
+      EVENTS = data.map(formatSupabaseEvent);
+      renderCalendar();
+      renderEventList();
+    }
+  }
+
   function getEventsForMonth(year, month) {
     return EVENTS.filter(ev => {
-      const d = new Date(ev.date);
-      return d.getFullYear() === year && d.getMonth() === month;
+      const [y, m] = ev.date.split('-');
+      return parseInt(y) === year && parseInt(m) - 1 === month;
     });
   }
 
@@ -392,7 +436,6 @@ function initEventCalendar() {
     return EVENTS.filter(ev => ev.date === dateStr);
   }
 
-  // Render Days Grid
   function renderCalendar() {
     if (monthTitleEl) {
       monthTitleEl.textContent = `${MONTH_NAMES[currentMonth]} ${currentYear}`;
@@ -449,16 +492,15 @@ function initEventCalendar() {
       dayButton.className = classes;
       dayButton.textContent = day;
 
-      // Event indicator dot
       if (hasEvent && !isSelected) {
         const dot = document.createElement('span');
-        dot.className = 'absolute bottom-1 w-1.5 h-1.5 rounded-full bg-primary-container';
+        dot.className = 'absolute bottom-1 w-1.5 h-1.5 rounded-full bg-primary-container shadow-[0_0_6px_rgba(255,199,0,0.8)]';
         dayButton.appendChild(dot);
       }
 
       dayButton.addEventListener('click', () => {
         if (selectedDateStr === dayStr) {
-          selectedDateStr = null; // Toggle off
+          selectedDateStr = null;
         } else {
           selectedDateStr = dayStr;
         }
@@ -469,7 +511,7 @@ function initEventCalendar() {
       calendarGrid.appendChild(dayButton);
     }
 
-    // Next Month Days (to fill out 35 or 42 grid slots)
+    // Next Month Days
     const totalRendered = firstDayIndex + daysInMonth;
     const remainingSlots = (totalRendered <= 35) ? (35 - totalRendered) : (42 - totalRendered);
 
@@ -481,7 +523,6 @@ function initEventCalendar() {
     }
   }
 
-  // Render Right Events List
   function renderEventList() {
     if (!eventsContainer) return;
     eventsContainer.innerHTML = '';
@@ -555,7 +596,6 @@ function initEventCalendar() {
       eventsContainer.appendChild(card);
     });
 
-    // Attach click listeners to Detail buttons
     eventsContainer.querySelectorAll('.cal-detail-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const evId = btn.getAttribute('data-event-id');
@@ -565,7 +605,6 @@ function initEventCalendar() {
     });
   }
 
-  // Open Event Modal with Dynamic Data
   function openEventModal(eventData) {
     const modalCategory = document.getElementById('event-modal-category');
     const modalTitle = document.getElementById('event-modal-title');
@@ -589,7 +628,8 @@ function initEventCalendar() {
     }
 
     if (modalMapsBtn) {
-      modalMapsBtn.href = `https://maps.google.com/?q=${encodeURIComponent(eventData.location)}`;
+      const mapTarget = eventData.maps_url || `https://maps.google.com/?q=${encodeURIComponent(eventData.location)}`;
+      modalMapsBtn.href = mapTarget;
     }
 
     if (window.openModal) {
@@ -597,7 +637,6 @@ function initEventCalendar() {
     }
   }
 
-  // Event Listeners
   if (prevBtn) {
     prevBtn.addEventListener('click', () => {
       currentMonth--;
@@ -626,9 +665,8 @@ function initEventCalendar() {
 
   if (todayBtn) {
     todayBtn.addEventListener('click', () => {
-      const now = new Date();
       currentYear = 2026;
-      currentMonth = 4; // May 2026 (or now.getMonth())
+      currentMonth = 4;
       selectedDateStr = '2026-05-15';
       renderCalendar();
       renderEventList();
@@ -643,7 +681,84 @@ function initEventCalendar() {
     });
   }
 
-  // Initial Render
+  // Realtime subscription to events table
+  subscribeToTable('events', () => {
+    console.log('Realtime event update received from Supabase!');
+    loadSupabaseEventsData();
+  });
+
+  // Initial local render + Async Supabase fetch
   renderCalendar();
   renderEventList();
+  loadSupabaseEventsData();
+}
+
+/* -------------------------------------------------------------------------- */
+/* Contact Form & Member Registration Submission to Supabase                */
+/* -------------------------------------------------------------------------- */
+function initContactForm() {
+  const contactForm = document.getElementById('contact-form');
+  if (!contactForm) return;
+
+  const submitBtn = contactForm.querySelector('button[type="submit"]');
+  const alertEl = document.getElementById('contact-alert');
+
+  contactForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById('contact-name')?.value || '';
+    const email = document.getElementById('contact-email')?.value || '';
+    const phone = document.getElementById('contact-phone')?.value || '';
+    const interest = document.getElementById('contact-interest')?.value || 'FPV Freestyle';
+    const message = document.getElementById('contact-message')?.value || '';
+
+    if (!name || !phone) {
+      alert('Mohon lengkapi Nama dan Nomor WhatsApp.');
+      return;
+    }
+
+    const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `
+        <span class="material-symbols-outlined text-sm animate-spin">sync</span>
+        MENGIRIM PESAN...
+      `;
+    }
+
+    // Submit to Supabase
+    const result = await submitSupabaseContact({
+      name,
+      email,
+      phone_wa: phone,
+      interest_type: interest,
+      message,
+      created_at: new Date().toISOString()
+    });
+
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnHtml;
+    }
+
+    if (alertEl) {
+      alertEl.classList.remove('hidden');
+      alertEl.className = 'p-4 rounded mb-4 font-label-caps text-xs ' + (result.success ? 'bg-green-500/20 border border-green-500 text-green-300' : 'bg-yellow-500/20 border border-yellow-500 text-yellow-300');
+      alertEl.innerHTML = result.success
+        ? '✅ Pesan & Pendaftaran berhasil dikirim ke database Skuad! Tim kami akan segera menghubungi Anda.'
+        : '⚠️ Pesan tercatat offline. Silakan langsung chat admin via WhatsApp di bawah.';
+    }
+
+    // Also offer WhatsApp direct open
+    const waText = encodeURIComponent(`Halo Admin Sky Multirotor Squad, saya ${name} (${interest}) ingin bergabung / bertanya: ${message}`);
+    const directWaUrl = `https://wa.me/6287772272928?text=${waText}`;
+
+    setTimeout(() => {
+      if (confirm('Buka WhatsApp sekarang untuk konfirmasi langsung dengan Admin SMS?')) {
+        window.open(directWaUrl, '_blank');
+      }
+    }, 500);
+
+    contactForm.reset();
+  });
 }

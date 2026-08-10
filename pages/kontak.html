@@ -288,6 +288,61 @@
       </div>
     </section>
 
+    <!-- Interactive Contact & Registration Form (Powered by Supabase) -->
+    <section class="bg-surface-container border border-surface-variant p-6 sm:p-8 rounded-lg shadow-xl relative overflow-hidden">
+      <div class="max-w-3xl mx-auto">
+        <div class="mb-6 border-b border-surface-variant pb-3">
+          <div class="font-label-caps text-xs text-primary-container uppercase tracking-widest mb-1">TRANSMISI PESAN &amp; PENDAFTARAN</div>
+          <h3 class="font-stats-lg text-2xl sm:text-3xl text-white font-bold uppercase">KIRIM PESAN / GABUNG SKUAD</h3>
+          <p class="font-body-md text-sm text-on-surface-variant mt-1">
+            Isi formulir di bawah ini untuk konsultasi perakitan, pertanyaan seputar gathering, atau pendaftaran anggota baru.
+          </p>
+        </div>
+
+        <div id="contact-alert" class="hidden"></div>
+
+        <form id="contact-form" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="contact-name" class="block font-label-caps text-xs text-primary-container mb-1">NAMA LENGKAP / CALLSIGN *</label>
+              <input id="contact-name" type="text" required placeholder="Contoh: Capt. Budi FPV" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2.5 text-white font-body-md text-sm focus:border-primary-container focus:outline-none"/>
+            </div>
+            <div>
+              <label for="contact-phone" class="block font-label-caps text-xs text-primary-container mb-1">NO. WHATSAPP / TELEPON *</label>
+              <input id="contact-phone" type="tel" required placeholder="Contoh: 08123456789" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2.5 text-white font-body-md text-sm focus:border-primary-container focus:outline-none"/>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="contact-email" class="block font-label-caps text-xs text-primary-container mb-1">EMAIL (OPSIONAL)</label>
+              <input id="contact-email" type="email" placeholder="email@domain.com" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2.5 text-white font-body-md text-sm focus:border-primary-container focus:outline-none"/>
+            </div>
+            <div>
+              <label for="contact-interest" class="block font-label-caps text-xs text-primary-container mb-1">MINAT / KATEGORI *</label>
+              <select id="contact-interest" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2.5 text-white font-label-caps text-xs focus:border-primary-container focus:outline-none">
+                <option value="FPV Freestyle & Racing" selected>Drone FPV Freestyle &amp; Racing</option>
+                <option value="Drone Aerial Cinematography">Drone Aerial / Sinematografi</option>
+                <option value="Aeromodeling & Fixed Wing">Aeromodeling / Fixed Wing</option>
+                <option value="Servis & Rakit Drone">Servis, Rakit &amp; PID Tuning</option>
+                <option value="Keanggotaan Baru">Pendaftaran Anggota Baru</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label for="contact-message" class="block font-label-caps text-xs text-primary-container mb-1">PESAN / PERTANYAAN</label>
+            <textarea id="contact-message" rows="3" placeholder="Tuliskan pertanyaan atau rencana build drone Anda di sini..." class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2.5 text-white font-body-md text-sm focus:border-primary-container focus:outline-none"></textarea>
+          </div>
+
+          <button type="submit" class="w-full sm:w-auto bg-primary-container text-on-primary font-label-caps text-xs px-8 py-3.5 font-bold glow-hover slant-btn flex items-center justify-center gap-2 transition-all shadow-lg">
+            <span class="material-symbols-outlined text-base">send</span>
+            KIRIM TRANSMISI KE DATABASE
+          </button>
+        </form>
+      </div>
+    </section>
+
     <!-- Mission Visuals (Gallery Preview) -->
     <section class="py-lg bg-surface-container-lowest border border-surface-variant rounded-lg overflow-hidden p-md md:p-lg">
       <div class="mb-lg flex justify-between items-end">
