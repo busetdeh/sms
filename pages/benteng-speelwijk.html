@@ -170,21 +170,48 @@
     </div>
   </nav>
 
-  <main>
-    <!-- Hero Section -->
-    <section class="relative min-h-[90vh] flex items-center justify-center pt-20 pb-16 px-4 sm:px-8 hud-grid" id="hero">
+    <!-- Hero Section with Multi-Layer Parallax -->
+    <section class="relative min-h-[92vh] flex items-center justify-center pt-24 pb-20 px-4 sm:px-8 hud-grid overflow-hidden" id="hero">
+      
+      <!-- Parallax Layer 0: Background Drone & Fortress Artwork -->
       <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <div class="w-full h-full bg-cover bg-center opacity-30 scale-105 animate-pulse duration-[8000ms]" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCOZeiCOWdbkV6ycKXV8tXkgodBa64prmJnQB4StsfpYYFC9kBqLfaDtb-4EWWaAOmhRhqdwx3bp0vwBWubU_QsmISg-pRQwnYoprEWl_pI7y7dKP0wMbXpzff8CG__nG8kQP-qdbW18yI0zBpdvzYG6Yb4ZPix_KGi14GXNXLnRKyqPKeeNicama1TS2u6Rl8qTGs1fWwOTedcfTZUrjPzCNpq88wf4hpPrLfPsJVSONhlsTkMkdPKIg')"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-background/30 via-background/70 to-background"></div>
+        <div id="speelwijk-parallax-bg" class="w-full h-full bg-cover bg-center opacity-35 will-change-transform scale-110 transition-transform duration-100 ease-out" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCOZeiCOWdbkV6ycKXV8tXkgodBa64prmJnQB4StsfpYYFC9kBqLfaDtb-4EWWaAOmhRhqdwx3bp0vwBWubU_QsmISg-pRQwnYoprEWl_pI7y7dKP0wMbXpzff8CG__nG8kQP-qdbW18yI0zBpdvzYG6Yb4ZPix_KGi14GXNXLnRKyqPKeeNicama1TS2u6Rl8qTGs1fWwOTedcfTZUrjPzCNpq88wf4hpPrLfPsJVSONhlsTkMkdPKIg'); transform: scale(1.15) translate3d(0, 0, 0);"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background"></div>
+        <div class="scanline-effect"></div>
       </div>
 
-      <div class="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-start gap-6 sm:gap-8">
+      <!-- Parallax Layer 1: Floating Tactical HUD Reticles & Flight Paths -->
+      <div id="speelwijk-parallax-hud" class="absolute inset-0 z-[5] pointer-events-none overflow-hidden will-change-transform">
+        <!-- Floating HUD Element 1 (Top Right) -->
+        <div class="absolute top-28 right-8 lg:right-20 bg-surface-container-high/70 backdrop-blur-md border border-primary/30 p-3 rounded font-mono-data text-[10px] text-primary-fixed-dim hidden md:flex flex-col gap-1 shadow-[0_0_15px_rgba(255,199,0,0.15)] animate-pulse">
+          <div class="flex items-center gap-1.5 font-bold">
+            <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+            <span>GATE_04 // AIR_TRACK_LOCKED</span>
+          </div>
+          <div class="text-on-surface-variant text-[9px]">TARGET: ARCHWAY CORRIDOR 01</div>
+        </div>
+
+        <!-- Floating HUD Element 2 (Bottom Left) -->
+        <div class="absolute bottom-20 left-8 lg:left-20 bg-surface-container-high/70 backdrop-blur-md border border-outline-variant p-3 rounded font-mono-data text-[10px] text-on-surface-variant hidden lg:flex flex-col gap-1">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary-fixed-dim text-xs">radar</span>
+            <span class="text-white font-bold">TELEMETRY BAND: R1 - 5658MHz</span>
+          </div>
+          <div class="text-[9px]">MAX SPEED RECORD: 142 KM/H</div>
+        </div>
+
+        <!-- Center Crosshair Marker -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 border border-primary/10 rounded-full pointer-events-none hidden sm:block"></div>
+      </div>
+
+      <!-- Parallax Layer 2: Main Hero Content -->
+      <div id="speelwijk-parallax-content" class="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-start gap-6 sm:gap-8 will-change-transform">
         <div class="flex flex-col gap-3">
-          <span class="font-label-caps text-xs text-primary tracking-[0.2em] uppercase border border-primary/40 px-3 py-1 rounded inline-block w-fit bg-primary/10 backdrop-blur-sm">
+          <span class="font-label-caps text-xs text-primary tracking-[0.2em] uppercase border border-primary/40 px-3.5 py-1.5 rounded inline-block w-fit bg-primary/15 backdrop-blur-md shadow-[0_0_15px_rgba(255,199,0,0.2)]">
             ⚡ Benteng Speelwijk Drone Fest 2026
           </span>
           <h1 class="text-4xl sm:text-6xl md:text-7xl font-bold text-white uppercase max-w-4xl tracking-tight leading-tight">
-            Fly Through <br><span class="text-primary-fixed-dim drop-shadow-[0_0_25px_rgba(255,199,0,0.5)]">History</span>
+            Fly Through <br><span class="text-primary-fixed-dim drop-shadow-[0_0_30px_rgba(255,199,0,0.6)]">History</span>
           </h1>
         </div>
 
@@ -192,7 +219,7 @@
           Eksplorasi aerodinamika drone FPV berkecepatan tinggi menembus reruntuhan bersejarah Benteng Speelwijk Banten Lama. Misi terbang sinematik & kompetisi presisi cagar budaya pertama di Indonesia.
         </p>
 
-        <div class="flex flex-wrap gap-4 sm:gap-6 font-mono-data text-xs sm:text-sm text-on-surface-variant bg-surface-container-low/80 border border-surface-variant p-3 rounded-lg backdrop-blur-sm">
+        <div class="flex flex-wrap gap-4 sm:gap-6 font-mono-data text-xs sm:text-sm text-on-surface-variant bg-surface-container-low/80 border border-surface-variant p-3.5 rounded-lg backdrop-blur-md shadow-xl">
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-primary-fixed-dim text-lg">calendar_today</span>
             <span class="text-white font-bold">20 - 21 Juli 2026</span>
@@ -210,10 +237,10 @@
         </div>
 
         <div class="flex flex-col sm:flex-row gap-4 mt-2 w-full sm:w-auto">
-          <a class="bg-primary-container text-black font-label-caps text-xs font-bold px-8 py-3.5 rounded text-center uppercase tracking-wider hover:bg-yellow-400 transition-colors border border-primary-container shadow-[0_0_20px_rgba(255,199,0,0.4)] slant-btn" href="#register">
+          <a class="bg-primary-container text-black font-label-caps text-xs font-bold px-8 py-3.5 rounded text-center uppercase tracking-wider hover:bg-yellow-400 transition-all border border-primary-container shadow-[0_0_25px_rgba(255,199,0,0.5)] hover:scale-105 slant-btn" href="#register">
             DAFTAR PILOT SEKARANG
           </a>
-          <a class="bg-surface-container text-primary font-label-caps text-xs font-bold px-8 py-3.5 rounded text-center uppercase tracking-wider hover:bg-surface-container-high transition-colors border border-outline-variant" href="#history">
+          <a class="bg-surface-container text-primary font-label-caps text-xs font-bold px-8 py-3.5 rounded text-center uppercase tracking-wider hover:bg-surface-container-high transition-all border border-outline-variant hover:border-primary/50" href="#history">
             LIHAT DETAIL MISI
           </a>
         </div>
@@ -619,6 +646,68 @@
         }
       });
     }
+
+    // 4. Multi-Layer Parallax Engine (Scroll + Mouse Depth)
+    function initSpeelwijkParallax() {
+      const heroSection = document.getElementById('hero');
+      const bgLayer = document.getElementById('speelwijk-parallax-bg');
+      const hudLayer = document.getElementById('speelwijk-parallax-hud');
+      const contentLayer = document.getElementById('speelwijk-parallax-content');
+
+      if (!heroSection || !bgLayer) return;
+
+      let mouseX = 0;
+      let mouseY = 0;
+      let targetMouseX = 0;
+      let targetMouseY = 0;
+      let scrollY = window.scrollY;
+
+      // Mouse Move 3D Tilt Listener
+      window.addEventListener('mousemove', (e) => {
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        targetMouseX = (e.clientX - cx) / cx; // -1 to 1
+        targetMouseY = (e.clientY - cy) / cy; // -1 to 1
+      }, { passive: true });
+
+      // Scroll Listener
+      window.addEventListener('scroll', () => {
+        scrollY = window.scrollY;
+      }, { passive: true });
+
+      // Animation Loop with Smooth Interpolation (Lerp)
+      function updateParallax() {
+        if (scrollY < window.innerHeight * 1.3) {
+          mouseX += (targetMouseX - mouseX) * 0.08;
+          mouseY += (targetMouseY - mouseY) * 0.08;
+
+          // Background moves slower and scales nicely
+          const bgTranslateY = scrollY * 0.35 + mouseY * 14;
+          const bgTranslateX = mouseX * 14;
+          bgLayer.style.transform = `scale(1.15) translate3d(${bgTranslateX.toFixed(2)}px, ${bgTranslateY.toFixed(2)}px, 0)`;
+
+          // HUD Layer moves faster with subtle 3D depth tilt
+          if (hudLayer) {
+            const hudY = scrollY * 0.18 + mouseY * -22;
+            const hudX = mouseX * -22;
+            hudLayer.style.transform = `translate3d(${hudX.toFixed(2)}px, ${hudY.toFixed(2)}px, 0)`;
+          }
+
+          // Content Layer has slight counter-balance
+          if (contentLayer) {
+            const contentY = scrollY * 0.06 + mouseY * -6;
+            const contentX = mouseX * -6;
+            contentLayer.style.transform = `translate3d(${contentX.toFixed(2)}px, ${contentY.toFixed(2)}px, 0)`;
+          }
+        }
+
+        requestAnimationFrame(updateParallax);
+      }
+
+      requestAnimationFrame(updateParallax);
+    }
+
+    initSpeelwijkParallax();
   </script>
 </body>
 </html>

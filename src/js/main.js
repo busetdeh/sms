@@ -82,23 +82,63 @@ function initMobileDrawer() {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Hero Parallax Effect                                                       */
+/* Hero Parallax Effect (Scroll + Mouse 3D Depth)                             */
 /* -------------------------------------------------------------------------- */
 function initParallax() {
   const parallaxBg = document.getElementById('parallax-bg');
+  const heroContent = document.getElementById('hero-parallax-content') || document.querySelector('.hero-slant .relative.z-10');
   if (!parallaxBg) return;
 
-  let ticking = false;
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      window.requestAnimationFrame(() => {
-        const scrollY = window.scrollY;
-        parallaxBg.style.transform = `scale(1.15) translate3d(0, ${scrollY * 0.35}px, 0)`;
-        ticking = false;
-      });
-      ticking = true;
-    }
+  let mouseX = 0;
+  let mouseY = 0;
+  let targetMouseX = 0;
+  let targetMouseY = 0;
+  let scrollY = window.scrollY;
+
+  // Mouse Move 3D Parallax Tracking
+  window.addEventListener('mousemove', (e) => {
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight / 2;
+    targetMouseX = (e.clientX - cx) / cx; // -1 to 1
+    targetMouseY = (e.clientY - cy) / cy; // -1 to 1
   }, { passive: true });
+
+  // Scroll Listener
+  window.addEventListener('scroll', () => {
+    scrollY = window.scrollY;
+  }, { passive: true });
+
+  // Device orientation / Gyro tilt on mobile
+  if (window.DeviceOrientationEvent && typeof window.DeviceOrientationEvent.requestPermission !== 'function') {
+    window.addEventListener('deviceorientation', (e) => {
+      if (e.gamma !== null && e.beta !== null) {
+        targetMouseX = Math.max(-1, Math.min(1, e.gamma / 30));
+        targetMouseY = Math.max(-1, Math.min(1, (e.beta - 45) / 30));
+      }
+    }, { passive: true });
+  }
+
+  function updateHeroParallax() {
+    if (scrollY < window.innerHeight * 1.2) {
+      mouseX += (targetMouseX - mouseX) * 0.08;
+      mouseY += (targetMouseY - mouseY) * 0.08;
+
+      // Background moves smoothly with scroll + mouse translation
+      const bgY = scrollY * 0.35 + mouseY * 15;
+      const bgX = mouseX * 15;
+      parallaxBg.style.transform = `scale(1.15) translate3d(${bgX.toFixed(2)}px, ${bgY.toFixed(2)}px, 0)`;
+
+      // Foreground content has slight counter-balance depth
+      if (heroContent) {
+        const contentY = scrollY * 0.08 + mouseY * -6;
+        const contentX = mouseX * -6;
+        heroContent.style.transform = `translate3d(${contentX.toFixed(2)}px, ${contentY.toFixed(2)}px, 0)`;
+      }
+    }
+    requestAnimationFrame(updateHeroParallax);
+  }
+
+  requestAnimationFrame(updateHeroParallax);
 }
 
 /* -------------------------------------------------------------------------- */
