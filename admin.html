@@ -1108,9 +1108,28 @@
           <textarea id="speelwijk-reg-input-notes" rows="2" placeholder="Nomor urut slot, ukuran jersey, dll..." class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"></textarea>
         </div>
 
-        <div class="pt-3 flex justify-end gap-2 border-t border-surface-variant">
-          <button type="button" onclick="document.getElementById('admin-speelwijk-reg-modal').classList.remove('active')" class="px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-high">Batal</button>
-          <button type="submit" class="bg-primary-container text-black font-bold px-6 py-2 rounded slant-btn hover:bg-yellow-400">SIMPAN PENDAFTAR</button>
+        <!-- Proof of Payment View -->
+        <div id="speelwijk-reg-proof-container" class="hidden border border-surface-variant rounded p-3 bg-surface-container-high space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="block font-label-caps text-primary-container font-bold text-[10px]">BUKTI TRANSFER / PEMBAYARAN:</span>
+            <button type="button" id="btn-speelwijk-reg-open-proof" class="text-[9px] text-primary hover:underline font-label-caps flex items-center gap-0.5">
+              <span class="material-symbols-outlined text-[10px]">open_in_new</span> Buka Tab Baru
+            </button>
+          </div>
+          <div class="w-full h-40 bg-black/40 rounded overflow-hidden flex items-center justify-center border border-surface-variant p-1">
+            <img id="speelwijk-reg-proof-preview" src="/logo.png" alt="Bukti Pembayaran" class="max-h-full max-w-full object-contain cursor-zoom-in" onclick="window.open(this.src, '_blank')"/>
+          </div>
+        </div>
+
+        <div class="pt-3 flex flex-wrap justify-between items-center gap-2 border-t border-surface-variant">
+          <a id="btn-speelwijk-reg-wa-notify" href="#" target="_blank" class="hidden bg-green-600 hover:bg-green-500 text-white font-bold px-3 py-2 rounded text-[11px] font-label-caps flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">chat</span>
+            <span>KIRIM NOTIFIKASI WA</span>
+          </a>
+          <div class="flex gap-2 ml-auto">
+            <button type="button" onclick="document.getElementById('admin-speelwijk-reg-modal').classList.remove('active')" class="px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-high">Batal</button>
+            <button type="submit" class="bg-primary-container text-black font-bold px-6 py-2 rounded slant-btn hover:bg-yellow-400">SIMPAN PENDAFTAR</button>
+          </div>
         </div>
       </form>
     </div>

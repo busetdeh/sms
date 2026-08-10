@@ -521,6 +521,32 @@
             </div>
           </div>
 
+          <!-- Transfer Proof Upload Section -->
+          <div id="transfer-proof-section" class="flex flex-col gap-1.5 p-4 border border-outline-variant bg-surface-container/30 rounded-lg">
+            <div class="flex justify-between items-center">
+              <label class="font-label-caps text-on-surface-variant uppercase text-[11px] font-bold">Unggah Bukti Transfer / Pembayaran *</label>
+              <span class="text-[9px] text-primary-fixed-dim font-mono-data">(Wajib diunggah untuk verifikasi slot)</span>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 items-center">
+              <div class="sm:col-span-3">
+                <div id="proof-dropzone" class="border-2 border-dashed border-outline-variant hover:border-primary hover:bg-surface-container-high/40 rounded p-3.5 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-1 group">
+                  <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary text-xl transition-colors">upload_file</span>
+                  <span id="proof-dropzone-text" class="text-[10px] text-white font-medium">Klik atau seret struk bukti transfer ke sini</span>
+                  <span class="text-[9px] text-on-surface-variant">Format gambar JPG/PNG/WEBP (Maksimal 2MB)</span>
+                  <input id="proof-file-input" type="file" accept="image/*" class="hidden" required/>
+                </div>
+              </div>
+              <div class="flex flex-col items-center justify-center border border-outline-variant rounded p-2 bg-surface">
+                <span class="text-[9px] font-label-caps text-on-surface-variant mb-1 uppercase">Preview</span>
+                <div class="w-16 h-16 bg-white rounded flex items-center justify-center overflow-hidden border border-outline-variant p-0.5">
+                  <img id="proof-preview" src="/logo.png" alt="Struk Preview" class="w-full h-full object-contain"/>
+                </div>
+              </div>
+            </div>
+            <input type="hidden" id="pilot-payment-proof" value=""/>
+          </div>
+
           <div class="pt-4 border-t border-surface-variant flex flex-col sm:flex-row justify-between items-center gap-3">
             <div class="text-[11px] text-on-surface-variant flex items-center gap-1">
               <span class="material-symbols-outlined text-sm text-green-400">lock</span>
@@ -776,7 +802,70 @@
 
     initPaymentMethodToggles();
 
-    // 5. Form Submission
+    // 5. Proof Upload Listener
+    function initProofUpload() {
+      const fileInput = document.getElementById('proof-file-input');
+      const dropzone = document.getElementById('proof-dropzone');
+      const proofHidden = document.getElementById('pilot-payment-proof');
+      const proofPreview = document.getElementById('proof-preview');
+      const dropzoneText = document.getElementById('proof-dropzone-text');
+
+      if (!fileInput || !dropzone) return;
+
+      dropzone.addEventListener('click', () => fileInput.click());
+
+      async function handleFile(file) {
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+          showToast('File harus berupa gambar (JPG, PNG, WEBP).', 'error');
+          return;
+        }
+
+        if (file.size > 2 * 1024 * 1024) {
+          showToast('Ukuran file maksimal 2 MB.', 'error');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (proofPreview) proofPreview.src = e.target.result;
+          if (proofHidden) proofHidden.value = e.target.result;
+          if (dropzoneText) dropzoneText.textContent = `Foto terpilih: ${file.name}`;
+          showToast('Bukti transfer berhasil dimuat!', 'success');
+        };
+        reader.readAsDataURL(file);
+      }
+
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          handleFile(e.target.files[0]);
+        }
+      });
+
+      dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.classList.add('border-primary', 'bg-surface-container-high/40');
+      });
+
+      ['dragleave', 'dragend'].forEach(type => {
+        dropzone.addEventListener(type, () => {
+          dropzone.classList.remove('border-primary', 'bg-surface-container-high/40');
+        });
+      });
+
+      dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('border-primary', 'bg-surface-container-high/40');
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+          handleFile(e.dataTransfer.files[0]);
+        }
+      });
+    }
+
+    initProofUpload();
+
+    // 6. Form Submission
     const regForm = document.getElementById('speelwijk-registration-form');
     if (regForm) {
       regForm.addEventListener('submit', async (e) => {
@@ -787,6 +876,12 @@
         const checkedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(cb => cb.value);
         if (checkedCategories.length === 0) {
           showToast('Silakan centang minimal 1 kategori drone yang Anda ikuti!', 'error');
+          return;
+        }
+
+        const paymentProof = document.getElementById('pilot-payment-proof')?.value || '';
+        if (!paymentProof) {
+          showToast('Silakan unggah bukti transfer / pembayaran Anda terlebih dahulu!', 'error');
           return;
         }
 
@@ -813,7 +908,14 @@
             email: email,
             phone: whatsapp,
             topic: 'EVENT_SPEELWIJK_2026',
-            message: messageContent
+            message: JSON.stringify({
+              callsign: community,
+              category: category,
+              paymentMethod: paymentMethod,
+              status: 'PENDING',
+              notes: `Mendaftar dari form microsite (${paymentMethod})`,
+              paymentProof: paymentProof
+            })
           });
 
           // 2. Save locally for instant dashboard display
@@ -825,17 +927,24 @@
             category,
             paymentMethod,
             status: 'PENDING',
-            notes: `Mendaftar dari form microsite (${paymentMethod})`
+            notes: `Mendaftar dari form microsite (${paymentMethod})`,
+            paymentProof: paymentProof
           });
 
-          showToast('Pendaftaran berhasil tercatat di database SMS! Membuka WhatsApp konfirmasi...', 'success');
+          showToast('Pendaftaran & bukti transfer berhasil tercatat! Membuka WhatsApp konfirmasi...', 'success');
 
           // Open WhatsApp with pre-filled message
-          const waMessage = encodeURIComponent(`Halo Panitia Sky Multirotor Squad, saya sudah mendaftar untuk acara "Benteng Speelwijk Drone Fest 2026":\n\n*Nama Operator:* ${name}\n*Komunitas/Callsign:* ${community}\n*WhatsApp:* ${whatsapp}\n*Kategori Drone:* ${category}\n*Metode Pembayaran:* ${paymentMethod}\n*Estimasi Biaya:* ${fee}\n\nMohon konfirmasi instruksi pembayaran & slot nomor registrasi saya. Terima kasih!`);
+          const waMessage = encodeURIComponent(`Halo Panitia Sky Multirotor Squad, saya sudah mendaftar untuk acara "Benteng Speelwijk Drone Fest 2026":\n\n*Nama Operator:* ${name}\n*Komunitas/Callsign:* ${community}\n*WhatsApp:* ${whatsapp}\n*Kategori Drone:* ${category}\n*Metode Pembayaran:* ${paymentMethod}\n*Estimasi Biaya:* ${fee}\n\n*Bukti transfer sudah saya unggah di form pendaftaran.* Mohon konfirmasi slot nomor registrasi saya. Terima kasih!`);
           
           setTimeout(() => {
             window.open(`https://wa.me/${waTarget}?text=${waMessage}`, '_blank');
             regForm.reset();
+            const proofPreview = document.getElementById('proof-preview');
+            if (proofPreview) proofPreview.src = '/logo.png';
+            const proofHidden = document.getElementById('pilot-payment-proof');
+            if (proofHidden) proofHidden.value = '';
+            const dropzoneText = document.getElementById('proof-dropzone-text');
+            if (dropzoneText) dropzoneText.textContent = 'Klik atau seret struk bukti transfer ke sini';
             submitBtn.disabled = false;
             submitBtn.innerHTML = origText;
             initPaymentMethodToggles();

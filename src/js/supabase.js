@@ -444,6 +444,7 @@ export async function getSpeelwijkRegistrations() {
           paymentMethod: details.paymentMethod || 'QRIS',
           status: details.status || 'PENDING',
           notes: details.notes || '',
+          paymentProof: details.paymentProof || '',
           created_at: c.created_at
         };
       });
@@ -467,6 +468,7 @@ export async function getSpeelwijkRegistrations() {
         paymentMethod: 'QRIS',
         status: 'LUNAS',
         notes: 'Slot 01 - Lunas via QRIS Panitia',
+        paymentProof: '',
         created_at: new Date().toISOString()
       },
       {
@@ -479,6 +481,7 @@ export async function getSpeelwijkRegistrations() {
         paymentMethod: 'Transfer Bank BCA',
         status: 'LUNAS',
         notes: 'Slot 02 - Verified',
+        paymentProof: '',
         created_at: new Date().toISOString()
       }
     ];
@@ -512,7 +515,8 @@ export async function saveSpeelwijkRegistration(regData) {
         category: regData.category,
         paymentMethod: regData.paymentMethod,
         status: regData.status,
-        notes: regData.notes
+        notes: regData.notes,
+        paymentProof: regData.paymentProof
       })
     };
 

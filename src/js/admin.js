@@ -680,6 +680,15 @@ function renderSpeelwijkRegistrations() {
       statusBadge = '<span class="px-2 py-0.5 rounded bg-red-500/20 text-red-400 font-label-caps text-[10px] font-bold border border-red-500/40">DIBATALKAN</span>';
     }
 
+    let proofButton = '';
+    if (reg.paymentProof) {
+      proofButton = `
+        <button class="btn-view-proof mt-1 text-[10px] text-primary hover:underline flex items-center gap-1 font-label-caps" data-id="${reg.id}">
+          <span class="material-symbols-outlined text-[12px] text-primary">receipt_long</span> Bukti Transfer
+        </button>
+      `;
+    }
+
     tr.innerHTML = `
       <td class="p-3.5">
         <div class="font-bold text-white text-sm">${reg.name}</div>
@@ -693,7 +702,8 @@ function renderSpeelwijkRegistrations() {
         <span class="px-2 py-0.5 rounded bg-surface-container font-label-caps text-[10px] text-white border border-surface-variant">${reg.category || 'FPV'}</span>
       </td>
       <td class="p-3.5 font-label-caps text-xs text-on-surface-variant">
-        ${reg.paymentMethod || 'QRIS'}
+        <div>${reg.paymentMethod || 'QRIS'}</div>
+        ${proofButton}
       </td>
       <td class="p-3.5">
         ${statusBadge}
@@ -707,7 +717,7 @@ function renderSpeelwijkRegistrations() {
     tbody.appendChild(tr);
   });
 
-  tbody.querySelectorAll('.btn-edit-speelwijk-reg').forEach(b => {
+  tbody.querySelectorAll('.btn-edit-speelwijk-reg, .btn-view-proof').forEach(b => {
     b.addEventListener('click', () => {
       const id = b.getAttribute('data-id');
       const item = cachedSpeelwijkRegs.find(r => r.id === id);
@@ -1144,6 +1154,61 @@ function openSpeelwijkRegModal(regData = null) {
   document.getElementById('speelwijk-reg-input-status').value = regData ? (regData.status || 'PENDING') : 'PENDING';
   document.getElementById('speelwijk-reg-input-notes').value = regData ? (regData.notes || '') : '';
 
+  // Payment Proof View
+  const proofContainer = document.getElementById('speelwijk-reg-proof-container');
+  const proofPreview = document.getElementById('speelwijk-reg-proof-preview');
+  const openProofBtn = document.getElementById('btn-speelwijk-reg-open-proof');
+  if (proofContainer && proofPreview) {
+    if (regData && regData.paymentProof) {
+      proofPreview.src = regData.paymentProof;
+      proofContainer.classList.remove('hidden');
+      if (openProofBtn) {
+        openProofBtn.onclick = () => {
+          const newTab = window.open();
+          newTab.document.write(`<iframe src="${regData.paymentProof}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
+        };
+      }
+    } else {
+      proofContainer.classList.add('hidden');
+      proofPreview.src = '/logo.png';
+    }
+  }
+
+  // WA Notify Link
+  const waNotifyBtn = document.getElementById('btn-speelwijk-reg-wa-notify');
+  if (waNotifyBtn) {
+    if (regData) {
+      waNotifyBtn.classList.remove('hidden');
+      
+      const updateWaNotifyLink = () => {
+        const currentStatus = document.getElementById('speelwijk-reg-input-status').value;
+        const currentNotes = document.getElementById('speelwijk-reg-input-notes').value.trim();
+        const cleanPhone = (regData.phone || '').replace(/\D/g, '');
+        const waPhone = cleanPhone.startsWith('0') ? '62' + cleanPhone.substring(1) : cleanPhone;
+        
+        const waMsg = `Halo Pilot ${regData.name} (${regData.callsign || '-'}), panitia Sky Multirotor Squad mengonfirmasi bahwa status pendaftaran Anda untuk event "Benteng Speelwijk Drone Fest 2026" kini adalah: *${currentStatus}*.\n\nCatatan Panitia: ${currentNotes || '-'}\n\nTerima kasih atas partisipasi Anda!`;
+        waNotifyBtn.href = `https://wa.me/${waPhone}?text=${encodeURIComponent(waMsg)}`;
+      };
+
+      updateWaNotifyLink();
+
+      // Set change/input event listeners (reset them first to avoid duplicates)
+      const statusInput = document.getElementById('speelwijk-reg-input-status');
+      const notesInput = document.getElementById('speelwijk-reg-input-notes');
+      
+      statusInput.removeEventListener('change', statusInput._updateWaFn || (() => {}));
+      notesInput.removeEventListener('input', notesInput._updateWaFn || (() => {}));
+      
+      statusInput._updateWaFn = updateWaNotifyLink;
+      notesInput._updateWaFn = updateWaNotifyLink;
+      
+      statusInput.addEventListener('change', updateWaNotifyLink);
+      notesInput.addEventListener('input', updateWaNotifyLink);
+    } else {
+      waNotifyBtn.classList.add('hidden');
+    }
+  }
+
   document.getElementById('speelwijk-reg-modal-heading').textContent = regData ? 'EDIT PENDAFTAR PILOT SPEELWIJK' : 'TAMBAH PENDAFTAR PILOT MANUAL';
   modal.classList.add('active');
 }
@@ -1306,7 +1371,10 @@ function initFormSubmissions() {
     const status = document.getElementById('speelwijk-reg-input-status').value;
     const notes = document.getElementById('speelwijk-reg-input-notes').value.trim();
 
-    const payload = { id: id || undefined, name, callsign, phone, email, category, paymentMethod, status, notes };
+    const foundReg = cachedSpeelwijkRegs.find(r => r.id === id);
+    const paymentProof = foundReg ? (foundReg.paymentProof || '') : '';
+
+    const payload = { id: id || undefined, name, callsign, phone, email, category, paymentMethod, status, notes, paymentProof };
 
     const res = await saveSpeelwijkRegistration(payload);
     if (res.success) {
