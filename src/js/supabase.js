@@ -404,7 +404,7 @@ const DEFAULT_SPEELWIJK_RUNDOWN = [
 const DEFAULT_SPEELWIJK_SETTINGS = {
   title: 'Fly Through History',
   subtitle: 'Benteng Speelwijk Drone Fest 2026',
-  date: '20 - 21 Juli 2026',
+  date: '17 - 18 Oktober 2026',
   fee: 'Rp 200.000',
   waNumber: '6287772272928',
   location: 'Benteng Speelwijk, Banten Lama',
