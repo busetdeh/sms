@@ -443,8 +443,9 @@ function initEventCalendar() {
   ];
 
   // Calendar State
-  let currentYear = 2026;
-  let currentMonth = 4; // May (0-indexed)
+  const today = new Date();
+  let currentYear = today.getFullYear();
+  let currentMonth = today.getMonth(); // 0-indexed
   let selectedDateStr = null; // YYYY-MM-DD format
 
   function formatSupabaseEvent(dbEvent) {
@@ -542,9 +543,9 @@ function initEventCalendar() {
     }
 
     // Current Month Days
-    const today = new Date();
-    const isCurrentActualMonth = (today.getFullYear() === currentYear && today.getMonth() === currentMonth);
-    const todayDateNum = today.getDate();
+    const actualToday = new Date();
+    const isCurrentActualMonth = (actualToday.getFullYear() === currentYear && actualToday.getMonth() === currentMonth);
+    const todayDateNum = actualToday.getDate();
 
     for (let day = 1; day <= daysInMonth; day++) {
       const dayStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
@@ -763,9 +764,10 @@ function initEventCalendar() {
 
   if (todayBtn) {
     todayBtn.addEventListener('click', () => {
-      currentYear = 2026;
-      currentMonth = 4;
-      selectedDateStr = '2026-05-15';
+      const now = new Date();
+      currentYear = now.getFullYear();
+      currentMonth = now.getMonth();
+      selectedDateStr = null;
       renderCalendar();
       renderEventList();
     });
