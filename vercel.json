@@ -5,6 +5,8 @@
   "rewrites": [
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/pages/admin", "destination": "/pages/admin.html" },
+    { "source": "/benteng-speelwijk", "destination": "/benteng-speelwijk.html" },
+    { "source": "/pages/benteng-speelwijk", "destination": "/pages/benteng-speelwijk.html" },
     { "source": "/tentang-kami", "destination": "/pages/tentang-kami.html" },
     { "source": "/galeri", "destination": "/pages/galeri.html" },
     { "source": "/spot-terbang", "destination": "/pages/spot-terbang.html" },

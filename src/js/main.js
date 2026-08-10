@@ -360,6 +360,21 @@ function initEventCalendar() {
       slots: 'Maks 15 Peserta'
     },
     {
+      id: 'ev-speelwijk',
+      date: '2026-07-20',
+      end_date: '2026-07-21',
+      displayDate: '20 - 21 Juli 2026',
+      badge: '20-21 JUL',
+      title: 'Fly Through History - Benteng Speelwijk Drone Fest',
+      category: 'KOMPETISI',
+      categoryBadge: 'bg-primary-container text-on-primary',
+      location: 'Benteng Speelwijk, Banten Lama',
+      time: '08:00 - 17:00 WIB (2 Hari)',
+      description: 'Kompetisi balap FPV menembus reruntuhan cagar budaya Benteng Speelwijk abad ke-17. Kategori: Racing FPV, Cinematic Heritage & Long Range.',
+      slots: 'Slot Pilot Terbuka',
+      custom_link: '/benteng-speelwijk'
+    },
+    {
       id: 'ev-6',
       date: '2026-08-10',
       displayDate: '10 Agustus 2026',

@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html class="dark scroll-smooth" lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Fly Through History - Benteng Speelwijk Drone Fest | Sky Multirotor Squad</title>
+  <link rel="icon" type="image/png" href="/logo.png"/>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-tint": "#f5bf00",
+            "tertiary-container": "#48e5cf",
+            "on-secondary-fixed": "#1c1b1b",
+            "tertiary-fixed": "#62fae3",
+            "on-error": "#690005",
+            "on-tertiary-container": "#006358",
+            "outline": "#9b9078",
+            "inverse-surface": "#e5e2e1",
+            "primary-container": "#ffc700",
+            "error-container": "#93000a",
+            "on-tertiary-fixed": "#00201c",
+            "primary": "#ffe9b9",
+            "on-error-container": "#ffdad6",
+            "on-secondary": "#313030",
+            "on-primary-fixed-variant": "#594400",
+            "primary-fixed-dim": "#f5bf00",
+            "on-secondary-fixed-variant": "#474746",
+            "surface-variant": "#353534",
+            "tertiary-fixed-dim": "#3cddc7",
+            "inverse-on-surface": "#313030",
+            "on-background": "#e5e2e1",
+            "on-tertiary-fixed-variant": "#005047",
+            "primary-fixed": "#ffdf94",
+            "on-primary-container": "#6e5400",
+            "error": "#ffb4ab",
+            "surface-container-low": "#1c1b1b",
+            "surface-dim": "#131313",
+            "inverse-primary": "#765b00",
+            "surface-container-lowest": "#0e0e0e",
+            "on-primary": "#3e2e00",
+            "tertiary": "#88ffeb",
+            "secondary-fixed": "#e5e2e1",
+            "surface-container": "#201f1f",
+            "on-primary-fixed": "#251a00",
+            "surface": "#131313",
+            "surface-bright": "#3a3939",
+            "outline-variant": "#4f4632",
+            "on-surface": "#e5e2e1",
+            "surface-container-high": "#2a2a2a",
+            "background": "#131313",
+            "secondary-fixed-dim": "#c8c6c5",
+            "on-surface-variant": "#d2c5ab",
+            "on-tertiary": "#003731",
+            "on-secondary-container": "#b7b5b4",
+            "secondary": "#c8c6c5",
+            "secondary-container": "#474746",
+            "surface-container-highest": "#353534"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "headline": ["Space Grotesk", "sans-serif"],
+            "body": ["Space Grotesk", "sans-serif"],
+            "label-caps": ["Space Grotesk", "sans-serif"],
+            "mono-data": ["Space Grotesk", "sans-serif"]
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #131313;
+      color: #e5e2e1;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .hud-grid {
+      background-size: 30px 30px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 199, 0, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 199, 0, 0.04) 1px, transparent 1px);
+    }
+    .slant-btn {
+      clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #131313;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #353534;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ffc700;
+    }
+  </style>
+</head>
+
+<body class="bg-background text-on-background font-body antialiased overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-[9999] flex flex-col gap-2 max-w-md w-full px-4 pointer-events-none *:pointer-events-auto"></div>
+
+  <!-- TopNavBar -->
+  <nav class="bg-background/95 backdrop-blur-md text-primary-fixed-dim top-0 border-b border-outline-variant sticky z-50 transition-all">
+    <div class="flex justify-between items-center px-4 sm:px-8 py-3.5 w-full max-w-7xl mx-auto">
+      <a href="/" class="flex items-center gap-3 group">
+        <img alt="Sky Multirotor Squad Logo" class="h-10 w-auto object-contain drop-shadow-[0_0_10px_rgba(255,199,0,0.4)] group-hover:scale-105 transition-transform" src="/logo.png"/>
+        <div class="flex flex-col">
+          <span class="font-label-caps text-xs font-bold text-primary-fixed-dim tracking-wider uppercase">Sky Multirotor Squad</span>
+          <span class="font-mono-data text-[10px] text-on-surface-variant tracking-widest uppercase">SPEELWIJK FEST 2026</span>
+        </div>
+      </a>
+
+      <!-- Desktop Links -->
+      <div class="hidden md:flex items-center gap-6 font-label-caps text-xs tracking-wider">
+        <a class="text-primary-fixed-dim hover:text-white font-bold transition-colors uppercase" href="#hero">Beranda</a>
+        <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#history">Misi Sejarah</a>
+        <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#schedule">Jadwal Terbang</a>
+        <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#register">Registrasi Pilot</a>
+        <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#partners">Sponsor</a>
+      </div>
+
+      <!-- Action Button & Mobile Toggle -->
+      <div class="flex items-center gap-3">
+        <a href="#register" class="bg-primary-container text-black font-label-caps text-xs font-bold px-4 py-2 rounded slant-btn hover:bg-yellow-400 transition-all uppercase tracking-wider hidden sm:inline-block shadow-[0_0_15px_rgba(255,199,0,0.3)]">
+          Daftar Sekarang
+        </a>
+        <a href="/" class="text-on-surface-variant hover:text-primary-fixed-dim font-label-caps text-xs border border-surface-variant px-3 py-1.5 rounded hidden lg:flex items-center gap-1 transition-colors">
+          <span class="material-symbols-outlined text-sm">home</span> Website Utama
+        </a>
+        <button id="mobile-menu-btn" class="md:hidden text-primary-fixed-dim p-1.5 rounded border border-surface-variant">
+          <span class="material-symbols-outlined text-2xl">menu</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Drawer Navigation -->
+    <div id="mobile-drawer" class="hidden md:hidden border-t border-surface-variant bg-surface-container-low px-4 py-4 space-y-3 font-label-caps text-xs">
+      <a class="block py-2 text-primary-fixed-dim font-bold" href="#hero" onclick="toggleMobileMenu()">BERANDA</a>
+      <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#history" onclick="toggleMobileMenu()">MISI SEJARAH</a>
+      <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#schedule" onclick="toggleMobileMenu()">JADWAL TERBANG</a>
+      <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#register" onclick="toggleMobileMenu()">REGISTRASI PILOT</a>
+      <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#partners" onclick="toggleMobileMenu()">SPONSOR &amp; PARTNERS</a>
+      <div class="pt-2 border-t border-surface-variant flex gap-2">
+        <a href="#register" class="flex-1 bg-primary-container text-black font-bold py-2.5 text-center rounded slant-btn" onclick="toggleMobileMenu()">DAFTAR PILOT</a>
+        <a href="/" class="px-3 py-2.5 border border-surface-variant text-center rounded text-white flex items-center justify-center">
+          <span class="material-symbols-outlined text-base">home</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="relative min-h-[90vh] flex items-center justify-center pt-20 pb-16 px-4 sm:px-8 hud-grid" id="hero">
+      <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div class="w-full h-full bg-cover bg-center opacity-30 scale-105 animate-pulse duration-[8000ms]" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCOZeiCOWdbkV6ycKXV8tXkgodBa64prmJnQB4StsfpYYFC9kBqLfaDtb-4EWWaAOmhRhqdwx3bp0vwBWubU_QsmISg-pRQwnYoprEWl_pI7y7dKP0wMbXpzff8CG__nG8kQP-qdbW18yI0zBpdvzYG6Yb4ZPix_KGi14GXNXLnRKyqPKeeNicama1TS2u6Rl8qTGs1fWwOTedcfTZUrjPzCNpq88wf4hpPrLfPsJVSONhlsTkMkdPKIg')"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-background/30 via-background/70 to-background"></div>
+      </div>
+
+      <div class="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-start gap-6 sm:gap-8">
+        <div class="flex flex-col gap-3">
+          <span class="font-label-caps text-xs text-primary tracking-[0.2em] uppercase border border-primary/40 px-3 py-1 rounded inline-block w-fit bg-primary/10 backdrop-blur-sm">
+            ⚡ Benteng Speelwijk Drone Fest 2026
+          </span>
+          <h1 class="text-4xl sm:text-6xl md:text-7xl font-bold text-white uppercase max-w-4xl tracking-tight leading-tight">
+            Fly Through <br><span class="text-primary-fixed-dim drop-shadow-[0_0_25px_rgba(255,199,0,0.5)]">History</span>
+          </h1>
+        </div>
+
+        <p class="text-on-surface-variant max-w-2xl text-sm sm:text-base leading-relaxed">
+          Eksplorasi aerodinamika drone FPV berkecepatan tinggi menembus reruntuhan bersejarah Benteng Speelwijk Banten Lama. Misi terbang sinematik & kompetisi presisi cagar budaya pertama di Indonesia.
+        </p>
+
+        <div class="flex flex-wrap gap-4 sm:gap-6 font-mono-data text-xs sm:text-sm text-on-surface-variant bg-surface-container-low/80 border border-surface-variant p-3 rounded-lg backdrop-blur-sm">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary-fixed-dim text-lg">calendar_today</span>
+            <span class="text-white font-bold">20 - 21 Juli 2026</span>
+          </div>
+          <div class="w-px h-4 bg-surface-variant my-auto hidden sm:block"></div>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary-fixed-dim text-lg">location_on</span>
+            <span>Benteng Speelwijk, Banten Lama</span>
+          </div>
+          <div class="w-px h-4 bg-surface-variant my-auto hidden sm:block"></div>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary-fixed-dim text-lg">verified_user</span>
+            <span>SMS Certified Race Track</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4 mt-2 w-full sm:w-auto">
+          <a class="bg-primary-container text-black font-label-caps text-xs font-bold px-8 py-3.5 rounded text-center uppercase tracking-wider hover:bg-yellow-400 transition-colors border border-primary-container shadow-[0_0_20px_rgba(255,199,0,0.4)] slant-btn" href="#register">
+            DAFTAR PILOT SEKARANG
+          </a>
+          <a class="bg-surface-container text-primary font-label-caps text-xs font-bold px-8 py-3.5 rounded text-center uppercase tracking-wider hover:bg-surface-container-high transition-colors border border-outline-variant" href="#history">
+            LIHAT DETAIL MISI
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- History / The Mission Section -->
+    <section class="py-16 md:py-24 px-4 sm:px-8 bg-surface-dim border-t border-surface-variant" id="history">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="flex flex-col gap-6">
+          <div>
+            <div class="text-primary-fixed-dim font-label-caps text-xs uppercase tracking-widest mb-1">DOKUMENTASI &amp; PRESERVASI CAGAR BUDAYA</div>
+            <h2 class="text-2xl sm:text-4xl font-bold text-white uppercase tracking-tight">The Mission</h2>
+          </div>
+
+          <p class="text-on-surface-variant text-sm sm:text-base leading-relaxed">
+            Acara ini merupakan titik temu antara konservasi sejarah warisan Kesultanan Banten dan teknologi kedirgantaraan multirotor modern. Kami mengerahkan sistem FPV racing dan sinematografi udara resolusi tinggi untuk memetakan serta mendokumentasikan kompleks cagar budaya Benteng Speelwijk.
+          </p>
+
+          <p class="text-on-surface-variant text-sm sm:text-base leading-relaxed">
+            Para pilot akan merasakan sensasi terbang unik, meliuk di antara gapura batu abad ke-17 dengan batas manuver presisi serta manajemen frekuensi radio analog/digital HD yang ketat.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+            <div class="bg-surface-container-low p-4 rounded-lg border border-surface-variant hover:border-primary/40 transition-colors">
+              <span class="material-symbols-outlined text-primary-fixed-dim text-3xl mb-2 block">speed</span>
+              <h3 class="text-white font-bold uppercase text-sm font-label-caps">High-Speed FPV Racing</h3>
+              <p class="text-on-surface-variant text-xs mt-1 leading-relaxed">Navigasi presisi tinggi melewati rintangan pilar & lorong benteng kuno.</p>
+            </div>
+            <div class="bg-surface-container-low p-4 rounded-lg border border-surface-variant hover:border-primary/40 transition-colors">
+              <span class="material-symbols-outlined text-primary-fixed-dim text-3xl mb-2 block">videocam</span>
+              <h3 class="text-white font-bold uppercase text-sm font-label-caps">Aerial Heritage Cinema</h3>
+              <p class="text-on-surface-variant text-xs mt-1 leading-relaxed">Dokumentasi visual 4K/60fps arsip digital aset bersejarah Provinsi Banten.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative h-[380px] lg:h-[520px] rounded-lg overflow-hidden border border-surface-variant group shadow-2xl">
+          <div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAb2UrjPCmPd2LcPO5IiFkg_uZgmT8Gtmz5pemZ0QeyrrddaayzBbEwGqXPb3sBSkZCxBtkLwnJcHj6rQWBVfeeL7NdD9bQ_1OF8vEYXRkG75mzrRI2FsjOuoUdU2MrieeHUNWDHvavk9xTDDFkHSENM4IctMI0zdIjtkDTVhFAe5FB1Ez7pyqgONX50iJb8qE3DXIE9xw3yM2FvbOTu6OsIs_4IgqwYdiFiCAiZdrMyvmVqv--RfmYTQ')"></div>
+          <div class="absolute inset-0 border border-primary/30 m-4 rounded pointer-events-none"></div>
+          <div class="absolute top-6 left-6 bg-black/85 backdrop-blur-sm border border-surface-variant px-3 py-1.5 rounded font-mono-data text-xs text-primary-fixed-dim flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-green-400 animate-ping"></span>
+            <span>SYS_OP: SCAN_ACTIVE [BENTENG_SPEELWIJK]</span>
+          </div>
+          <div class="absolute bottom-6 right-6 bg-black/85 backdrop-blur-sm border border-surface-variant px-3 py-1.5 rounded font-mono-data text-[11px] text-on-surface-variant">
+            COORDINATES: 6°01'59"S 106°09'14"E
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Schedule Section -->
+    <section class="py-16 md:py-24 px-4 sm:px-8 bg-background border-t border-surface-variant" id="schedule">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+          <div class="text-primary-fixed-dim font-label-caps text-xs uppercase tracking-widest mb-1">RUNDOWN RESMI ACARA</div>
+          <h2 class="text-2xl sm:text-4xl font-bold text-white uppercase tracking-tight">Flight Schedule &amp; Agenda</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Day 1 -->
+          <div class="bg-surface-container-low border border-surface-variant rounded-lg p-6 sm:p-8">
+            <div class="border-b border-surface-variant pb-3 mb-4 flex justify-between items-end">
+              <div>
+                <span class="text-[10px] font-label-caps text-primary-fixed-dim uppercase tracking-wider block">DAY 01</span>
+                <h3 class="text-lg sm:text-xl font-bold text-white uppercase font-label-caps">Kualifikasi &amp; Eksibisi</h3>
+              </div>
+              <span class="font-mono-data text-xs text-primary font-bold bg-primary/10 border border-primary/30 px-2 py-1 rounded">20 JULI 2026</span>
+            </div>
+
+            <div class="space-y-3">
+              <div class="flex items-start gap-4 p-3 bg-surface-container hover:bg-surface-container-high transition-colors rounded group border-l-2 border-transparent hover:border-primary">
+                <span class="font-mono-data text-xs text-primary-fixed-dim w-16 pt-0.5 font-bold">08:00</span>
+                <div>
+                  <h4 class="text-sm font-bold text-white group-hover:text-primary transition-colors">Kalibrasi Sistem &amp; Safety Briefing</h4>
+                  <p class="text-on-surface-variant text-xs mt-0.5">Registrasi ulang pilot, alokasi frekuensi VTX (Analog & Digital), dan scrutineering drone.</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4 p-3 bg-surface-container hover:bg-surface-container-high transition-colors rounded group border-l-2 border-transparent hover:border-primary">
+                <span class="font-mono-data text-xs text-primary-fixed-dim w-16 pt-0.5 font-bold">10:00</span>
+                <div>
+                  <h4 class="text-sm font-bold text-white group-hover:text-primary transition-colors">Heritage Fly-over Session</h4>
+                  <p class="text-on-surface-variant text-xs mt-0.5">Sesi terbang sinematik & long range exhibition mengitari benteng dan pelabuhan lama.</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4 p-3 bg-surface-container hover:bg-surface-container-high transition-colors rounded group border-l-2 border-transparent hover:border-primary">
+                <span class="font-mono-data text-xs text-primary-fixed-dim w-16 pt-0.5 font-bold">13:00</span>
+                <div>
+                  <h4 class="text-sm font-bold text-white group-hover:text-primary transition-colors">FPV Racing: Heat 1 &amp; Time Trials</h4>
+                  <p class="text-on-surface-variant text-xs mt-0.5">Uji catatan waktu putaran (lap timing) melewati 12 rintangan air-gate di area reruntuhan.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Day 2 -->
+          <div class="bg-surface-container-low border border-surface-variant rounded-lg p-6 sm:p-8 relative overflow-hidden">
+            <div class="border-b border-surface-variant pb-3 mb-4 flex justify-between items-end">
+              <div>
+                <span class="text-[10px] font-label-caps text-primary-fixed-dim uppercase tracking-wider block">DAY 02</span>
+                <h3 class="text-lg sm:text-xl font-bold text-white uppercase font-label-caps">Semifinal &amp; Grand Finals</h3>
+              </div>
+              <span class="font-mono-data text-xs text-primary font-bold bg-primary/10 border border-primary/30 px-2 py-1 rounded">21 JULI 2026</span>
+            </div>
+
+            <div class="space-y-3">
+              <div class="flex items-start gap-4 p-3 bg-surface-container hover:bg-surface-container-high transition-colors rounded group border-l-2 border-transparent hover:border-primary">
+                <span class="font-mono-data text-xs text-primary-fixed-dim w-16 pt-0.5 font-bold">09:00</span>
+                <div>
+                  <h4 class="text-sm font-bold text-white group-hover:text-primary transition-colors">FPV Racing: Semi-Finals</h4>
+                  <p class="text-on-surface-variant text-xs mt-0.5">Top 16 pilot terbaik bertarung dalam 4 bracket gugur sistem poin cepat.</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4 p-3 bg-surface-container hover:bg-surface-container-high transition-colors rounded group border-l-2 border-transparent hover:border-primary">
+                <span class="font-mono-data text-xs text-primary-fixed-dim w-16 pt-0.5 font-bold">14:00</span>
+                <div>
+                  <h4 class="text-sm font-bold text-white group-hover:text-primary transition-colors">The Grand Final Showdown</h4>
+                  <p class="text-on-surface-variant text-xs mt-0.5">Final 4 pilot adu kecepatan 5 lap untuk memperebutkan Piala Bergilir Speelwijk.</p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4 p-3 bg-primary/15 hover:bg-primary/20 transition-colors rounded group border-l-2 border-primary">
+                <span class="font-mono-data text-xs text-primary-fixed-dim w-16 pt-0.5 font-bold">16:30</span>
+                <div>
+                  <h4 class="text-sm font-bold text-primary-fixed-dim uppercase">Awarding Ceremony &amp; Sunset Fly</h4>
+                  <p class="text-on-surface-variant text-xs mt-0.5">Penyerahan trofi juara, medali, hadiah sponsor, dan formasi terbang penutup.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Registration Section -->
+    <section class="py-16 md:py-24 px-4 sm:px-8 bg-surface-dim border-t border-surface-variant relative" id="register">
+      <div class="max-w-3xl mx-auto bg-surface-container-low border border-surface-variant rounded-lg p-6 sm:p-10 shadow-2xl relative z-10">
+        <div class="mb-6">
+          <div class="text-primary-fixed-dim font-label-caps text-xs uppercase tracking-widest mb-1">FORMULIR PENDAFTARAN RESMI</div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white uppercase tracking-tight">Pilot Registration</h2>
+          <p class="text-on-surface-variant text-xs sm:text-sm mt-1">Inisialisasi data operator drone Anda untuk slot terbang resmi.</p>
+
+          <div class="mt-4 p-4 bg-primary/10 border border-primary/30 rounded flex items-center justify-between">
+            <div>
+              <span class="font-label-caps text-xs text-primary uppercase tracking-wider block">Biaya Registrasi Slot Pilot</span>
+              <span class="text-[11px] text-on-surface-variant">Termasuk Pit Access, Frekuensi Slot, Official Jersey &amp; Konsumsi 2 Hari</span>
+            </div>
+            <span class="text-xl sm:text-2xl text-primary-fixed-dim font-bold font-mono-data">Rp 200.000</span>
+          </div>
+        </div>
+
+        <form id="speelwijk-registration-form" class="space-y-4 text-xs font-body">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1">
+              <label class="font-label-caps text-on-surface-variant uppercase text-[11px]">Nama Lengkap Operator *</label>
+              <input id="pilot-name" required class="bg-surface border border-outline-variant rounded px-3 py-2.5 text-white focus:border-primary focus:outline-none transition-colors font-mono-data text-xs" placeholder="Contoh: Juang Pratama" type="text"/>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="font-label-caps text-on-surface-variant uppercase text-[11px]">Komunitas / Squad / Callsign</label>
+              <input id="pilot-community" class="bg-surface border border-outline-variant rounded px-3 py-2.5 text-white focus:border-primary focus:outline-none transition-colors font-mono-data text-xs" placeholder="Contoh: Sky Multirotor Squad / RED_FOX" type="text"/>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1">
+              <label class="font-label-caps text-on-surface-variant uppercase text-[11px]">Nomor WhatsApp Aktif *</label>
+              <input id="pilot-whatsapp" required class="bg-surface border border-outline-variant rounded px-3 py-2.5 text-white focus:border-primary focus:outline-none transition-colors font-mono-data text-xs" placeholder="08xxxxxxxxxx" type="tel"/>
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="font-label-caps text-on-surface-variant uppercase text-[11px]">Email Operator</label>
+              <input id="pilot-email" class="bg-surface border border-outline-variant rounded px-3 py-2.5 text-white focus:border-primary focus:outline-none transition-colors font-mono-data text-xs" placeholder="operator@gmail.com" type="email"/>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label class="font-label-caps text-on-surface-variant uppercase text-[11px]">Kategori Drone yang Diikuti *</label>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <label class="flex items-center gap-2 p-2.5 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface">
+                <input class="text-primary-container focus:ring-0 bg-background border-outline-variant" name="category" type="radio" value="Racing FPV (5 Inch / 3.5 Inch)" checked/>
+                <span class="font-mono-data text-white text-xs">Racing FPV</span>
+              </label>
+              <label class="flex items-center gap-2 p-2.5 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface">
+                <input class="text-primary-container focus:ring-0 bg-background border-outline-variant" name="category" type="radio" value="Cinematic & Freestyle FPV"/>
+                <span class="font-mono-data text-white text-xs">Cinematic</span>
+              </label>
+              <label class="flex items-center gap-2 p-2.5 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface">
+                <input class="text-primary-container focus:ring-0 bg-background border-outline-variant" name="category" type="radio" value="Long Range & Fixed Wing"/>
+                <span class="font-mono-data text-white text-xs">Long Range</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label class="font-label-caps text-on-surface-variant uppercase text-[11px]">Metode Pembayaran *</label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <label class="flex items-center gap-2 p-2.5 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface">
+                <input id="pay-qris" class="text-primary-container focus:ring-0 bg-background border-outline-variant" name="payment_method" type="radio" value="QRIS" checked/>
+                <span class="font-mono-data text-white text-xs">QRIS (Semua E-Wallet / Mobile Banking)</span>
+              </label>
+              <label class="flex items-center gap-2 p-2.5 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface">
+                <input id="pay-transfer" class="text-primary-container focus:ring-0 bg-background border-outline-variant" name="payment_method" type="radio" value="Transfer Bank BCA / Mandiri"/>
+                <span class="font-mono-data text-white text-xs">Transfer Bank (BCA / Mandiri)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Payment Info Box -->
+          <div id="payment-info-box" class="p-3.5 bg-surface-container border border-surface-variant rounded text-xs space-y-1">
+            <div class="font-bold text-primary-fixed-dim font-label-caps flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-sm">qr_code_scanner</span>
+              <span>Instruksi Pembayaran QRIS / Transfer:</span>
+            </div>
+            <p class="text-on-surface-variant text-[11px]">
+              Setelah menekan tombol <strong>"KIRIM PENDAFTARAN &amp; RSVP"</strong>, data pendaftaran Anda akan otomatis tercatat di sistem dan admin panitia SMS akan segera mengirimkan konfirmasi slot via WhatsApp resmi.
+            </p>
+          </div>
+
+          <div class="pt-4 border-t border-surface-variant flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="text-[11px] text-on-surface-variant flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm text-green-400">lock</span>
+              <span>Data aman terenkripsi &amp; terhubung langsung ke panitia SMS.</span>
+            </div>
+            <button id="btn-submit-registration" class="bg-primary-container text-black font-label-caps text-xs font-bold px-8 py-3.5 rounded uppercase tracking-wider hover:bg-yellow-400 transition-colors w-full sm:w-auto slant-btn flex items-center justify-center gap-2 shadow-lg" type="submit">
+              <span class="material-symbols-outlined text-base">send</span>
+              KIRIM PENDAFTARAN &amp; RSVP
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Technical Decor -->
+      <div class="absolute right-6 bottom-6 opacity-10 pointer-events-none select-none hidden lg:block">
+        <span class="font-mono-data text-9xl text-primary font-bold tracking-tighter">SPEELWIJK</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- Partners Section -->
+  <section class="py-16 md:py-24 px-4 sm:px-8 bg-background border-t border-surface-variant" id="partners">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <div class="text-primary-fixed-dim font-label-caps text-xs uppercase tracking-widest mb-1">KOLABORASI &amp; DUKUNGAN</div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white uppercase tracking-tight">Sponsors &amp; Support</h2>
+        <div class="h-0.5 w-20 bg-primary-container mx-auto mt-2"></div>
+      </div>
+
+      <div class="space-y-12">
+        <!-- Main Sponsors -->
+        <div class="flex flex-col items-center gap-4">
+          <h3 class="font-label-caps text-xs text-on-surface-variant tracking-[0.2em] uppercase font-bold">Main Sponsors</h3>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-4xl">
+            <div class="bg-surface-container-low border border-surface-variant p-6 rounded-lg flex items-center justify-center hover:border-primary transition-colors group text-center">
+              <div class="font-mono-data text-xs sm:text-sm font-bold text-on-surface-variant group-hover:text-primary transition-colors">AERO_TECH_CORP</div>
+            </div>
+            <div class="bg-surface-container-low border border-surface-variant p-6 rounded-lg flex items-center justify-center hover:border-primary transition-colors group text-center">
+              <div class="font-mono-data text-xs sm:text-sm font-bold text-on-surface-variant group-hover:text-primary transition-colors">HORIZON_DYNAMICS</div>
+            </div>
+            <div class="bg-surface-container-low border border-surface-variant p-6 rounded-lg flex items-center justify-center hover:border-primary transition-colors group col-span-2 md:col-span-1 text-center">
+              <div class="font-mono-data text-xs sm:text-sm font-bold text-on-surface-variant group-hover:text-primary transition-colors">HERITAGE_TRUST</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Supported By -->
+        <div class="flex flex-col items-center gap-4">
+          <h3 class="font-label-caps text-xs text-on-surface-variant tracking-[0.2em] uppercase font-bold">Supported By</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 w-full">
+            <div class="bg-surface-container-low border border-surface-variant p-3.5 rounded flex items-center justify-center hover:border-primary transition-colors group text-center">
+              <div class="font-mono-data text-[11px] text-on-surface-variant group-hover:text-primary">BANTEN_GOV</div>
+            </div>
+            <div class="bg-surface-container-low border border-surface-variant p-3.5 rounded flex items-center justify-center hover:border-primary transition-colors group text-center">
+              <div class="font-mono-data text-[11px] text-on-surface-variant group-hover:text-primary">DRONE_FED</div>
+            </div>
+            <div class="bg-surface-container-low border border-surface-variant p-3.5 rounded flex items-center justify-center hover:border-primary transition-colors group text-center">
+              <div class="font-mono-data text-[11px] text-on-surface-variant group-hover:text-primary">SKY_OPTICS</div>
+            </div>
+            <div class="bg-surface-container-low border border-surface-variant p-3.5 rounded flex items-center justify-center hover:border-primary transition-colors group text-center">
+              <div class="font-mono-data text-[11px] text-on-surface-variant group-hover:text-primary">LIPO_CELL</div>
+            </div>
+            <div class="bg-surface-container-low border border-surface-variant p-3.5 rounded flex items-center justify-center hover:border-primary transition-colors group text-center">
+              <div class="font-mono-data text-[11px] text-on-surface-variant group-hover:text-primary">PROP_MASTER</div>
+            </div>
+            <div class="bg-surface-container-low border border-surface-variant p-3.5 rounded flex items-center justify-center hover:border-primary transition-colors group text-center">
+              <div class="font-mono-data text-[11px] text-on-surface-variant group-hover:text-primary">RADIO_LINK</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-surface-container-lowest text-primary-fixed-dim font-label-caps text-xs border-t border-surface-variant">
+    <div class="w-full px-4 sm:px-8 py-8 flex flex-col md:flex-row justify-between items-center gap-4 max-w-7xl mx-auto">
+      <div class="flex items-center gap-2 text-surface-tint">
+        <img src="/logo.png" alt="SMS Logo" class="w-6 h-6 object-contain"/>
+        <span>© 2026 Sky Multirotor Squad. Official Event Microsite.</span>
+      </div>
+      <div class="flex gap-4 text-on-surface-variant">
+        <a class="hover:text-primary transition-colors uppercase" href="/">Beranda Utama</a>
+        <a class="hover:text-primary transition-colors uppercase" href="/pages/tentang-kami">Pilot Skuad</a>
+        <a class="hover:text-primary transition-colors uppercase" href="/pages/spot-terbang">Spot Terbang</a>
+        <a class="hover:text-primary transition-colors uppercase" href="/pages/kontak">Kontak Panitia</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script for Mobile Menu & Form Submission -->
+  <script type="module">
+    import { submitSupabaseContact } from '/src/js/supabase.js';
+
+    // 1. Mobile Menu Toggle
+    window.toggleMobileMenu = function() {
+      const drawer = document.getElementById('mobile-drawer');
+      if (drawer) {
+        drawer.classList.toggle('hidden');
+      }
+    };
+    document.getElementById('mobile-menu-btn')?.addEventListener('click', toggleMobileMenu);
+
+    // 2. Toast Notification Helper
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      const bgColors = {
+        success: 'bg-green-950/90 border-green-500 text-green-200',
+        error: 'bg-red-950/90 border-red-500 text-red-200',
+        info: 'bg-surface-container-high border-primary-container text-white'
+      };
+
+      toast.className = `p-4 rounded-lg border shadow-2xl flex items-center gap-3 text-xs font-body backdrop-blur-md transition-all duration-300 transform translate-y-2 opacity-0 ${bgColors[type] || bgColors.info}`;
+      toast.innerHTML = `
+        <span class="material-symbols-outlined text-lg ${type === 'success' ? 'text-green-400' : type === 'error' ? 'text-red-400' : 'text-primary-container'}">
+          ${type === 'success' ? 'check_circle' : type === 'error' ? 'error' : 'info'}
+        </span>
+        <span class="flex-grow leading-relaxed">${message}</span>
+      `;
+
+      container.appendChild(toast);
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 5000);
+    }
+
+    // 3. Form Submission
+    const regForm = document.getElementById('speelwijk-registration-form');
+    if (regForm) {
+      regForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = document.getElementById('btn-submit-registration');
+        const origText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">progress_activity</span> Mengirim Data...';
+
+        const name = document.getElementById('pilot-name').value.trim();
+        const community = document.getElementById('pilot-community').value.trim() || 'Independen';
+        const whatsapp = document.getElementById('pilot-whatsapp').value.trim();
+        const email = document.getElementById('pilot-email').value.trim() || '-';
+        const category = document.querySelector('input[name="category"]:checked')?.value || 'Racing FPV';
+        const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'QRIS';
+
+        const messageContent = `[PENDAFTARAN BENTENG SPEELWIJK DRONE FEST 2026]\nNama: ${name}\nKomunitas/Callsign: ${community}\nWhatsApp: ${whatsapp}\nEmail: ${email}\nKategori: ${category}\nMetode Pembayaran: ${paymentMethod}\nBiaya: Rp 200.000`;
+
+        try {
+          // Send to Supabase contacts table
+          await submitSupabaseContact({
+            full_name: name,
+            email: email,
+            phone: whatsapp,
+            topic: 'EVENT_SPEELWIJK_2026',
+            message: messageContent
+          });
+
+          showToast('Pendaftaran berhasil tercatat di database SMS! Membuka WhatsApp konfirmasi...', 'success');
+
+          // Open WhatsApp with pre-filled message
+          const waMessage = encodeURIComponent(`Halo Panitia Sky Multirotor Squad, saya sudah mendaftar untuk acara "Benteng Speelwijk Drone Fest 2026":\n\n*Nama Operator:* ${name}\n*Komunitas/Callsign:* ${community}\n*WhatsApp:* ${whatsapp}\n*Kategori Drone:* ${category}\n*Metode Pembayaran:* ${paymentMethod}\n\nMohon konfirmasi instruksi pembayaran & slot nomor registrasi saya. Terima kasih!`);
+          
+          setTimeout(() => {
+            window.open(`https://wa.me/6287772272928?text=${waMessage}`, '_blank');
+            regForm.reset();
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = origText;
+          }, 1500);
+
+        } catch (err) {
+          console.error(err);
+          showToast('Data tetap dapat dikirim langsung melalui WhatsApp panitia.', 'info');
+          const waMessage = encodeURIComponent(`Halo Panitia Sky Multirotor Squad, saya ingin mendaftar event Benteng Speelwijk:\nNama: ${name}\nKategori: ${category}`);
+          window.open(`https://wa.me/6287772272928?text=${waMessage}`, '_blank');
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = origText;
+        }
+      });
+    }
+  </script>
+</body>
+</html>
