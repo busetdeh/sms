@@ -409,7 +409,7 @@ const DEFAULT_SPEELWIJK_SETTINGS = {
   waNumber: '6287772272928',
   location: 'Benteng Speelwijk, Banten Lama',
   coords: "6°01'59\"S 106°09'14\"E",
-  desc: 'Eksplorasi aerodinamika drone FPV berkecepatan tinggi menembus reruntuhan bersejarah Benteng Speelwijk Banten Lama. Misi terbang sinematik & kompetisi presisi cagar budaya pertama di Indonesia.'
+  desc: 'Eksplorasi aerodinamika drone FPV berkecepatan tinggi menembus reruntuhan bersejarah Benteng Speelwijk, Banten Lama. Misi terbang sinematik dan kompetisi presisi pertama di kawasan cagar budaya Indonesia.'
 };
 
 // 1. Registrations CRUD
