@@ -32,6 +32,24 @@ import {
 let currentUser = null;
 let currentTab = 'overview';
 
+// 14 Official Pilots extracted from Tentang Kami
+export const DEFAULT_OFFICIAL_PILOTS = [
+  { name: 'Juang', callsign: 'JUANG', division: 'Drone FPV & Aerial', interests: 'Minat: Cinematic & Freestyle', photo_url: '/pilot/juang.webp', instagram_handle: '@juangpratama', display_order: 1 },
+  { name: 'Derli', callsign: 'DERLI', division: 'Drone Aerial', interests: 'Minat: Landscape & Cinematic', photo_url: '/pilot/derli.jpeg', instagram_handle: '@derli_fpv', display_order: 2 },
+  { name: 'Rijal', callsign: 'RIJAL', division: 'Drone FPV & Aerial', interests: 'Minat: Cinematic & Freestyle', photo_url: '/pilot/ijal-1.jpg', instagram_handle: '@rijal_sky', display_order: 3 },
+  { name: 'Amarendra', callsign: 'AMARENDRA', division: 'Drone FPV', interests: 'Minat: Cinematic & Freestyle', photo_url: '/pilot/amarendra.jpeg', instagram_handle: '@amarendra_drone', display_order: 4 },
+  { name: 'Hadi', callsign: 'HADI', division: 'Drone FPV & Aerial', interests: 'Minat: Cinematic & Freestyle', photo_url: '/pilot/hadi-3.jpg', instagram_handle: '@hadi_multirotor', display_order: 5 },
+  { name: 'Yani', callsign: 'YANI', division: 'Drone FPV & Aerial', interests: 'Minat: Cinematic & Freestyle', photo_url: '/pilot/yani.jpeg', instagram_handle: '@yani_aero', display_order: 6 },
+  { name: 'Agus RDT', callsign: 'AGUS_RDT', division: 'Drone FPV & Aerial', interests: 'Minat: Cinematic & Freestyle', photo_url: '/pilot/agusrdt-1.jpg', instagram_handle: '@agus_rdt', display_order: 7 },
+  { name: 'Djane', callsign: 'DJANE', division: 'Drone FPV', interests: 'Minat: Cinematic & Freestyle', photo_url: '/pilot/djane.jpeg', instagram_handle: '@djane_fpv', display_order: 8 },
+  { name: 'Ferry', callsign: 'FERRY', division: 'Drone FPV & Aerial', interests: 'Minat: Cinematic & Freestyle', photo_url: '/pilot/ferry.jpeg', instagram_handle: '@ferry_pilot', display_order: 9 },
+  { name: 'Rhaka', callsign: 'RHAKA', division: 'Drone FPV & Aerial', interests: 'Minat: Cinematic & Freestyle', photo_url: '/pilot/rhaka-1.jpg', instagram_handle: '@rhakaguntur', display_order: 10 },
+  { name: 'Jerry', callsign: 'JERRY', division: 'Drone FPV & Aerial', interests: 'Minat: Cinematic & Freestyle', photo_url: '/pilot/jerry-1.jpg', instagram_handle: '@jerry_sky', display_order: 11 },
+  { name: 'Arief', callsign: 'ARIEF', division: 'Drone Race', interests: 'Minat: Race & Freestyle', photo_url: '/pilot/ARIEF-1.jpeg', instagram_handle: '@arief_racing', display_order: 12 },
+  { name: 'Hanif', callsign: 'HANIF', division: 'Drone FPV', interests: 'Minat: Cinematic & Freestyle', photo_url: '/pilot/hanif-1.jpg', instagram_handle: '@hanif_fpv', display_order: 13 },
+  { name: 'Taufik', callsign: 'TAUFIK', division: 'Aeromodeling & Drone FPV', interests: 'Minat: Freestyle', photo_url: '/pilot/taufik-.jpg', instagram_handle: '@taufik_aero', display_order: 14 }
+];
+
 // Cached Data
 let cachedEvents = [];
 let cachedPilots = [];
@@ -44,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTabNavigation();
   initModalListeners();
   initFormSubmissions();
+  initPilotSync();
   setupRealtimeListeners();
 });
 
@@ -742,6 +761,44 @@ function initFormSubmissions() {
       loadGallery();
     } else {
       showToast(res.error, 'error');
+    }
+  });
+}
+
+/* -------------------------------------------------------------------------- */
+/* PILOT SYNC (1-CLICK SEED FROM TENTANG-KAMI TO SUPABASE)                    */
+/* -------------------------------------------------------------------------- */
+function initPilotSync() {
+  const syncBtn = document.getElementById('btn-sync-pilots');
+  if (!syncBtn) return;
+
+  syncBtn.addEventListener('click', async () => {
+    if (!confirm('Apakah Anda ingin menyinkronkan 14 data pilot resmi ke Supabase? Data yang belum ada akan langsung ditambahkan.')) {
+      return;
+    }
+
+    const origText = syncBtn.innerHTML;
+    syncBtn.disabled = true;
+    syncBtn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span> MENYINKRONKAN...';
+
+    let successCount = 0;
+    for (const pilot of DEFAULT_OFFICIAL_PILOTS) {
+      // Check if pilot already exists by name
+      const exists = cachedPilots.some(p => p.name.toLowerCase() === pilot.name.toLowerCase());
+      if (!exists) {
+        const res = await createSupabasePilot(pilot);
+        if (res.success) successCount++;
+      }
+    }
+
+    syncBtn.disabled = false;
+    syncBtn.innerHTML = origText;
+
+    if (successCount > 0) {
+      showToast(`Berhasil menyinkronkan ${successCount} pilot baru ke database!`, 'success');
+      loadPilots();
+    } else {
+      showToast('Semua 14 pilot resmi sudah ada di database.', 'info');
     }
   });
 }

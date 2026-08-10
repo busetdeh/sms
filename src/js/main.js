@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFilterTabs();
   initEventCalendar();
   initContactForm();
+  initDynamicPilots();
 });
 
 /* -------------------------------------------------------------------------- */
@@ -761,4 +762,42 @@ function initContactForm() {
 
     contactForm.reset();
   });
+}
+
+/* -------------------------------------------------------------------------- */
+/* Dynamic Pilots Roster (pages/tentang-kami.html)                             */
+/* -------------------------------------------------------------------------- */
+async function initDynamicPilots() {
+  const container = document.getElementById('pilots-grid-container');
+  const countBadge = document.getElementById('pilots-count-badge');
+  if (!container) return;
+
+  async function renderPilots() {
+    const pilots = await getSupabasePilots();
+    if (!pilots || pilots.length === 0) return;
+
+    if (countBadge) {
+      countBadge.textContent = `${pilots.length} ACTIVE PILOTS`;
+    }
+
+    container.innerHTML = '';
+    pilots.forEach(pilot => {
+      const card = document.createElement('div');
+      card.className = 'bg-surface-container hud-border p-3 sm:p-md flex flex-col items-center text-center group hover:border-primary-container transition-colors relative overflow-hidden rounded shadow-lg';
+      card.innerHTML = `
+        <div class="w-full h-1 bg-primary-container absolute top-0 left-0 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+        <img class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full object-cover mb-2 sm:mb-sm border-2 border-primary-container/40 group-hover:border-primary-container group-hover:scale-105 transition-all shadow-md" alt="${pilot.name} - Pilot Sky Multirotor Squad" src="${pilot.photo_url || '/logo.png'}"/>
+        <h3 class="font-stats-lg text-base sm:text-lg md:text-xl text-white mb-0.5 sm:mb-xs font-bold">${pilot.name}</h3>
+        <span class="bg-surface text-primary-container font-label-caps text-[10px] sm:text-xs px-2 py-0.5 sm:px-2.5 sm:py-1 uppercase mb-1.5 sm:mb-sm rounded border border-surface-variant font-bold leading-tight">${pilot.division}</span>
+        <p class="font-label-caps text-on-surface-variant text-[10px] sm:text-xs leading-tight sm:leading-normal">${pilot.interests || 'Pilot Skuad'}</p>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  subscribeToTable('pilots', () => {
+    renderPilots();
+  });
+
+  renderPilots();
 }

@@ -344,11 +344,16 @@
         <!-- TAB 3: PILOTS (PILOT SKUAD)                                       -->
         <!-- ================================================================= -->
         <section id="section-pilots" class="admin-tab-section hidden space-y-4">
-          <div class="flex justify-between items-center">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div class="text-xs text-on-surface-variant font-label-caps">Daftar pilot dan struktur kepengurusan di halaman Tentang Kami.</div>
-            <button id="btn-add-pilot" class="bg-primary-container text-on-primary font-label-caps text-xs px-4 py-2 font-bold slant-btn flex items-center gap-1 hover:bg-yellow-400 transition-colors">
-              <span class="material-symbols-outlined text-sm">person_add</span> TAMBAH PILOT
-            </button>
+            <div class="flex items-center gap-2">
+              <button id="btn-sync-pilots" class="bg-surface-container-high hover:border-primary-container border border-surface-variant text-primary-container font-label-caps text-xs px-3 py-2 rounded flex items-center gap-1.5 transition-colors" title="Impor 14 pilot resmi dari halaman Tentang Kami ke Supabase">
+                <span class="material-symbols-outlined text-sm">sync</span> SINKRONKAN 14 PILOT RESMI
+              </button>
+              <button id="btn-add-pilot" class="bg-primary-container text-on-primary font-label-caps text-xs px-4 py-2 font-bold slant-btn flex items-center gap-1 hover:bg-yellow-400 transition-colors">
+                <span class="material-symbols-outlined text-sm">person_add</span> TAMBAH PILOT
+              </button>
+            </div>
           </div>
 
           <div class="bg-surface-container border border-surface-variant rounded-lg overflow-x-auto shadow-xl">
