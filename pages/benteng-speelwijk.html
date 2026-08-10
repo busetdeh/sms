@@ -547,6 +547,17 @@
             <input type="hidden" id="pilot-payment-proof" value=""/>
           </div>
 
+          <div class="flex flex-col gap-1.5 p-4 border border-primary/30 bg-primary/5 rounded-lg">
+            <label for="registration-challenge-answer" class="font-label-caps text-on-surface-variant uppercase text-[11px] font-bold">
+              Verifikasi Pendaftaran *
+            </label>
+            <div class="flex items-center gap-2 max-w-xs">
+              <span id="registration-challenge-question" class="font-mono-data text-primary-fixed-dim text-base font-bold min-w-[92px]" aria-live="polite"></span>
+              <input id="registration-challenge-answer" required inputmode="numeric" pattern="[0-9]+" type="number" min="0" class="w-28 bg-surface border border-outline-variant rounded px-3 py-2.5 text-white focus:border-primary focus:outline-none transition-colors font-mono-data text-xs" placeholder="Jawaban" aria-describedby="registration-challenge-help"/>
+            </div>
+            <p id="registration-challenge-help" class="text-[10px] text-on-surface-variant">Jawab pertanyaan matematika sebelum mengirim pendaftaran.</p>
+          </div>
+
           <div class="pt-4 border-t border-surface-variant flex flex-col sm:flex-row justify-between items-center gap-3">
             <div class="text-[11px] text-on-surface-variant flex items-center gap-1">
               <span class="material-symbols-outlined text-sm text-green-400">lock</span>
@@ -572,7 +583,7 @@
     <div class="max-w-7xl mx-auto">
       <div class="text-center mb-12">
         <div class="text-primary-fixed-dim font-label-caps text-xs uppercase tracking-widest mb-1">KOLABORASI &amp; DUKUNGAN</div>
-        <h2 class="text-2xl sm:text-3xl font-bold text-white uppercase tracking-tight">Sponsors &amp; Support</h2>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white uppercase tracking-tight">Sponsors &amp; Supporters</h2>
         <div class="h-0.5 w-20 bg-primary-container mx-auto mt-2"></div>
       </div>
 
@@ -865,6 +876,25 @@
 
     initProofUpload();
 
+    // 5.5 Simple random registration validation
+    let registrationChallengeAnswer = null;
+    function initRegistrationChallenge() {
+      const first = Math.floor(Math.random() * 9) + 1;
+      const second = Math.floor(Math.random() * 9) + 1;
+      registrationChallengeAnswer = first + second;
+
+      const question = document.getElementById('registration-challenge-question');
+      const answerInput = document.getElementById('registration-challenge-answer');
+      if (question) question.textContent = `${first} + ${second} =`;
+      if (answerInput) {
+        answerInput.value = '';
+        answerInput.setCustomValidity('');
+        answerInput.addEventListener('input', () => answerInput.setCustomValidity(''), { once: true });
+      }
+    }
+
+    initRegistrationChallenge();
+
     // 6. Form Submission
     const regForm = document.getElementById('speelwijk-registration-form');
     if (regForm) {
@@ -872,6 +902,13 @@
         e.preventDefault();
         const submitBtn = document.getElementById('btn-submit-registration');
         const origText = submitBtn.innerHTML;
+
+        const challengeInput = document.getElementById('registration-challenge-answer');
+        if (!challengeInput || Number(challengeInput.value) !== registrationChallengeAnswer) {
+          showToast('Jawaban verifikasi belum benar. Silakan coba lagi.', 'error');
+          challengeInput?.focus();
+          return;
+        }
 
         const checkedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(cb => cb.value);
         if (checkedCategories.length === 0) {
@@ -948,6 +985,7 @@
             submitBtn.disabled = false;
             submitBtn.innerHTML = origText;
             initPaymentMethodToggles();
+            initRegistrationChallenge();
           }, 1500);
 
         } catch (err) {
