@@ -424,18 +424,21 @@
           </div>
 
           <div class="flex flex-col gap-1.5">
-            <label class="font-label-caps text-on-surface-variant uppercase text-[11px]">Kategori Drone yang Diikuti *</label>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <label class="flex items-center gap-2 p-2.5 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface">
-                <input class="text-primary-container focus:ring-0 bg-background border-outline-variant" name="category" type="radio" value="Racing FPV (5 Inch / 3.5 Inch)" checked/>
+            <div class="flex justify-between items-center">
+              <label class="font-label-caps text-on-surface-variant uppercase text-[11px]">Kategori Drone yang Diikuti *</label>
+              <span class="text-[10px] text-primary-fixed-dim font-mono-data">(Pilih satu atau lebih)</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2" id="speelwijk-category-group">
+              <label class="flex items-center gap-2.5 p-2.5 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface has-[:checked]:border-primary-container has-[:checked]:bg-primary/10">
+                <input class="text-primary-container rounded focus:ring-0 bg-background border-outline-variant w-4 h-4" name="category" type="checkbox" value="Racing FPV (5 Inch / 3.5 Inch)" checked/>
                 <span class="font-mono-data text-white text-xs">Racing FPV</span>
               </label>
-              <label class="flex items-center gap-2 p-2.5 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface">
-                <input class="text-primary-container focus:ring-0 bg-background border-outline-variant" name="category" type="radio" value="Cinematic & Freestyle FPV"/>
+              <label class="flex items-center gap-2.5 p-2.5 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface has-[:checked]:border-primary-container has-[:checked]:bg-primary/10">
+                <input class="text-primary-container rounded focus:ring-0 bg-background border-outline-variant w-4 h-4" name="category" type="checkbox" value="Cinematic & Freestyle FPV"/>
                 <span class="font-mono-data text-white text-xs">Cinematic</span>
               </label>
-              <label class="flex items-center gap-2 p-2.5 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface">
-                <input class="text-primary-container focus:ring-0 bg-background border-outline-variant" name="category" type="radio" value="Long Range & Fixed Wing"/>
+              <label class="flex items-center gap-2.5 p-2.5 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface has-[:checked]:border-primary-container has-[:checked]:bg-primary/10">
+                <input class="text-primary-container rounded focus:ring-0 bg-background border-outline-variant w-4 h-4" name="category" type="checkbox" value="Long Range & Fixed Wing"/>
                 <span class="font-mono-data text-white text-xs">Long Range</span>
               </label>
             </div>
@@ -444,26 +447,78 @@
           <div class="flex flex-col gap-1.5">
             <label class="font-label-caps text-on-surface-variant uppercase text-[11px]">Metode Pembayaran *</label>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <label class="flex items-center gap-2 p-2.5 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface">
+              <label class="flex items-center gap-2.5 p-2.5 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface has-[:checked]:border-primary-container has-[:checked]:bg-primary/10">
                 <input id="pay-qris" class="text-primary-container focus:ring-0 bg-background border-outline-variant" name="payment_method" type="radio" value="QRIS" checked/>
-                <span class="font-mono-data text-white text-xs">QRIS (Semua E-Wallet / Mobile Banking)</span>
+                <span class="font-mono-data text-white text-xs flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-sm text-primary-container">qr_code_scanner</span>
+                  <span>QRIS (E-Wallet &amp; M-Banking)</span>
+                </span>
               </label>
-              <label class="flex items-center gap-2 p-2.5 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface">
-                <input id="pay-transfer" class="text-primary-container focus:ring-0 bg-background border-outline-variant" name="payment_method" type="radio" value="Transfer Bank BCA / Mandiri"/>
-                <span class="font-mono-data text-white text-xs">Transfer Bank (BCA / Mandiri)</span>
+              <label class="flex items-center gap-2.5 p-2.5 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface has-[:checked]:border-primary-container has-[:checked]:bg-primary/10">
+                <input id="pay-transfer" class="text-primary-container focus:ring-0 bg-background border-outline-variant" name="payment_method" type="radio" value="Transfer Bank"/>
+                <span class="font-mono-data text-white text-xs flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-sm text-primary-container">account_balance</span>
+                  <span>Transfer Rekening Bank</span>
+                </span>
               </label>
             </div>
           </div>
 
-          <!-- Payment Info Box -->
-          <div id="payment-info-box" class="p-3.5 bg-surface-container border border-surface-variant rounded text-xs space-y-1">
-            <div class="font-bold text-primary-fixed-dim font-label-caps flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-sm">qr_code_scanner</span>
-              <span>Instruksi Pembayaran QRIS / Transfer:</span>
+          <!-- Dynamic Payment Info Box -->
+          <div id="payment-info-box" class="p-4 bg-surface-container border border-surface-variant rounded-lg text-xs space-y-3">
+            <!-- QRIS View -->
+            <div id="payment-view-qris" class="space-y-2.5">
+              <div class="flex items-center justify-between border-b border-surface-variant/60 pb-2">
+                <div class="font-bold text-primary-fixed-dim font-label-caps flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-sm">qr_code_2</span>
+                  <span>Pembayaran via QRIS Resmi SMS:</span>
+                </div>
+                <span id="qris-display-fee" class="font-mono-data text-primary font-bold text-xs">Rp 200.000</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] font-mono-data">
+                <div class="p-2 bg-surface-container-high rounded border border-surface-variant/50">
+                  <span class="text-on-surface-variant block text-[10px]">MERCHANT:</span>
+                  <span id="qris-display-merchant" class="text-white font-bold">Sky Multirotor Squad</span>
+                </div>
+                <div class="p-2 bg-surface-container-high rounded border border-surface-variant/50">
+                  <span class="text-on-surface-variant block text-[10px]">NMID:</span>
+                  <span id="qris-display-nmid" class="text-white font-bold">ID1020038849502</span>
+                </div>
+              </div>
+              <div id="qris-image-container" class="hidden text-center p-2 bg-white rounded max-w-[180px] mx-auto">
+                <img id="qris-display-img" src="" alt="QRIS Code" class="w-full h-auto object-contain mx-auto"/>
+              </div>
             </div>
-            <p class="text-on-surface-variant text-[11px]">
-              Setelah menekan tombol <strong>"KIRIM PENDAFTARAN &amp; RSVP"</strong>, data pendaftaran Anda akan otomatis tercatat di sistem dan admin panitia SMS akan segera mengirimkan konfirmasi slot via WhatsApp resmi.
-            </p>
+
+            <!-- Bank Transfer View -->
+            <div id="payment-view-transfer" class="space-y-2.5 hidden">
+              <div class="flex items-center justify-between border-b border-surface-variant/60 pb-2">
+                <div class="font-bold text-primary-fixed-dim font-label-caps flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-sm">account_balance</span>
+                  <span>Detail Transfer Rekening Bank:</span>
+                </div>
+                <span id="bank-display-fee" class="font-mono-data text-primary font-bold text-xs">Rp 200.000</span>
+              </div>
+              <div class="p-3 bg-surface-container-high rounded border border-surface-variant/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <div>
+                  <span id="bank-display-name" class="text-xs font-bold text-white block">BCA (Bank Central Asia)</span>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <span id="bank-display-number" class="text-base font-mono-data font-bold text-primary-container tracking-wider">883-091-2839</span>
+                    <button type="button" id="btn-copy-bank" class="px-2 py-0.5 bg-surface border border-outline-variant text-[10px] rounded text-on-surface-variant hover:text-white hover:border-primary transition-colors flex items-center gap-1">
+                      <span class="material-symbols-outlined text-xs">content_copy</span> Salin
+                    </button>
+                  </div>
+                  <span id="bank-display-holder" class="text-[10px] text-on-surface-variant block mt-0.5 uppercase">A/N SKY MULTIROTOR SQUAD</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Instructions -->
+            <div class="pt-2 border-t border-surface-variant/60">
+              <p id="payment-display-instructions" class="text-on-surface-variant text-[11px] leading-relaxed">
+                Setelah menekan tombol <strong>"KIRIM PENDAFTARAN &amp; RSVP"</strong>, data pendaftaran Anda akan otomatis tercatat di sistem dan admin panitia SMS akan segera mengirimkan konfirmasi slot via WhatsApp resmi.
+              </p>
+            </div>
           </div>
 
           <div class="pt-4 border-t border-surface-variant flex flex-col sm:flex-row justify-between items-center gap-3">
@@ -646,6 +701,38 @@
         if (settings) {
           const priceBadge = document.querySelector('#register .text-primary-fixed-dim.font-bold.font-mono-data');
           if (priceBadge && settings.fee) priceBadge.textContent = settings.fee;
+
+          // Payment box sync
+          const qrisFee = document.getElementById('qris-display-fee');
+          const bankFee = document.getElementById('bank-display-fee');
+          if (qrisFee && settings.fee) qrisFee.textContent = settings.fee;
+          if (bankFee && settings.fee) bankFee.textContent = settings.fee;
+
+          const qrisMerchant = document.getElementById('qris-display-merchant');
+          const qrisNmid = document.getElementById('qris-display-nmid');
+          const qrisImg = document.getElementById('qris-display-img');
+          const qrisImgBox = document.getElementById('qris-image-container');
+
+          if (qrisMerchant && settings.qrisMerchant) qrisMerchant.textContent = settings.qrisMerchant;
+          if (qrisNmid && settings.qrisNmid) qrisNmid.textContent = settings.qrisNmid;
+          if (qrisImg && qrisImgBox) {
+            if (settings.qrisImageUrl) {
+              qrisImg.src = settings.qrisImageUrl;
+              qrisImgBox.classList.remove('hidden');
+            } else {
+              qrisImgBox.classList.add('hidden');
+            }
+          }
+
+          const bankName = document.getElementById('bank-display-name');
+          const bankNum = document.getElementById('bank-display-number');
+          const bankHolder = document.getElementById('bank-display-holder');
+          if (bankName && settings.bankName) bankName.textContent = settings.bankName;
+          if (bankNum && settings.bankAccount) bankNum.textContent = settings.bankAccount;
+          if (bankHolder && settings.bankHolder) bankHolder.textContent = `A/N ${settings.bankHolder}`;
+
+          const payInst = document.getElementById('payment-display-instructions');
+          if (payInst && settings.paymentInstructions) payInst.textContent = settings.paymentInstructions;
         }
       } catch (e) {
         console.warn('Sync live content notice:', e);
@@ -654,13 +741,55 @@
 
     syncLiveContent();
 
-    // 4. Form Submission
+    // 4. Payment Method Switch & Copy Listener
+    function initPaymentMethodToggles() {
+      const qrisRadio = document.getElementById('pay-qris');
+      const transferRadio = document.getElementById('pay-transfer');
+      const qrisView = document.getElementById('payment-view-qris');
+      const transferView = document.getElementById('payment-view-transfer');
+
+      function updateView() {
+        if (transferRadio && transferRadio.checked) {
+          transferView?.classList.remove('hidden');
+          qrisView?.classList.add('hidden');
+        } else {
+          qrisView?.classList.remove('hidden');
+          transferView?.classList.add('hidden');
+        }
+      }
+
+      qrisRadio?.addEventListener('change', updateView);
+      transferRadio?.addEventListener('change', updateView);
+
+      // Copy Bank Account Button
+      document.getElementById('btn-copy-bank')?.addEventListener('click', () => {
+        const bankNum = document.getElementById('bank-display-number')?.textContent.trim();
+        if (bankNum) {
+          navigator.clipboard.writeText(bankNum).then(() => {
+            showToast(`Nomor rekening ${bankNum} berhasil disalin!`, 'success');
+          }).catch(() => {
+            showToast(`Nomor rekening: ${bankNum}`, 'info');
+          });
+        }
+      });
+    }
+
+    initPaymentMethodToggles();
+
+    // 5. Form Submission
     const regForm = document.getElementById('speelwijk-registration-form');
     if (regForm) {
       regForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const submitBtn = document.getElementById('btn-submit-registration');
         const origText = submitBtn.innerHTML;
+
+        const checkedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(cb => cb.value);
+        if (checkedCategories.length === 0) {
+          showToast('Silakan centang minimal 1 kategori drone yang Anda ikuti!', 'error');
+          return;
+        }
+
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">progress_activity</span> Mengirim Data...';
 
@@ -668,7 +797,7 @@
         const community = document.getElementById('pilot-community').value.trim() || 'Independen';
         const whatsapp = document.getElementById('pilot-whatsapp').value.trim();
         const email = document.getElementById('pilot-email').value.trim() || '-';
-        const category = document.querySelector('input[name="category"]:checked')?.value || 'Racing FPV';
+        const category = checkedCategories.join(', ');
         const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'QRIS';
 
         const settings = getSpeelwijkSettings();
@@ -702,13 +831,14 @@
           showToast('Pendaftaran berhasil tercatat di database SMS! Membuka WhatsApp konfirmasi...', 'success');
 
           // Open WhatsApp with pre-filled message
-          const waMessage = encodeURIComponent(`Halo Panitia Sky Multirotor Squad, saya sudah mendaftar untuk acara "Benteng Speelwijk Drone Fest 2026":\n\n*Nama Operator:* ${name}\n*Komunitas/Callsign:* ${community}\n*WhatsApp:* ${whatsapp}\n*Kategori Drone:* ${category}\n*Metode Pembayaran:* ${paymentMethod}\n\nMohon konfirmasi instruksi pembayaran & slot nomor registrasi saya. Terima kasih!`);
+          const waMessage = encodeURIComponent(`Halo Panitia Sky Multirotor Squad, saya sudah mendaftar untuk acara "Benteng Speelwijk Drone Fest 2026":\n\n*Nama Operator:* ${name}\n*Komunitas/Callsign:* ${community}\n*WhatsApp:* ${whatsapp}\n*Kategori Drone:* ${category}\n*Metode Pembayaran:* ${paymentMethod}\n*Estimasi Biaya:* ${fee}\n\nMohon konfirmasi instruksi pembayaran & slot nomor registrasi saya. Terima kasih!`);
           
           setTimeout(() => {
             window.open(`https://wa.me/${waTarget}?text=${waMessage}`, '_blank');
             regForm.reset();
             submitBtn.disabled = false;
             submitBtn.innerHTML = origText;
+            initPaymentMethodToggles();
           }, 1500);
 
         } catch (err) {
@@ -722,7 +852,7 @@
       });
     }
 
-    // 5. Multi-Layer Parallax Engine (Scroll + Mouse Depth)
+    // 6. Multi-Layer Parallax Engine (Scroll + Mouse Depth)
     function initSpeelwijkParallax() {
       const heroSection = document.getElementById('hero');
       const bgLayer = document.getElementById('speelwijk-parallax-bg');

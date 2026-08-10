@@ -805,6 +805,15 @@ function loadSpeelwijkSettings() {
   setVal('setting-speelwijk-loc', cachedSpeelwijkSettings.location);
   setVal('setting-speelwijk-coords', cachedSpeelwijkSettings.coords);
   setVal('setting-speelwijk-desc', cachedSpeelwijkSettings.desc);
+
+  // QRIS & Bank transfer fields
+  setVal('setting-speelwijk-qris-merchant', cachedSpeelwijkSettings.qrisMerchant || 'Sky Multirotor Squad');
+  setVal('setting-speelwijk-qris-nmid', cachedSpeelwijkSettings.qrisNmid || 'ID1020038849502');
+  setVal('setting-speelwijk-qris-image', cachedSpeelwijkSettings.qrisImageUrl || '');
+  setVal('setting-speelwijk-bank-name', cachedSpeelwijkSettings.bankName || 'BCA (Bank Central Asia)');
+  setVal('setting-speelwijk-bank-account', cachedSpeelwijkSettings.bankAccount || '883-091-2839');
+  setVal('setting-speelwijk-bank-holder', cachedSpeelwijkSettings.bankHolder || 'SKY MULTIROTOR SQUAD');
+  setVal('setting-speelwijk-payment-instructions', cachedSpeelwijkSettings.paymentInstructions || 'Setelah menekan tombol "KIRIM PENDAFTARAN & RSVP", data pendaftaran Anda akan otomatis tercatat di sistem dan admin panitia SMS akan segera mengirimkan konfirmasi slot via WhatsApp resmi.');
 }
 
 /* -------------------------------------------------------------------------- */
@@ -1243,9 +1252,34 @@ function initFormSubmissions() {
     const coords = document.getElementById('setting-speelwijk-coords').value.trim();
     const desc = document.getElementById('setting-speelwijk-desc').value.trim();
 
-    const payload = { title, subtitle, date, fee, waNumber, location, coords, desc };
+    const qrisMerchant = document.getElementById('setting-speelwijk-qris-merchant')?.value.trim() || 'Sky Multirotor Squad';
+    const qrisNmid = document.getElementById('setting-speelwijk-qris-nmid')?.value.trim() || 'ID1020038849502';
+    const qrisImageUrl = document.getElementById('setting-speelwijk-qris-image')?.value.trim() || '';
+    const bankName = document.getElementById('setting-speelwijk-bank-name')?.value.trim() || 'BCA (Bank Central Asia)';
+    const bankAccount = document.getElementById('setting-speelwijk-bank-account')?.value.trim() || '883-091-2839';
+    const bankHolder = document.getElementById('setting-speelwijk-bank-holder')?.value.trim() || 'SKY MULTIROTOR SQUAD';
+    const paymentInstructions = document.getElementById('setting-speelwijk-payment-instructions')?.value.trim() || '';
+
+    const payload = { 
+      title, 
+      subtitle, 
+      date, 
+      fee, 
+      waNumber, 
+      location, 
+      coords, 
+      desc,
+      qrisMerchant,
+      qrisNmid,
+      qrisImageUrl,
+      bankName,
+      bankAccount,
+      bankHolder,
+      paymentInstructions
+    };
+
     saveSpeelwijkSettings(payload);
-    showToast('Pengaturan microsite Benteng Speelwijk berhasil disimpan!', 'success');
+    showToast('Pengaturan informasi, tiket & rekening microsite berhasil disimpan!', 'success');
   });
 }
 

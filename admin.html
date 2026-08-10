@@ -577,54 +577,120 @@
 
           <!-- SUB-VIEW 3: MICROSITE SETTINGS -->
           <div id="speelwijk-subview-settings" class="speelwijk-subview hidden">
-            <form id="form-speelwijk-settings" class="bg-surface-container border border-surface-variant rounded-lg p-6 space-y-4 max-w-3xl">
-              <h4 class="font-stats-lg text-base text-white font-bold uppercase border-b border-surface-variant pb-2 text-primary-container">
-                Konfigurasi Informasi &amp; Biaya Tiket Microsite
-              </h4>
+            <form id="form-speelwijk-settings" class="bg-surface-container border border-surface-variant rounded-lg p-6 space-y-6 max-w-4xl">
+              <div class="flex items-center justify-between border-b border-surface-variant pb-3">
+                <h4 class="font-stats-lg text-base text-white font-bold uppercase text-primary-container flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary-container">tune</span>
+                  Konfigurasi Informasi, Tiket &amp; Rekening Pembayaran Microsite
+                </h4>
+              </div>
 
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label class="block font-label-caps text-primary-container text-xs mb-1">JUDUL ACARA (MAIN TITLE)</label>
-                  <input id="setting-speelwijk-title" type="text" value="Fly Through History" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+              <!-- Section 1: Informasi Acara -->
+              <div class="space-y-3">
+                <div class="text-xs font-label-caps text-on-surface-variant font-bold uppercase tracking-wider flex items-center gap-1.5 text-primary-fixed-dim">
+                  <span class="material-symbols-outlined text-sm">event</span>
+                  <span>1. Informasi Umum Acara</span>
                 </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block font-label-caps text-primary-container text-xs mb-1">JUDUL ACARA (MAIN TITLE)</label>
+                    <input id="setting-speelwijk-title" type="text" value="Fly Through History" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                  </div>
+                  <div>
+                    <label class="block font-label-caps text-primary-container text-xs mb-1">SUBTITLE / TAGLINE</label>
+                    <input id="setting-speelwijk-subtitle" type="text" value="Benteng Speelwijk Drone Fest 2026" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block font-label-caps text-primary-container text-xs mb-1">TANGGAL PELAKSANAAN</label>
+                    <input id="setting-speelwijk-date" type="text" value="17 - 18 Oktober 2026" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                  </div>
+                  <div>
+                    <label class="block font-label-caps text-primary-container text-xs mb-1">NO. WHATSAPP PANITIA (KONFIRMASI)</label>
+                    <input id="setting-speelwijk-wa" type="tel" value="6287772272928" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none font-mono-data"/>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block font-label-caps text-primary-container text-xs mb-1">LOKASI EVENT</label>
+                    <input id="setting-speelwijk-loc" type="text" value="Benteng Speelwijk, Banten Lama" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                  </div>
+                  <div>
+                    <label class="block font-label-caps text-primary-container text-xs mb-1">KOORDINAT GPS</label>
+                    <input id="setting-speelwijk-coords" type="text" value="6°01'59&quot;S 106°09'14&quot;E" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs font-mono-data focus:border-primary-container focus:outline-none"/>
+                  </div>
+                </div>
+
                 <div>
-                  <label class="block font-label-caps text-primary-container text-xs mb-1">SUBTITLE / TAGLINE</label>
-                  <input id="setting-speelwijk-subtitle" type="text" value="Benteng Speelwijk Drone Fest 2026" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                  <label class="block font-label-caps text-primary-container text-xs mb-1">DESKRIPSI NARASI EVENT</label>
+                  <textarea id="setting-speelwijk-desc" rows="2" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none">Eksplorasi aerodinamika drone FPV berkecepatan tinggi menembus reruntuhan bersejarah Benteng Speelwijk, Banten Lama. Misi terbang sinematik dan kompetisi presisi pertama di kawasan cagar budaya Indonesia.</textarea>
                 </div>
               </div>
 
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div>
-                  <label class="block font-label-caps text-primary-container text-xs mb-1">TANGGAL PELAKSANAAN</label>
-                  <input id="setting-speelwijk-date" type="text" value="17 - 18 Oktober 2026" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+              <!-- Section 2: Biaya & Konfigurasi QRIS -->
+              <div class="pt-4 border-t border-surface-variant space-y-3">
+                <div class="text-xs font-label-caps text-on-surface-variant font-bold uppercase tracking-wider flex items-center gap-1.5 text-primary-fixed-dim">
+                  <span class="material-symbols-outlined text-sm">qr_code_2</span>
+                  <span>2. Biaya Slot &amp; Pengaturan QRIS</span>
                 </div>
-                <div>
-                  <label class="block font-label-caps text-primary-container text-xs mb-1">BIAYA SLOT REGISTRASI</label>
-                  <input id="setting-speelwijk-fee" type="text" value="Rp 200.000" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label class="block font-label-caps text-primary-container text-xs mb-1">BIAYA SLOT REGISTRASI *</label>
+                    <input id="setting-speelwijk-fee" type="text" value="Rp 200.000" required class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs font-bold font-mono-data focus:border-primary-container focus:outline-none"/>
+                  </div>
+                  <div>
+                    <label class="block font-label-caps text-primary-container text-xs mb-1">NAMA MERCHANT QRIS</label>
+                    <input id="setting-speelwijk-qris-merchant" type="text" value="Sky Multirotor Squad" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                  </div>
+                  <div>
+                    <label class="block font-label-caps text-primary-container text-xs mb-1">NMID / ID QRIS</label>
+                    <input id="setting-speelwijk-qris-nmid" type="text" value="ID1020038849502" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs font-mono-data focus:border-primary-container focus:outline-none"/>
+                  </div>
                 </div>
+
                 <div>
-                  <label class="block font-label-caps text-primary-container text-xs mb-1">NO. WHATSAPP KONFIRMASI</label>
-                  <input id="setting-speelwijk-wa" type="tel" value="6287772272928" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                  <label class="block font-label-caps text-primary-container text-xs mb-1">URL / FOTO GAMBAR QRIS (OPSIONAL)</label>
+                  <input id="setting-speelwijk-qris-image" type="text" placeholder="https://... atau data:image/..." class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
                 </div>
               </div>
 
-              <div>
-                <label class="block font-label-caps text-primary-container text-xs mb-1">LOKASI &amp; KOORDINAT</label>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <input id="setting-speelwijk-loc" type="text" value="Benteng Speelwijk, Banten Lama" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
-                  <input id="setting-speelwijk-coords" type="text" value="6°01'59&quot;S 106°09'14&quot;E" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs font-mono-data focus:border-primary-container focus:outline-none"/>
+              <!-- Section 3: Detail Transfer Bank -->
+              <div class="pt-4 border-t border-surface-variant space-y-3">
+                <div class="text-xs font-label-caps text-on-surface-variant font-bold uppercase tracking-wider flex items-center gap-1.5 text-primary-fixed-dim">
+                  <span class="material-symbols-outlined text-sm">account_balance</span>
+                  <span>3. Detail Akun Transfer Bank</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label class="block font-label-caps text-primary-container text-xs mb-1">NAMA BANK</label>
+                    <input id="setting-speelwijk-bank-name" type="text" value="BCA (Bank Central Asia)" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                  </div>
+                  <div>
+                    <label class="block font-label-caps text-primary-container text-xs mb-1">NOMOR REKENING</label>
+                    <input id="setting-speelwijk-bank-account" type="text" value="883-091-2839" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs font-mono-data font-bold focus:border-primary-container focus:outline-none"/>
+                  </div>
+                  <div>
+                    <label class="block font-label-caps text-primary-container text-xs mb-1">ATAS NAMA (ACCOUNT HOLDER)</label>
+                    <input id="setting-speelwijk-bank-holder" type="text" value="SKY MULTIROTOR SQUAD" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs uppercase focus:border-primary-container focus:outline-none"/>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block font-label-caps text-primary-container text-xs mb-1">PETUNJUK &amp; INSTRUKSI PEMBAYARAN</label>
+                  <textarea id="setting-speelwijk-payment-instructions" rows="2" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none">Setelah menekan tombol "KIRIM PENDAFTARAN &amp; RSVP", data pendaftaran Anda akan otomatis tercatat di sistem dan admin panitia SMS akan segera mengirimkan konfirmasi slot via WhatsApp resmi.</textarea>
                 </div>
               </div>
 
-              <div>
-                <label class="block font-label-caps text-primary-container text-xs mb-1">DESKRIPSI NARASI EVENT</label>
-                <textarea id="setting-speelwijk-desc" rows="3" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none">Eksplorasi aerodinamika drone FPV berkecepatan tinggi menembus reruntuhan bersejarah Benteng Speelwijk, Banten Lama. Misi terbang sinematik dan kompetisi presisi pertama di kawasan cagar budaya Indonesia.</textarea>
-              </div>
-
-              <div class="pt-3 border-t border-surface-variant flex justify-end">
-                <button type="submit" class="bg-primary-container text-black font-bold font-label-caps text-xs px-6 py-2.5 rounded slant-btn hover:bg-yellow-400 flex items-center gap-1.5">
+              <div class="pt-4 border-t border-surface-variant flex justify-end">
+                <button type="submit" class="bg-primary-container text-black font-bold font-label-caps text-xs px-8 py-3 rounded slant-btn hover:bg-yellow-400 flex items-center gap-2 shadow-lg">
                   <span class="material-symbols-outlined text-base">save</span>
-                  <span>SIMPAN PENGATURAN MICROSITE</span>
+                  <span>SIMPAN SEMUA PENGATURAN MICROSITE</span>
                 </button>
               </div>
             </form>

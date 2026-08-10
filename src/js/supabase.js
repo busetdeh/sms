@@ -409,7 +409,14 @@ const DEFAULT_SPEELWIJK_SETTINGS = {
   waNumber: '6287772272928',
   location: 'Benteng Speelwijk, Banten Lama',
   coords: "6°01'59\"S 106°09'14\"E",
-  desc: 'Eksplorasi aerodinamika drone FPV berkecepatan tinggi menembus reruntuhan bersejarah Benteng Speelwijk, Banten Lama. Misi terbang sinematik dan kompetisi presisi pertama di kawasan cagar budaya Indonesia.'
+  desc: 'Eksplorasi aerodinamika drone FPV berkecepatan tinggi menembus reruntuhan bersejarah Benteng Speelwijk, Banten Lama. Misi terbang sinematik dan kompetisi presisi pertama di kawasan cagar budaya Indonesia.',
+  qrisMerchant: 'Sky Multirotor Squad',
+  qrisNmid: 'ID1020038849502',
+  qrisImageUrl: '',
+  bankName: 'BCA (Bank Central Asia)',
+  bankAccount: '883-091-2839',
+  bankHolder: 'SKY MULTIROTOR SQUAD',
+  paymentInstructions: 'Setelah menekan tombol "KIRIM PENDAFTARAN & RSVP", data pendaftaran Anda akan otomatis tercatat di sistem dan admin panitia SMS akan segera mengirimkan konfirmasi slot via WhatsApp resmi.'
 };
 
 // 1. Registrations CRUD
