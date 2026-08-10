@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/tentang-kami", "destination": "/pages/tentang-kami.html" },
+    { "source": "/galeri", "destination": "/pages/galeri.html" },
+    { "source": "/spot-terbang", "destination": "/pages/spot-terbang.html" },
+    { "source": "/kontak", "destination": "/pages/kontak.html" },
+    { "source": "/artikel", "destination": "/pages/artikel.html" },
+    { "source": "/pages/tentang-kami", "destination": "/pages/tentang-kami.html" },
+    { "source": "/pages/galeri", "destination": "/pages/galeri.html" },
+    { "source": "/pages/spot-terbang", "destination": "/pages/spot-terbang.html" },
+    { "source": "/pages/kontak", "destination": "/pages/kontak.html" },
+    { "source": "/pages/artikel", "destination": "/pages/artikel.html" }
+  ]
+}
