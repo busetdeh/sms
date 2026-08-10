@@ -170,7 +170,6 @@
     </div>
   </nav>
 
-  <main>
     <!-- Hero Section with Multi-Layer Parallax -->
     <section class="relative min-h-[92vh] flex items-center justify-center pt-24 pb-20 px-4 sm:px-8 hud-grid overflow-hidden" id="hero">
       
@@ -309,15 +308,15 @@
                 <span class="text-[10px] font-label-caps text-primary-fixed-dim uppercase tracking-wider block">DAY 01</span>
                 <h3 class="text-lg sm:text-xl font-bold text-white uppercase font-label-caps">Kualifikasi &amp; Eksibisi</h3>
               </div>
-              <span class="font-mono-data text-xs text-primary font-bold bg-primary/10 border border-primary/30 px-2 py-1 rounded">20 JULI 2026</span>
+              <span id="speelwijk-day1-date" class="font-mono-data text-xs text-primary font-bold bg-primary/10 border border-primary/30 px-2 py-1 rounded">20 JULI 2026</span>
             </div>
 
-            <div class="space-y-3">
+            <div id="speelwijk-live-rundown-day1" class="space-y-3">
               <div class="flex items-start gap-4 p-3 bg-surface-container hover:bg-surface-container-high transition-colors rounded group border-l-2 border-transparent hover:border-primary">
                 <span class="font-mono-data text-xs text-primary-fixed-dim w-16 pt-0.5 font-bold">08:00</span>
                 <div>
                   <h4 class="text-sm font-bold text-white group-hover:text-primary transition-colors">Kalibrasi Sistem &amp; Safety Briefing</h4>
-                  <p class="text-on-surface-variant text-xs mt-0.5">Registrasi ulang pilot, alokasi frekuensi VTX (Analog & Digital), dan scrutineering drone.</p>
+                  <p class="text-on-surface-variant text-xs mt-0.5">Registrasi ulang pilot, alokasi frekuensi VTX (Analog &amp; Digital), dan scrutineering drone.</p>
                 </div>
               </div>
 
@@ -325,7 +324,7 @@
                 <span class="font-mono-data text-xs text-primary-fixed-dim w-16 pt-0.5 font-bold">10:00</span>
                 <div>
                   <h4 class="text-sm font-bold text-white group-hover:text-primary transition-colors">Heritage Fly-over Session</h4>
-                  <p class="text-on-surface-variant text-xs mt-0.5">Sesi terbang sinematik & long range exhibition mengitari benteng dan pelabuhan lama.</p>
+                  <p class="text-on-surface-variant text-xs mt-0.5">Sesi terbang sinematik &amp; long range exhibition mengitari benteng dan pelabuhan lama.</p>
                 </div>
               </div>
 
@@ -346,10 +345,10 @@
                 <span class="text-[10px] font-label-caps text-primary-fixed-dim uppercase tracking-wider block">DAY 02</span>
                 <h3 class="text-lg sm:text-xl font-bold text-white uppercase font-label-caps">Semifinal &amp; Grand Finals</h3>
               </div>
-              <span class="font-mono-data text-xs text-primary font-bold bg-primary/10 border border-primary/30 px-2 py-1 rounded">21 JULI 2026</span>
+              <span id="speelwijk-day2-date" class="font-mono-data text-xs text-primary font-bold bg-primary/10 border border-primary/30 px-2 py-1 rounded">21 JULI 2026</span>
             </div>
 
-            <div class="space-y-3">
+            <div id="speelwijk-live-rundown-day2" class="space-y-3">
               <div class="flex items-start gap-4 p-3 bg-surface-container hover:bg-surface-container-high transition-colors rounded group border-l-2 border-transparent hover:border-primary">
                 <span class="font-mono-data text-xs text-primary-fixed-dim w-16 pt-0.5 font-bold">09:00</span>
                 <div>
@@ -552,9 +551,14 @@
     </div>
   </footer>
 
-  <!-- Script for Mobile Menu & Form Submission -->
+  <!-- Script for Mobile Menu, Live Rundown & Form Submission -->
   <script type="module">
-    import { submitSupabaseContact } from '/src/js/supabase.js';
+    import { 
+      submitSupabaseContact, 
+      getSpeelwijkRundown, 
+      getSpeelwijkSettings, 
+      saveSpeelwijkRegistration 
+    } from '/src/js/supabase.js';
 
     // 1. Mobile Menu Toggle
     window.toggleMobileMenu = function() {
@@ -596,7 +600,56 @@
       }, 5000);
     }
 
-    // 3. Form Submission
+    // 3. Dynamic Rundown & Settings Sync
+    function syncLiveContent() {
+      try {
+        const rundown = getSpeelwijkRundown();
+        const day1El = document.getElementById('speelwijk-live-rundown-day1');
+        const day2El = document.getElementById('speelwijk-live-rundown-day2');
+
+        if (rundown && rundown.length > 0) {
+          const day1Items = rundown.filter(i => String(i.day) === '1');
+          const day2Items = rundown.filter(i => String(i.day) === '2');
+
+          if (day1El && day1Items.length > 0) {
+            day1El.innerHTML = day1Items.map(item => `
+              <div class="flex items-start gap-4 p-3 bg-surface-container hover:bg-surface-container-high transition-colors rounded group border-l-2 border-transparent hover:border-primary">
+                <span class="font-mono-data text-xs text-primary-fixed-dim w-16 pt-0.5 font-bold">${item.time}</span>
+                <div>
+                  <h4 class="text-sm font-bold text-white group-hover:text-primary transition-colors">${item.title}</h4>
+                  <p class="text-on-surface-variant text-xs mt-0.5">${item.desc || '-'}</p>
+                </div>
+              </div>
+            `).join('');
+          }
+
+          if (day2El && day2Items.length > 0) {
+            day2El.innerHTML = day2Items.map((item, idx) => `
+              <div class="flex items-start gap-4 p-3 ${idx === day2Items.length - 1 ? 'bg-primary/15 hover:bg-primary/20 border-primary' : 'bg-surface-container hover:bg-surface-container-high border-transparent'} transition-colors rounded group border-l-2 hover:border-primary">
+                <span class="font-mono-data text-xs text-primary-fixed-dim w-16 pt-0.5 font-bold">${item.time}</span>
+                <div>
+                  <h4 class="text-sm font-bold ${idx === day2Items.length - 1 ? 'text-primary-fixed-dim uppercase' : 'text-white group-hover:text-primary'} transition-colors">${item.title}</h4>
+                  <p class="text-on-surface-variant text-xs mt-0.5">${item.desc || '-'}</p>
+                </div>
+              </div>
+            `).join('');
+          }
+        }
+
+        // Settings sync
+        const settings = getSpeelwijkSettings();
+        if (settings) {
+          const priceBadge = document.querySelector('#register .text-primary-fixed-dim.font-bold.font-mono-data');
+          if (priceBadge && settings.fee) priceBadge.textContent = settings.fee;
+        }
+      } catch (e) {
+        console.warn('Sync live content notice:', e);
+      }
+    }
+
+    syncLiveContent();
+
+    // 4. Form Submission
     const regForm = document.getElementById('speelwijk-registration-form');
     if (regForm) {
       regForm.addEventListener('submit', async (e) => {
@@ -613,10 +666,14 @@
         const category = document.querySelector('input[name="category"]:checked')?.value || 'Racing FPV';
         const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'QRIS';
 
-        const messageContent = `[PENDAFTARAN BENTENG SPEELWIJK DRONE FEST 2026]\nNama: ${name}\nKomunitas/Callsign: ${community}\nWhatsApp: ${whatsapp}\nEmail: ${email}\nKategori: ${category}\nMetode Pembayaran: ${paymentMethod}\nBiaya: Rp 200.000`;
+        const settings = getSpeelwijkSettings();
+        const fee = settings?.fee || 'Rp 200.000';
+        const waTarget = (settings?.waNumber || '6287772272928').replace(/\D/g, '');
+
+        const messageContent = `[PENDAFTARAN BENTENG SPEELWIJK DRONE FEST 2026]\nNama: ${name}\nKomunitas/Callsign: ${community}\nWhatsApp: ${whatsapp}\nEmail: ${email}\nKategori: ${category}\nMetode Pembayaran: ${paymentMethod}\nBiaya: ${fee}`;
 
         try {
-          // Send to Supabase contacts table
+          // 1. Send to Supabase contacts table
           await submitSupabaseContact({
             full_name: name,
             email: email,
@@ -625,13 +682,25 @@
             message: messageContent
           });
 
+          // 2. Save locally for instant dashboard display
+          await saveSpeelwijkRegistration({
+            name,
+            callsign: community,
+            phone: whatsapp,
+            email,
+            category,
+            paymentMethod,
+            status: 'PENDING',
+            notes: `Mendaftar dari form microsite (${paymentMethod})`
+          });
+
           showToast('Pendaftaran berhasil tercatat di database SMS! Membuka WhatsApp konfirmasi...', 'success');
 
           // Open WhatsApp with pre-filled message
           const waMessage = encodeURIComponent(`Halo Panitia Sky Multirotor Squad, saya sudah mendaftar untuk acara "Benteng Speelwijk Drone Fest 2026":\n\n*Nama Operator:* ${name}\n*Komunitas/Callsign:* ${community}\n*WhatsApp:* ${whatsapp}\n*Kategori Drone:* ${category}\n*Metode Pembayaran:* ${paymentMethod}\n\nMohon konfirmasi instruksi pembayaran & slot nomor registrasi saya. Terima kasih!`);
           
           setTimeout(() => {
-            window.open(`https://wa.me/6287772272928?text=${waMessage}`, '_blank');
+            window.open(`https://wa.me/${waTarget}?text=${waMessage}`, '_blank');
             regForm.reset();
             submitBtn.disabled = false;
             submitBtn.innerHTML = origText;
@@ -641,14 +710,14 @@
           console.error(err);
           showToast('Data tetap dapat dikirim langsung melalui WhatsApp panitia.', 'info');
           const waMessage = encodeURIComponent(`Halo Panitia Sky Multirotor Squad, saya ingin mendaftar event Benteng Speelwijk:\nNama: ${name}\nKategori: ${category}`);
-          window.open(`https://wa.me/6287772272928?text=${waMessage}`, '_blank');
+          window.open(`https://wa.me/${waTarget}?text=${waMessage}`, '_blank');
           submitBtn.disabled = false;
           submitBtn.innerHTML = origText;
         }
       });
     }
 
-    // 4. Multi-Layer Parallax Engine (Scroll + Mouse Depth)
+    // 5. Multi-Layer Parallax Engine (Scroll + Mouse Depth)
     function initSpeelwijkParallax() {
       const heroSection = document.getElementById('hero');
       const bgLayer = document.getElementById('speelwijk-parallax-bg');

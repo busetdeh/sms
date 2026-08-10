@@ -384,3 +384,212 @@ export function subscribeToTable(tableName, onUpdateCallback) {
     return null;
   }
 }
+
+/* -------------------------------------------------------------------------- */
+/* BENTENG SPEELWIJK EVENT CRUD                                               */
+/* -------------------------------------------------------------------------- */
+
+// Default Seed Rundown
+const DEFAULT_SPEELWIJK_RUNDOWN = [
+  { id: 'session_1', day: '1', time: '08:00 WIB', title: 'Registrasi & Safety Briefing', desc: 'Pemeriksaan failsafe, frekuensi VTX VTX-table lock, dan safety check baterai LiPo.' },
+  { id: 'session_2', day: '1', time: '10:00 WIB', title: 'Open Practice & Track Preview', desc: 'Pengenalan layout lintasan reruntuhan Speelwijk, gate tunnel bastion, dan line shooting.' },
+  { id: 'session_3', day: '1', time: '13:30 WIB', title: 'Kualifikasi Time Attack (Heat 1-4)', desc: 'Pencatatan lap time resmi 3 lap berturut-turut untuk seeding bracket turnamen.' },
+  { id: 'session_4', day: '1', time: '16:00 WIB', title: 'Cinematic Sunset Golden Hour', desc: 'Sesi terbang sinematik bebas mengabadikan siluet menara dan dinding benteng saat senja.' },
+  { id: 'session_5', day: '2', time: '08:30 WIB', title: 'Warm-up & Eliminasi Ganda', desc: 'Babak gugur 16 besar kelas 5-Inch Open dan 3.5-Inch Freestyle precision.' },
+  { id: 'session_6', day: '2', time: '13:00 WIB', title: 'Semifinal & Final Battle', desc: 'Pertarungan puncak memperebutkan Trophy Juara Benteng Speelwijk Drone Fest 2026.' },
+  { id: 'session_7', day: '2', time: '15:30 WIB', title: 'Podium & Closing Ceremony', desc: 'Penyerahan piala, sertifikat kehormatan skuad, dan foto bersama seluruh pilot & komunitas.' }
+];
+
+// Default Settings
+const DEFAULT_SPEELWIJK_SETTINGS = {
+  title: 'Fly Through History',
+  subtitle: 'Benteng Speelwijk Drone Fest 2026',
+  date: '20 - 21 Juli 2026',
+  fee: 'Rp 200.000',
+  waNumber: '6287772272928',
+  location: 'Benteng Speelwijk, Banten Lama',
+  coords: "6°01'59\"S 106°09'14\"E",
+  desc: 'Eksplorasi aerodinamika drone FPV berkecepatan tinggi menembus reruntuhan bersejarah Benteng Speelwijk Banten Lama. Misi terbang sinematik & kompetisi presisi cagar budaya pertama di Indonesia.'
+};
+
+// 1. Registrations CRUD
+export async function getSpeelwijkRegistrations() {
+  try {
+    // Check contacts table first where topic is EVENT_SPEELWIJK_2026
+    const { data: contactData, error: contactError } = await supabase
+      .from('contacts')
+      .select('*')
+      .eq('topic', 'EVENT_SPEELWIJK_2026')
+      .order('created_at', { ascending: false });
+
+    if (!contactError && contactData && contactData.length > 0) {
+      return contactData.map(c => {
+        let details = {};
+        try { details = JSON.parse(c.message); } catch (e) { details = { raw: c.message }; }
+        return {
+          id: c.id,
+          name: c.name || details.name || 'Pilot Speelwijk',
+          callsign: details.callsign || '-',
+          phone: c.phone || details.phone || '-',
+          email: c.email || details.email || '-',
+          category: details.category || 'Cinematic & Freestyle FPV',
+          paymentMethod: details.paymentMethod || 'QRIS',
+          status: details.status || 'PENDING',
+          notes: details.notes || '',
+          created_at: c.created_at
+        };
+      });
+    }
+
+    // Fallback to local storage
+    const local = localStorage.getItem('sms_speelwijk_registrations');
+    if (local) {
+      return JSON.parse(local);
+    }
+
+    // Default mock data if empty
+    const seed = [
+      {
+        id: 'speel_reg_1',
+        name: 'Rhaka Guntur Pratama',
+        callsign: 'NIGHT_HAWK',
+        phone: '087772272928',
+        email: 'rhakaguntur@gmail.com',
+        category: 'Cinematic & Freestyle FPV',
+        paymentMethod: 'QRIS',
+        status: 'LUNAS',
+        notes: 'Slot 01 - Lunas via QRIS Panitia',
+        created_at: new Date().toISOString()
+      },
+      {
+        id: 'speel_reg_2',
+        name: 'Juang Pratama',
+        callsign: 'RED_FOX',
+        phone: '081234567890',
+        email: 'juang@skymultirotor.com',
+        category: 'Racing FPV (5 Inch / 3.5 Inch)',
+        paymentMethod: 'Transfer Bank BCA',
+        status: 'LUNAS',
+        notes: 'Slot 02 - Verified',
+        created_at: new Date().toISOString()
+      }
+    ];
+    localStorage.setItem('sms_speelwijk_registrations', JSON.stringify(seed));
+    return seed;
+  } catch (err) {
+    console.warn('Error fetching Speelwijk registrations:', err.message);
+    const local = localStorage.getItem('sms_speelwijk_registrations');
+    return local ? JSON.parse(local) : [];
+  }
+}
+
+export async function saveSpeelwijkRegistration(regData) {
+  try {
+    const isEdit = Boolean(regData.id);
+    const id = regData.id || `speel_reg_${Date.now()}`;
+    const payload = {
+      ...regData,
+      id,
+      created_at: regData.created_at || new Date().toISOString()
+    };
+
+    // Save to contacts in Supabase for persistence
+    const contactPayload = {
+      name: regData.name,
+      phone: regData.phone,
+      email: regData.email,
+      topic: 'EVENT_SPEELWIJK_2026',
+      message: JSON.stringify({
+        callsign: regData.callsign,
+        category: regData.category,
+        paymentMethod: regData.paymentMethod,
+        status: regData.status,
+        notes: regData.notes
+      })
+    };
+
+    if (isEdit && typeof regData.id === 'string' && regData.id.includes('-')) {
+      await supabase.from('contacts').update(contactPayload).eq('id', regData.id);
+    } else if (!isEdit) {
+      await supabase.from('contacts').insert([contactPayload]);
+    }
+
+    // Sync to local storage
+    const current = await getSpeelwijkRegistrations();
+    let updated;
+    if (isEdit) {
+      updated = current.map(item => item.id === id ? payload : item);
+    } else {
+      updated = [payload, ...current];
+    }
+    localStorage.setItem('sms_speelwijk_registrations', JSON.stringify(updated));
+
+    return { success: true, data: payload };
+  } catch (err) {
+    console.warn('Save Speelwijk registration error:', err.message);
+    return { success: false, error: err.message };
+  }
+}
+
+export async function deleteSpeelwijkRegistration(id) {
+  try {
+    if (typeof id === 'string' && id.includes('-')) {
+      await supabase.from('contacts').delete().eq('id', id);
+    }
+    const current = await getSpeelwijkRegistrations();
+    const filtered = current.filter(item => item.id !== id);
+    localStorage.setItem('sms_speelwijk_registrations', JSON.stringify(filtered));
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+// 2. Rundown CRUD
+export function getSpeelwijkRundown() {
+  const local = localStorage.getItem('sms_speelwijk_rundown');
+  if (local) {
+    try { return JSON.parse(local); } catch (e) { }
+  }
+  localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(DEFAULT_SPEELWIJK_RUNDOWN));
+  return DEFAULT_SPEELWIJK_RUNDOWN;
+}
+
+export function saveSpeelwijkRundownItem(sessionData) {
+  const isEdit = Boolean(sessionData.id);
+  const id = sessionData.id || `session_${Date.now()}`;
+  const payload = { ...sessionData, id };
+  const current = getSpeelwijkRundown();
+  let updated;
+  if (isEdit) {
+    updated = current.map(item => item.id === id ? payload : item);
+  } else {
+    updated = [...current, payload];
+  }
+  localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(updated));
+  return { success: true, data: payload };
+}
+
+export function deleteSpeelwijkRundownItem(id) {
+  const current = getSpeelwijkRundown();
+  const filtered = current.filter(item => item.id !== id);
+  localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(filtered));
+  return { success: true };
+}
+
+// 3. Settings CRUD
+export function getSpeelwijkSettings() {
+  const local = localStorage.getItem('sms_speelwijk_settings');
+  if (local) {
+    try { return JSON.parse(local); } catch (e) { }
+  }
+  localStorage.setItem('sms_speelwijk_settings', JSON.stringify(DEFAULT_SPEELWIJK_SETTINGS));
+  return DEFAULT_SPEELWIJK_SETTINGS;
+}
+
+export function saveSpeelwijkSettings(settingsData) {
+  const payload = { ...DEFAULT_SPEELWIJK_SETTINGS, ...settingsData };
+  localStorage.setItem('sms_speelwijk_settings', JSON.stringify(payload));
+  return { success: true, data: payload };
+}
+

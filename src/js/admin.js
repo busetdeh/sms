@@ -27,7 +27,15 @@ import {
   getSupabaseContacts,
   deleteSupabaseContact,
   uploadSupabaseFile,
-  subscribeToTable
+  subscribeToTable,
+  getSpeelwijkRegistrations,
+  saveSpeelwijkRegistration,
+  deleteSpeelwijkRegistration,
+  getSpeelwijkRundown,
+  saveSpeelwijkRundownItem,
+  deleteSpeelwijkRundownItem,
+  getSpeelwijkSettings,
+  saveSpeelwijkSettings
 } from './supabase.js';
 
 let currentUser = null;
@@ -57,10 +65,14 @@ let cachedPilots = [];
 let cachedSpots = [];
 let cachedGallery = [];
 let cachedContacts = [];
+let cachedSpeelwijkRegs = [];
+let cachedSpeelwijkRundown = [];
+let cachedSpeelwijkSettings = {};
 
 document.addEventListener('DOMContentLoaded', () => {
   initAdminAuth();
   initTabNavigation();
+  initSpeelwijkSubtabs();
   initModalListeners();
   initFormSubmissions();
   initPilotSync();
@@ -214,10 +226,40 @@ function initTabNavigation() {
           pilots: 'Manajemen Pilot Skuad (Pilots)',
           spots: 'Manajemen Spot Terbang Banten',
           gallery: 'Manajemen Galeri & Log Misi',
-          inbox: 'Kotak Masuk Pesan & Pendaftaran'
+          inbox: 'Kotak Masuk Pesan & Pendaftaran',
+          speelwijk: 'Manajemen Event Benteng Speelwijk Drone Fest 2026'
         };
         pageTitleEl.textContent = titles[tabTarget] || 'Dashboard Admin';
       }
+    });
+  });
+}
+
+/* -------------------------------------------------------------------------- */
+/* SPEELWIJK SUBTAB NAVIGATION                                                */
+/* -------------------------------------------------------------------------- */
+function initSpeelwijkSubtabs() {
+  const subtabBtns = [
+    { btn: document.getElementById('subtab-btn-speelwijk-regs'), view: document.getElementById('speelwijk-subview-regs') },
+    { btn: document.getElementById('subtab-btn-speelwijk-rundown'), view: document.getElementById('speelwijk-subview-rundown') },
+    { btn: document.getElementById('subtab-btn-speelwijk-settings'), view: document.getElementById('speelwijk-subview-settings') }
+  ];
+
+  subtabBtns.forEach(({ btn, view }) => {
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      // Reset all buttons
+      subtabBtns.forEach(item => {
+        if (!item.btn || !item.view) return;
+        item.btn.classList.remove('font-bold', 'border-b-2', 'border-primary-container', 'text-primary-container');
+        item.btn.classList.add('text-on-surface-variant', 'border-transparent');
+        item.view.classList.add('hidden');
+      });
+
+      // Activate clicked
+      btn.classList.remove('text-on-surface-variant', 'border-transparent');
+      btn.classList.add('font-bold', 'border-b-2', 'border-primary-container', 'text-primary-container');
+      if (view) view.classList.remove('hidden');
     });
   });
 }
@@ -231,7 +273,8 @@ async function loadAllDashboardData() {
     loadPilots(),
     loadSpots(),
     loadGallery(),
-    loadContacts()
+    loadContacts(),
+    loadSpeelwijkData()
   ]);
   updateOverviewStats();
 }
@@ -242,12 +285,14 @@ function updateOverviewStats() {
   const statSpots = document.getElementById('stat-spots-count');
   const statGallery = document.getElementById('stat-gallery-count');
   const statInbox = document.getElementById('stat-inbox-count');
+  const statSpeelwijk = document.getElementById('stat-speelwijk-count');
 
   if (statEvents) statEvents.textContent = cachedEvents.length;
   if (statPilots) statPilots.textContent = cachedPilots.length;
   if (statSpots) statSpots.textContent = cachedSpots.length;
   if (statGallery) statGallery.textContent = cachedGallery.length;
   if (statInbox) statInbox.textContent = cachedContacts.length;
+  if (statSpeelwijk) statSpeelwijk.textContent = cachedSpeelwijkRegs.length;
 }
 
 // 1. Events
@@ -554,6 +599,214 @@ async function loadContacts() {
   });
 }
 
+// 6. Benteng Speelwijk Event Module (Registrations, Rundown, Settings)
+async function loadSpeelwijkData() {
+  await Promise.all([
+    loadSpeelwijkRegistrations(),
+    loadSpeelwijkRundown(),
+    loadSpeelwijkSettings()
+  ]);
+}
+
+async function loadSpeelwijkRegistrations() {
+  const tbody = document.getElementById('admin-speelwijk-regs-tbody');
+  const countBadge = document.getElementById('speelwijk-regs-count-badge');
+  const statCard = document.getElementById('stat-speelwijk-count');
+  
+  cachedSpeelwijkRegs = (await getSpeelwijkRegistrations()) || [];
+
+  if (countBadge) countBadge.textContent = cachedSpeelwijkRegs.length;
+  if (statCard) statCard.textContent = cachedSpeelwijkRegs.length;
+
+  if (!tbody) return;
+  renderSpeelwijkRegistrations();
+
+  // Search and filter listeners
+  const searchInput = document.getElementById('speelwijk-search-input');
+  const filterSelect = document.getElementById('speelwijk-filter-status');
+
+  if (searchInput && !searchInput.dataset.hasListener) {
+    searchInput.dataset.hasListener = 'true';
+    searchInput.addEventListener('input', () => renderSpeelwijkRegistrations());
+  }
+  if (filterSelect && !filterSelect.dataset.hasListener) {
+    filterSelect.dataset.hasListener = 'true';
+    filterSelect.addEventListener('change', () => renderSpeelwijkRegistrations());
+  }
+}
+
+function renderSpeelwijkRegistrations() {
+  const tbody = document.getElementById('admin-speelwijk-regs-tbody');
+  if (!tbody) return;
+
+  const searchInput = document.getElementById('speelwijk-search-input');
+  const filterSelect = document.getElementById('speelwijk-filter-status');
+
+  const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+  const filterStatus = filterSelect ? filterSelect.value : 'ALL';
+
+  const filtered = cachedSpeelwijkRegs.filter(reg => {
+    const matchesSearch = !query || 
+      (reg.name && reg.name.toLowerCase().includes(query)) ||
+      (reg.callsign && reg.callsign.toLowerCase().includes(query)) ||
+      (reg.phone && reg.phone.includes(query)) ||
+      (reg.category && reg.category.toLowerCase().includes(query));
+
+    const matchesStatus = filterStatus === 'ALL' || (reg.status && reg.status.toUpperCase() === filterStatus);
+
+    return matchesSearch && matchesStatus;
+  });
+
+  tbody.innerHTML = '';
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-on-surface-variant font-label-caps text-xs">Tidak ada data pendaftar pilot yang cocok dengan filter.</td></tr>`;
+    return;
+  }
+
+  filtered.forEach(reg => {
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-surface-variant hover:bg-surface-container-high/50 transition-colors text-xs font-body-md';
+
+    const cleanPhone = (reg.phone || '').replace(/\D/g, '');
+    const waPhone = cleanPhone.startsWith('0') ? '62' + cleanPhone.substring(1) : cleanPhone;
+    const waUrl = `https://wa.me/${waPhone}?text=${encodeURIComponent(`Halo Pilot ${reg.name} (${reg.callsign || 'Speelwijk Fest'}), panitia Sky Multirotor Squad mengonfirmasi status slot Anda: ${reg.status}.`)}`;
+
+    let statusBadge = '<span class="px-2 py-0.5 rounded bg-yellow-500/20 text-yellow-400 font-label-caps text-[10px] font-bold border border-yellow-500/40">PENDING</span>';
+    if (reg.status === 'LUNAS') {
+      statusBadge = '<span class="px-2 py-0.5 rounded bg-green-500/20 text-green-400 font-label-caps text-[10px] font-bold border border-green-500/40">LUNAS / VERIFIED</span>';
+    } else if (reg.status === 'BATAL') {
+      statusBadge = '<span class="px-2 py-0.5 rounded bg-red-500/20 text-red-400 font-label-caps text-[10px] font-bold border border-red-500/40">DIBATALKAN</span>';
+    }
+
+    tr.innerHTML = `
+      <td class="p-3.5">
+        <div class="font-bold text-white text-sm">${reg.name}</div>
+        <div class="text-[11px] text-primary-container font-mono-data uppercase font-bold">${reg.callsign || '-'}</div>
+      </td>
+      <td class="p-3.5">
+        <div class="text-white font-mono-data text-xs">${reg.phone || '-'}</div>
+        <div class="text-[10px] text-on-surface-variant">${reg.email || '-'}</div>
+      </td>
+      <td class="p-3.5">
+        <span class="px-2 py-0.5 rounded bg-surface-container font-label-caps text-[10px] text-white border border-surface-variant">${reg.category || 'FPV'}</span>
+      </td>
+      <td class="p-3.5 font-label-caps text-xs text-on-surface-variant">
+        ${reg.paymentMethod || 'QRIS'}
+      </td>
+      <td class="p-3.5">
+        ${statusBadge}
+      </td>
+      <td class="p-3.5 text-right whitespace-nowrap">
+        <a href="${waUrl}" target="_blank" class="inline-flex p-1.5 text-green-400 hover:bg-green-950/40 rounded mr-1" title="Kirim Pesan WhatsApp"><span class="material-symbols-outlined text-base">chat</span></a>
+        <button data-id="${reg.id}" class="btn-edit-speelwijk-reg p-1.5 text-primary-container hover:bg-surface-container rounded mr-1" title="Edit Pendaftar"><span class="material-symbols-outlined text-base">edit</span></button>
+        <button data-id="${reg.id}" class="btn-delete-speelwijk-reg p-1.5 text-red-400 hover:bg-red-950/40 rounded" title="Hapus"><span class="material-symbols-outlined text-base">delete</span></button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  tbody.querySelectorAll('.btn-edit-speelwijk-reg').forEach(b => {
+    b.addEventListener('click', () => {
+      const id = b.getAttribute('data-id');
+      const item = cachedSpeelwijkRegs.find(r => r.id === id);
+      if (item) openSpeelwijkRegModal(item);
+    });
+  });
+
+  tbody.querySelectorAll('.btn-delete-speelwijk-reg').forEach(b => {
+    b.addEventListener('click', async () => {
+      const id = b.getAttribute('data-id');
+      if (confirm('Hapus pendaftar pilot Speelwijk ini?')) {
+        const res = await deleteSpeelwijkRegistration(id);
+        if (res.success) {
+          showToast('Data pendaftar berhasil dihapus.', 'success');
+          loadSpeelwijkRegistrations();
+        } else {
+          showToast(res.error, 'error');
+        }
+      }
+    });
+  });
+}
+
+function loadSpeelwijkRundown() {
+  cachedSpeelwijkRundown = getSpeelwijkRundown();
+  const day1Container = document.getElementById('speelwijk-rundown-day1-container');
+  const day2Container = document.getElementById('speelwijk-rundown-day2-container');
+
+  if (day1Container) day1Container.innerHTML = '';
+  if (day2Container) day2Container.innerHTML = '';
+
+  const day1Items = cachedSpeelwijkRundown.filter(item => String(item.day) === '1');
+  const day2Items = cachedSpeelwijkRundown.filter(item => String(item.day) === '2');
+
+  const renderList = (items, container, emptyText) => {
+    if (!container) return;
+    if (items.length === 0) {
+      container.innerHTML = `<div class="p-4 text-center text-on-surface-variant font-label-caps text-xs">${emptyText}</div>`;
+      return;
+    }
+    items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'p-3 bg-surface-container-high/60 border border-surface-variant rounded flex items-start justify-between gap-3 hover:border-primary-container/40 transition-colors';
+      card.innerHTML = `
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-1.5 py-0.5 rounded bg-primary-container/20 text-primary-container font-mono-data text-[11px] font-bold border border-primary-container/40">${item.time}</span>
+            <span class="font-bold text-white text-xs font-label-caps">${item.title}</span>
+          </div>
+          <p class="text-[11px] text-on-surface-variant leading-relaxed">${item.desc || '-'}</p>
+        </div>
+        <div class="flex items-center gap-1 shrink-0">
+          <button data-id="${item.id}" class="btn-edit-speelwijk-session p-1 text-primary-container hover:bg-surface-container rounded" title="Edit Sesi"><span class="material-symbols-outlined text-sm">edit</span></button>
+          <button data-id="${item.id}" class="btn-delete-speelwijk-session p-1 text-red-400 hover:bg-red-950/40 rounded" title="Hapus Sesi"><span class="material-symbols-outlined text-sm">delete</span></button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  };
+
+  renderList(day1Items, day1Container, 'Belum ada sesi Day 1.');
+  renderList(day2Items, day2Container, 'Belum ada sesi Day 2.');
+
+  document.querySelectorAll('.btn-edit-speelwijk-session').forEach(b => {
+    b.addEventListener('click', () => {
+      const id = b.getAttribute('data-id');
+      const item = cachedSpeelwijkRundown.find(r => r.id === id);
+      if (item) openSpeelwijkSessionModal(item);
+    });
+  });
+
+  document.querySelectorAll('.btn-delete-speelwijk-session').forEach(b => {
+    b.addEventListener('click', () => {
+      const id = b.getAttribute('data-id');
+      if (confirm('Hapus sesi rundown ini?')) {
+        deleteSpeelwijkRundownItem(id);
+        showToast('Sesi rundown dihapus.', 'success');
+        loadSpeelwijkRundown();
+      }
+    });
+  });
+}
+
+function loadSpeelwijkSettings() {
+  cachedSpeelwijkSettings = getSpeelwijkSettings();
+  const setVal = (id, val) => {
+    const el = document.getElementById(id);
+    if (el && val !== undefined) el.value = val;
+  };
+
+  setVal('setting-speelwijk-title', cachedSpeelwijkSettings.title);
+  setVal('setting-speelwijk-subtitle', cachedSpeelwijkSettings.subtitle);
+  setVal('setting-speelwijk-date', cachedSpeelwijkSettings.date);
+  setVal('setting-speelwijk-fee', cachedSpeelwijkSettings.fee);
+  setVal('setting-speelwijk-wa', cachedSpeelwijkSettings.waNumber);
+  setVal('setting-speelwijk-loc', cachedSpeelwijkSettings.location);
+  setVal('setting-speelwijk-coords', cachedSpeelwijkSettings.coords);
+  setVal('setting-speelwijk-desc', cachedSpeelwijkSettings.desc);
+}
+
 /* -------------------------------------------------------------------------- */
 /* MODAL EDIT / CREATE HANDLERS                                               */
 /* -------------------------------------------------------------------------- */
@@ -562,6 +815,8 @@ function initModalListeners() {
   document.getElementById('btn-add-pilot')?.addEventListener('click', () => openPilotModal());
   document.getElementById('btn-add-spot')?.addEventListener('click', () => openSpotModal());
   document.getElementById('btn-add-gallery')?.addEventListener('click', () => openGalleryModal());
+  document.getElementById('btn-add-speelwijk-reg')?.addEventListener('click', () => openSpeelwijkRegModal());
+  document.getElementById('btn-add-speelwijk-session')?.addEventListener('click', () => openSpeelwijkSessionModal());
 
   initPilotPhotoUploadListeners();
 }
@@ -770,6 +1025,42 @@ function openGalleryModal(galleryData = null) {
   modal.classList.add('active');
 }
 
+// Speelwijk Registrant Modal
+function openSpeelwijkRegModal(regData = null) {
+  const modal = document.getElementById('admin-speelwijk-reg-modal');
+  const form = document.getElementById('form-speelwijk-reg');
+  if (!modal || !form) return;
+
+  document.getElementById('speelwijk-reg-form-id').value = regData ? regData.id : '';
+  document.getElementById('speelwijk-reg-input-name').value = regData ? regData.name : '';
+  document.getElementById('speelwijk-reg-input-community').value = regData ? (regData.callsign || '') : '';
+  document.getElementById('speelwijk-reg-input-phone').value = regData ? (regData.phone || '') : '';
+  document.getElementById('speelwijk-reg-input-email').value = regData ? (regData.email || '') : '';
+  document.getElementById('speelwijk-reg-input-category').value = regData ? regData.category : 'Cinematic & Freestyle FPV';
+  document.getElementById('speelwijk-reg-input-payment').value = regData ? (regData.paymentMethod || 'QRIS') : 'QRIS';
+  document.getElementById('speelwijk-reg-input-status').value = regData ? (regData.status || 'PENDING') : 'PENDING';
+  document.getElementById('speelwijk-reg-input-notes').value = regData ? (regData.notes || '') : '';
+
+  document.getElementById('speelwijk-reg-modal-heading').textContent = regData ? 'EDIT PENDAFTAR PILOT SPEELWIJK' : 'TAMBAH PENDAFTAR PILOT MANUAL';
+  modal.classList.add('active');
+}
+
+// Speelwijk Rundown Session Modal
+function openSpeelwijkSessionModal(sessionData = null) {
+  const modal = document.getElementById('admin-speelwijk-session-modal');
+  const form = document.getElementById('form-speelwijk-session');
+  if (!modal || !form) return;
+
+  document.getElementById('speelwijk-session-form-id').value = sessionData ? sessionData.id : '';
+  document.getElementById('speelwijk-session-input-day').value = sessionData ? String(sessionData.day) : '1';
+  document.getElementById('speelwijk-session-input-time').value = sessionData ? sessionData.time : '08:00 WIB';
+  document.getElementById('speelwijk-session-input-title').value = sessionData ? sessionData.title : '';
+  document.getElementById('speelwijk-session-input-desc').value = sessionData ? (sessionData.desc || '') : '';
+
+  document.getElementById('speelwijk-session-modal-heading').textContent = sessionData ? 'EDIT SESI RUNDOWN' : 'TAMBAH SESI RUNDOWN';
+  modal.classList.add('active');
+}
+
 /* -------------------------------------------------------------------------- */
 /* FORM SUBMISSIONS (SAVE TO SUPABASE)                                        */
 /* -------------------------------------------------------------------------- */
@@ -898,6 +1189,64 @@ function initFormSubmissions() {
       showToast(res.error, 'error');
     }
   });
+
+  // 5. Speelwijk Registrant Form
+  document.getElementById('form-speelwijk-reg')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('speelwijk-reg-form-id').value;
+    const name = document.getElementById('speelwijk-reg-input-name').value.trim();
+    const callsign = document.getElementById('speelwijk-reg-input-community').value.trim();
+    const phone = document.getElementById('speelwijk-reg-input-phone').value.trim();
+    const email = document.getElementById('speelwijk-reg-input-email').value.trim();
+    const category = document.getElementById('speelwijk-reg-input-category').value;
+    const paymentMethod = document.getElementById('speelwijk-reg-input-payment').value;
+    const status = document.getElementById('speelwijk-reg-input-status').value;
+    const notes = document.getElementById('speelwijk-reg-input-notes').value.trim();
+
+    const payload = { id: id || undefined, name, callsign, phone, email, category, paymentMethod, status, notes };
+
+    const res = await saveSpeelwijkRegistration(payload);
+    if (res.success) {
+      showToast(id ? 'Data pendaftar diperbarui!' : 'Pendaftar baru berhasil ditambahkan!', 'success');
+      document.getElementById('admin-speelwijk-reg-modal')?.classList.remove('active');
+      loadSpeelwijkRegistrations();
+    } else {
+      showToast(res.error, 'error');
+    }
+  });
+
+  // 6. Speelwijk Rundown Session Form
+  document.getElementById('form-speelwijk-session')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const id = document.getElementById('speelwijk-session-form-id').value;
+    const day = document.getElementById('speelwijk-session-input-day').value;
+    const time = document.getElementById('speelwijk-session-input-time').value.trim();
+    const title = document.getElementById('speelwijk-session-input-title').value.trim();
+    const desc = document.getElementById('speelwijk-session-input-desc').value.trim();
+
+    const payload = { id: id || undefined, day, time, title, desc };
+    saveSpeelwijkRundownItem(payload);
+    showToast(id ? 'Sesi rundown diperbarui!' : 'Sesi baru ditambahkan ke rundown!', 'success');
+    document.getElementById('admin-speelwijk-session-modal')?.classList.remove('active');
+    loadSpeelwijkRundown();
+  });
+
+  // 7. Speelwijk Settings Form
+  document.getElementById('form-speelwijk-settings')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const title = document.getElementById('setting-speelwijk-title').value.trim();
+    const subtitle = document.getElementById('setting-speelwijk-subtitle').value.trim();
+    const date = document.getElementById('setting-speelwijk-date').value.trim();
+    const fee = document.getElementById('setting-speelwijk-fee').value.trim();
+    const waNumber = document.getElementById('setting-speelwijk-wa').value.trim();
+    const location = document.getElementById('setting-speelwijk-loc').value.trim();
+    const coords = document.getElementById('setting-speelwijk-coords').value.trim();
+    const desc = document.getElementById('setting-speelwijk-desc').value.trim();
+
+    const payload = { title, subtitle, date, fee, waNumber, location, coords, desc };
+    saveSpeelwijkSettings(payload);
+    showToast('Pengaturan microsite Benteng Speelwijk berhasil disimpan!', 'success');
+  });
 }
 
 /* -------------------------------------------------------------------------- */
@@ -947,7 +1296,9 @@ function setupRealtimeListeners() {
   subscribeToTable('flying_spots', () => loadSpots());
   subscribeToTable('gallery', () => loadGallery());
   subscribeToTable('contacts', () => {
-    showToast('Transmisi pesan baru diterima di Inbox!', 'info');
+    showToast('Transmisi data kontak / pendaftar diterima!', 'info');
     loadContacts();
+    loadSpeelwijkRegistrations();
   });
 }
+

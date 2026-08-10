@@ -200,6 +200,12 @@
           <span class="material-symbols-outlined text-base">inbox</span>
           <span>Kotak Masuk</span>
         </button>
+
+        <button data-tab="speelwijk" class="admin-tab-btn flex items-center gap-2 px-3 py-2.5 rounded font-label-caps text-xs whitespace-nowrap text-on-surface-variant hover:bg-surface-container-high transition-all">
+          <span class="material-symbols-outlined text-base text-primary-container">castle</span>
+          <span>Event Speelwijk</span>
+          <span id="stat-speelwijk-badge" class="ml-auto bg-primary-container text-black text-[9px] px-1.5 py-0.5 rounded font-bold">EVENT</span>
+        </button>
       </aside>
 
       <!-- Content Area -->
@@ -258,13 +264,22 @@
               <div class="text-[10px] text-primary-container mt-1 font-label-caps">Log Misi Visual</div>
             </div>
 
-            <div class="bg-surface-container border border-surface-variant p-4 rounded-lg col-span-2 lg:col-span-1">
+            <div class="bg-surface-container border border-surface-variant p-4 rounded-lg">
               <div class="flex items-center justify-between text-on-surface-variant mb-1">
                 <span class="font-label-caps text-[10px]">TRANSMISI MASUK</span>
                 <span class="material-symbols-outlined text-primary-container text-base">mail</span>
               </div>
               <div id="stat-inbox-count" class="font-stats-lg text-3xl font-bold text-white">0</div>
               <div class="text-[10px] text-primary-container mt-1 font-label-caps">Pesan Pengunjung</div>
+            </div>
+
+            <div class="bg-surface-container border border-surface-variant p-4 rounded-lg col-span-2 lg:col-span-1">
+              <div class="flex items-center justify-between text-on-surface-variant mb-1">
+                <span class="font-label-caps text-[10px]">PENDAFTAR SPEELWIJK</span>
+                <span class="material-symbols-outlined text-primary-container text-base">how_to_reg</span>
+              </div>
+              <div id="stat-speelwijk-count" class="font-stats-lg text-3xl font-bold text-white">0</div>
+              <div class="text-[10px] text-primary-container mt-1 font-label-caps">Pilot RSVP Fest</div>
             </div>
           </div>
 
@@ -291,11 +306,11 @@
                 </div>
               </button>
 
-              <button onclick="document.querySelector('[data-tab=spots]').click(); setTimeout(() => document.getElementById('btn-add-spot').click(), 100);" class="bg-surface-container-high hover:border-primary-container border border-surface-variant p-3.5 rounded text-left flex items-center gap-3 transition-colors">
-                <span class="material-symbols-outlined text-primary-container text-2xl">add_location_alt</span>
+              <button onclick="document.querySelector('[data-tab=speelwijk]').click();" class="bg-surface-container-high hover:border-primary-container border border-surface-variant p-3.5 rounded text-left flex items-center gap-3 transition-colors">
+                <span class="material-symbols-outlined text-primary-container text-2xl">castle</span>
                 <div>
-                  <div class="font-bold text-white text-xs font-label-caps">Tambah Spot</div>
-                  <div class="text-[10px] text-on-surface-variant">Lokasi terbang baru</div>
+                  <div class="font-bold text-white text-xs font-label-caps">Event Speelwijk</div>
+                  <div class="text-[10px] text-on-surface-variant">Kelola peserta &amp; rundown</div>
                 </div>
               </button>
 
@@ -437,12 +452,184 @@
         <!-- ================================================================= -->
         <section id="section-inbox" class="admin-tab-section hidden space-y-4">
           <div class="flex justify-between items-center">
-            <div class="text-xs text-on-surface-variant font-label-caps">Transmisi pesan & formulir pendaftaran anggota baru yang masuk dari website.</div>
+            <div class="text-xs text-on-surface-variant font-label-caps">Transmisi pesan &amp; formulir pendaftaran anggota baru yang masuk dari website.</div>
           </div>
 
           <div id="admin-inbox-container" class="space-y-3">
             <!-- Populated via JS -->
           </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- TAB 7: EVENT BENTENG SPEELWIJK 2026 (MICROSITE CRUD)              -->
+        <!-- ================================================================= -->
+        <section id="section-speelwijk" class="admin-tab-section hidden space-y-6">
+          
+          <!-- Top Control Header -->
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface-container border border-surface-variant p-4 rounded-lg">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary-container text-xl">castle</span>
+                <h3 class="font-stats-lg text-lg text-white font-bold uppercase">Benteng Speelwijk Drone Fest 2026</h3>
+              </div>
+              <p class="text-xs text-on-surface-variant mt-0.5 font-label-caps">Manajemen Pendaftar Pilot, Rundown Acara &amp; Pengaturan Halaman Microsite.</p>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+              <a href="/benteng-speelwijk" target="_blank" class="bg-surface-container-high hover:bg-surface-bright text-primary-container border border-primary-container/40 text-xs px-3.5 py-2 rounded font-label-caps flex items-center gap-1.5 transition-colors">
+                <span class="material-symbols-outlined text-sm">open_in_new</span>
+                <span>BUKA MICROSITE</span>
+              </a>
+              <button id="btn-add-speelwijk-reg" class="bg-primary-container text-black font-bold font-label-caps text-xs px-4 py-2 rounded slant-btn hover:bg-yellow-400 flex items-center gap-1 shadow">
+                <span class="material-symbols-outlined text-sm">person_add</span>
+                <span>+ TAMBAH PENDAFTAR</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Speelwijk Sub-Navigation Tabs -->
+          <div class="flex border-b border-surface-variant gap-2 text-xs font-label-caps">
+            <button id="subtab-btn-speelwijk-regs" class="speelwijk-subtab-btn px-4 py-2.5 font-bold border-b-2 border-primary-container text-primary-container flex items-center gap-1.5 transition-colors">
+              <span class="material-symbols-outlined text-base">how_to_reg</span>
+              <span>PENDAFTAR PILOT (<span id="speelwijk-regs-count-badge">0</span>)</span>
+            </button>
+            <button id="subtab-btn-speelwijk-rundown" class="speelwijk-subtab-btn px-4 py-2.5 text-on-surface-variant hover:text-white border-b-2 border-transparent flex items-center gap-1.5 transition-colors">
+              <span class="material-symbols-outlined text-base">schedule</span>
+              <span>JADWAL &amp; RUNDOWN</span>
+            </button>
+            <button id="subtab-btn-speelwijk-settings" class="speelwijk-subtab-btn px-4 py-2.5 text-on-surface-variant hover:text-white border-b-2 border-transparent flex items-center gap-1.5 transition-colors">
+              <span class="material-symbols-outlined text-base">tune</span>
+              <span>PENGATURAN &amp; TIKET</span>
+            </button>
+          </div>
+
+          <!-- SUB-VIEW 1: REGISTRATIONS TABLE -->
+          <div id="speelwijk-subview-regs" class="speelwijk-subview space-y-4">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+              <div class="relative w-full sm:w-72">
+                <span class="material-symbols-outlined absolute left-3 top-2 text-on-surface-variant text-base">search</span>
+                <input id="speelwijk-search-input" type="text" placeholder="Cari nama, callsign, WA..." class="w-full bg-surface-container border border-surface-variant rounded pl-9 pr-3 py-1.5 text-xs text-white focus:border-primary-container focus:outline-none"/>
+              </div>
+
+              <div class="flex items-center gap-2 w-full sm:w-auto">
+                <select id="speelwijk-filter-status" class="bg-surface-container border border-surface-variant rounded px-3 py-1.5 text-xs text-white focus:border-primary-container focus:outline-none font-label-caps">
+                  <option value="ALL">SEMUA STATUS</option>
+                  <option value="LUNAS">STATUS: LUNAS / TERKONFIRMASI</option>
+                  <option value="PENDING">STATUS: MENUNGGU PEMBAYARAN</option>
+                  <option value="BATAL">STATUS: DIBATALKAN</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="bg-surface-container border border-surface-variant rounded-lg overflow-x-auto">
+              <table class="w-full text-left border-collapse min-w-[750px]">
+                <thead>
+                  <tr class="border-b border-surface-variant font-label-caps text-[11px] text-primary-container bg-surface-container-high/50">
+                    <th class="p-3.5">OPERATOR &amp; CALLSIGN</th>
+                    <th class="p-3.5">KONTAK (WA / EMAIL)</th>
+                    <th class="p-3.5">KATEGORI DRONE</th>
+                    <th class="p-3.5">METODE BAYAR</th>
+                    <th class="p-3.5">STATUS SLOT</th>
+                    <th class="p-3.5 text-right">AKSI</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-speelwijk-regs-tbody">
+                  <!-- Populated via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- SUB-VIEW 2: RUNDOWN CRUD -->
+          <div id="speelwijk-subview-rundown" class="speelwijk-subview hidden space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="font-label-caps text-xs text-on-surface-variant">Kelola sesi jadwal terbang untuk Day 1 dan Day 2 di halaman microsite.</span>
+              <button id="btn-add-speelwijk-session" class="bg-primary-container text-black font-bold font-label-caps text-xs px-3.5 py-1.5 rounded slant-btn hover:bg-yellow-400 flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">add</span>
+                <span>+ TAMBAH SESI</span>
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Day 1 Card List -->
+              <div class="bg-surface-container border border-surface-variant rounded-lg p-4">
+                <div class="border-b border-surface-variant pb-2.5 mb-3 flex justify-between items-center">
+                  <span class="font-bold text-white font-label-caps text-xs text-primary-container">DAY 01 (20 JULI 2026)</span>
+                  <span class="font-mono-data text-[10px] text-on-surface-variant">KUALIFIKASI &amp; EKSIBISI</span>
+                </div>
+                <div id="speelwijk-rundown-day1-container" class="space-y-2.5">
+                  <!-- Populated via JS -->
+                </div>
+              </div>
+
+              <!-- Day 2 Card List -->
+              <div class="bg-surface-container border border-surface-variant rounded-lg p-4">
+                <div class="border-b border-surface-variant pb-2.5 mb-3 flex justify-between items-center">
+                  <span class="font-bold text-white font-label-caps text-xs text-primary-container">DAY 02 (21 JULI 2026)</span>
+                  <span class="font-mono-data text-[10px] text-on-surface-variant">SEMIFINAL &amp; GRAND FINAL</span>
+                </div>
+                <div id="speelwijk-rundown-day2-container" class="space-y-2.5">
+                  <!-- Populated via JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUB-VIEW 3: MICROSITE SETTINGS -->
+          <div id="speelwijk-subview-settings" class="speelwijk-subview hidden">
+            <form id="form-speelwijk-settings" class="bg-surface-container border border-surface-variant rounded-lg p-6 space-y-4 max-w-3xl">
+              <h4 class="font-stats-lg text-base text-white font-bold uppercase border-b border-surface-variant pb-2 text-primary-container">
+                Konfigurasi Informasi &amp; Biaya Tiket Microsite
+              </h4>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block font-label-caps text-primary-container text-xs mb-1">JUDUL ACARA (MAIN TITLE)</label>
+                  <input id="setting-speelwijk-title" type="text" value="Fly Through History" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                </div>
+                <div>
+                  <label class="block font-label-caps text-primary-container text-xs mb-1">SUBTITLE / TAGLINE</label>
+                  <input id="setting-speelwijk-subtitle" type="text" value="Benteng Speelwijk Drone Fest 2026" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label class="block font-label-caps text-primary-container text-xs mb-1">TANGGAL PELAKSANAAN</label>
+                  <input id="setting-speelwijk-date" type="text" value="20 - 21 Juli 2026" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                </div>
+                <div>
+                  <label class="block font-label-caps text-primary-container text-xs mb-1">BIAYA SLOT REGISTRASI</label>
+                  <input id="setting-speelwijk-fee" type="text" value="Rp 200.000" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                </div>
+                <div>
+                  <label class="block font-label-caps text-primary-container text-xs mb-1">NO. WHATSAPP KONFIRMASI</label>
+                  <input id="setting-speelwijk-wa" type="tel" value="6287772272928" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                </div>
+              </div>
+
+              <div>
+                <label class="block font-label-caps text-primary-container text-xs mb-1">LOKASI &amp; KOORDINAT</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <input id="setting-speelwijk-loc" type="text" value="Benteng Speelwijk, Banten Lama" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                  <input id="setting-speelwijk-coords" type="text" value="6°01'59&quot;S 106°09'14&quot;E" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs font-mono-data focus:border-primary-container focus:outline-none"/>
+                </div>
+              </div>
+
+              <div>
+                <label class="block font-label-caps text-primary-container text-xs mb-1">DESKRIPSI NARASI EVENT</label>
+                <textarea id="setting-speelwijk-desc" rows="3" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none">Eksplorasi aerodinamika drone FPV berkecepatan tinggi menembus reruntuhan bersejarah Benteng Speelwijk Banten Lama. Misi terbang sinematik &amp; kompetisi presisi cagar budaya pertama di Indonesia.</textarea>
+              </div>
+
+              <div class="pt-3 border-t border-surface-variant flex justify-end">
+                <button type="submit" class="bg-primary-container text-black font-bold font-label-caps text-xs px-6 py-2.5 rounded slant-btn hover:bg-yellow-400 flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-base">save</span>
+                  <span>SIMPAN PENGATURAN MICROSITE</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
         </section>
 
       </main>
@@ -754,6 +941,133 @@
         <div class="pt-3 flex justify-end gap-2 border-t border-surface-variant">
           <button type="button" onclick="document.getElementById('admin-gallery-modal').classList.remove('active')" class="px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-high">Batal</button>
           <button type="submit" class="bg-primary-container text-on-primary font-bold px-6 py-2 rounded slant-btn hover:bg-yellow-400">SIMPAN GALERI</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: ADD / EDIT SPEELWIJK REGISTRANT                                    -->
+  <!-- ========================================================================= -->
+  <div id="admin-speelwijk-reg-modal" class="modal-backdrop fixed inset-0 bg-black/85 backdrop-blur-md z-50 items-center justify-center p-4">
+    <div class="modal-content bg-surface-container border border-outline-variant rounded-lg max-w-lg w-full p-6 text-left relative max-h-[90vh] overflow-y-auto">
+      <button onclick="document.getElementById('admin-speelwijk-reg-modal').classList.remove('active')" class="absolute top-4 right-4 text-on-surface-variant hover:text-primary-container">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+
+      <h3 id="speelwijk-reg-modal-heading" class="font-stats-lg text-xl text-white font-bold mb-4 text-primary-container">
+        DATA PENDAFTAR PILOT SPEELWIJK
+      </h3>
+
+      <form id="form-speelwijk-reg" class="space-y-3 font-body-md text-xs">
+        <input type="hidden" id="speelwijk-reg-form-id"/>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">NAMA OPERATOR *</label>
+            <input id="speelwijk-reg-input-name" type="text" required placeholder="Nama lengkap pilot" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">KOMUNITAS / CALLSIGN</label>
+            <input id="speelwijk-reg-input-community" type="text" placeholder="SMS / RED_FOX" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">WHATSAPP *</label>
+            <input id="speelwijk-reg-input-phone" type="tel" required placeholder="08xxxxxxxxxx" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">EMAIL</label>
+            <input id="speelwijk-reg-input-email" type="email" placeholder="pilot@gmail.com" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">KATEGORI DRONE *</label>
+            <select id="speelwijk-reg-input-category" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none">
+              <option value="Racing FPV (5 Inch / 3.5 Inch)">Racing FPV (5 Inch / 3.5 Inch)</option>
+              <option value="Cinematic & Freestyle FPV">Cinematic & Freestyle FPV</option>
+              <option value="Long Range & Fixed Wing">Long Range & Fixed Wing</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">METODE PEMBAYARAN</label>
+            <select id="speelwijk-reg-input-payment" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none">
+              <option value="QRIS">QRIS</option>
+              <option value="Transfer Bank BCA / Mandiri">Transfer Bank (BCA / Mandiri)</option>
+              <option value="Cash on Venue">Cash on Venue</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-label-caps text-primary-container mb-1">STATUS PEMBAYARAN / VERIFIKASI SLOT *</label>
+          <select id="speelwijk-reg-input-status" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white font-bold focus:border-primary-container focus:outline-none">
+            <option value="LUNAS" class="text-green-400 font-bold">LUNAS / TERKONFIRMASI (SLOT SECURED)</option>
+            <option value="PENDING" class="text-yellow-400 font-bold">MENUNGGU PEMBAYARAN (PENDING)</option>
+            <option value="BATAL" class="text-red-400 font-bold">DIBATALKAN (CANCELLED)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-label-caps text-primary-container mb-1">CATATAN PANITIA (INTERNAL)</label>
+          <textarea id="speelwijk-reg-input-notes" rows="2" placeholder="Nomor urut slot, ukuran jersey, dll..." class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"></textarea>
+        </div>
+
+        <div class="pt-3 flex justify-end gap-2 border-t border-surface-variant">
+          <button type="button" onclick="document.getElementById('admin-speelwijk-reg-modal').classList.remove('active')" class="px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-high">Batal</button>
+          <button type="submit" class="bg-primary-container text-black font-bold px-6 py-2 rounded slant-btn hover:bg-yellow-400">SIMPAN PENDAFTAR</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: ADD / EDIT SPEELWIJK RUNDOWN SESSION                               -->
+  <!-- ========================================================================= -->
+  <div id="admin-speelwijk-session-modal" class="modal-backdrop fixed inset-0 bg-black/85 backdrop-blur-md z-50 items-center justify-center p-4">
+    <div class="modal-content bg-surface-container border border-outline-variant rounded-lg max-w-md w-full p-6 text-left relative max-h-[90vh] overflow-y-auto">
+      <button onclick="document.getElementById('admin-speelwijk-session-modal').classList.remove('active')" class="absolute top-4 right-4 text-on-surface-variant hover:text-primary-container">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+
+      <h3 id="speelwijk-session-modal-heading" class="font-stats-lg text-xl text-white font-bold mb-4 text-primary-container">
+        TAMBAH SESI RUNDOWN
+      </h3>
+
+      <form id="form-speelwijk-session" class="space-y-3 font-body-md text-xs">
+        <input type="hidden" id="speelwijk-session-form-id"/>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">HARI ACARA (DAY) *</label>
+            <select id="speelwijk-session-input-day" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none font-bold">
+              <option value="1">DAY 01 (20 Juli 2026)</option>
+              <option value="2">DAY 02 (21 Juli 2026)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">JAM / WAKTU *</label>
+            <input id="speelwijk-session-input-time" type="text" required placeholder="08:00 WIB" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white font-mono-data focus:border-primary-container focus:outline-none"/>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-label-caps text-primary-container mb-1">NAMA SESI / AGENDA *</label>
+          <input id="speelwijk-session-input-title" type="text" required placeholder="Contoh: Kalibrasi Sistem & Safety Briefing" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-label-caps text-primary-container mb-1">DESKRIPSI SESI</label>
+          <textarea id="speelwijk-session-input-desc" rows="3" placeholder="Rincian agenda atau instruksi untuk pilot..." class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"></textarea>
+        </div>
+
+        <div class="pt-3 flex justify-end gap-2 border-t border-surface-variant">
+          <button type="button" onclick="document.getElementById('admin-speelwijk-session-modal').classList.remove('active')" class="px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-high">Batal</button>
+          <button type="submit" class="bg-primary-container text-black font-bold px-6 py-2 rounded slant-btn hover:bg-yellow-400">SIMPAN SESI</button>
         </div>
       </form>
     </div>
