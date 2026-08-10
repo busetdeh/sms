@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Artikel & Panduan | Sky Multirotor Squad</title>
+  <meta name="description" content="Kumpulan berita, liputan acara, dan panduan teknis drone FPV dan aeromodeling dari Sky Multirotor Squad."/>
+  
+  <link rel="icon" type="image/png" href="/logo.png"/>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-background": "#e2e2e2",
+            "primary-container": "#ffd700",
+            "on-primary": "#3a3000",
+            "surface-variant": "#333535",
+            "surface-container": "#1e2020",
+            "surface-container-low": "#1a1c1c",
+            "on-surface": "#e2e2e2",
+            "surface-container-lowest": "#0c0f0f",
+            "surface-container-highest": "#333535",
+            "background": "#121414",
+            "on-surface-variant": "#d0c6ab",
+            "surface": "#121414",
+            "outline-variant": "#4d4732",
+            "surface-container-high": "#282a2b"
+          },
+          fontFamily: {
+            "stats-lg": ["Space Grotesk", "sans-serif"],
+            "headline-lg": ["Space Grotesk", "sans-serif"],
+            "label-caps": ["JetBrains Mono", "monospace"],
+            "headline-lg-mobile": ["Space Grotesk", "sans-serif"],
+            "body-md": ["Hanken Grotesk", "sans-serif"],
+            "display-lg": ["Space Grotesk", "sans-serif"]
+          },
+          spacing: {
+            "margin-mobile": "16px",
+            "margin-desktop": "64px",
+            "gutter": "24px",
+            "lg": "24px",
+            "md": "16px",
+            "sm": "8px",
+            "xs": "4px",
+            "xl": "48px"
+          }
+        },
+      },
+    }
+  </script>
+  <link rel="stylesheet" href="/src/styles/main.css"/>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased overflow-x-hidden hud-grid">
+
+  <!-- TopNavBar Component -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-md border-b border-outline-variant transition-all duration-300">
+    <div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-2.5 w-full max-w-7xl mx-auto">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center gap-3 group">
+        <img src="/logo.png" alt="Sky Multirotor Squad Logo" class="h-10 sm:h-12 w-auto object-contain group-hover:scale-105 transition-transform drop-shadow-[0_2px_10px_rgba(255,215,0,0.35)]"/>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <div class="hidden md:flex gap-gutter items-center font-label-caps text-xs uppercase">
+        <a class="text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high transition-colors px-3 py-2 rounded" href="/">Beranda</a>
+        <a class="text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high transition-colors px-3 py-2 rounded" href="/pages/tentang-kami.html">Tentang Kami</a>
+        <a class="text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high transition-colors px-3 py-2 rounded" href="/pages/galeri.html">Galeri</a>
+        <a class="text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high transition-colors px-3 py-2 rounded" href="/pages/spot-terbang.html">Spot Terbang</a>
+        <a class="text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high transition-colors px-3 py-2 rounded" href="/pages/kontak.html">Kontak</a>
+      </div>
+
+      <!-- Action Button / Mobile menu -->
+      <div class="flex items-center gap-sm">
+        <a href="/pages/kontak.html" class="hidden sm:flex slant-r bg-primary-container text-on-primary font-label-caps text-xs px-4 py-2 font-bold glow-hover transition-all items-center gap-1.5">
+          <span class="material-symbols-outlined text-sm">flight_takeoff</span>
+          GABUNG
+        </a>
+        <button id="open-menu-btn" class="md:hidden text-primary-container p-1 rounded hover:bg-surface-variant transition-colors" aria-label="Buka Menu">
+          <span class="material-symbols-outlined text-3xl">menu</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Drawer Overlay & Menu -->
+  <div id="drawer-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
+  <aside id="mobile-drawer" class="fixed top-0 right-0 bottom-0 w-[280px] bg-surface-container-high border-l border-surface-variant z-50 p-6 flex flex-col justify-between">
+    <div>
+      <div class="flex justify-between items-center mb-8 border-b border-surface-variant pb-4">
+        <a href="/" class="flex items-center gap-2">
+          <img src="/logo.png" alt="Sky Multirotor Squad Logo" class="h-9 w-auto object-contain"/>
+        </a>
+        <button id="close-menu-btn" class="text-on-surface-variant hover:text-primary-container p-1" aria-label="Tutup Menu">
+          <span class="material-symbols-outlined text-2xl">close</span>
+        </button>
+      </div>
+
+      <nav class="flex flex-col gap-4 font-label-caps text-sm">
+        <a class="text-on-surface-variant hover:text-primary-container py-2 px-3 hover:bg-surface-variant rounded transition-colors" href="/">BERANDA</a>
+        <a class="text-on-surface-variant hover:text-primary-container py-2 px-3 hover:bg-surface-variant rounded transition-colors" href="/pages/tentang-kami.html">TENTANG KAMI</a>
+        <a class="text-on-surface-variant hover:text-primary-container py-2 px-3 hover:bg-surface-variant rounded transition-colors" href="/pages/galeri.html">GALERI MEDIA</a>
+        <a class="text-on-surface-variant hover:text-primary-container py-2 px-3 hover:bg-surface-variant rounded transition-colors" href="/pages/spot-terbang.html">SPOT TERBANG</a>
+        <a class="text-on-surface-variant hover:text-primary-container py-2 px-3 hover:bg-surface-variant rounded transition-colors" href="/pages/kontak.html">KONTAK & SERVIS</a>
+      </nav>
+    </div>
+    
+    <div class="pt-6 border-t border-surface-variant">
+      <a href="/pages/kontak.html" class="w-full slant-r bg-primary-container text-on-primary font-label-caps text-xs py-3 font-bold glow-hover text-center flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-sm">flight_takeoff</span>
+        GABUNG SKUAD
+      </a>
+    </div>
+  </aside>
+
+  <!-- Header Banner -->
+  <header class="pt-28 pb-10 px-margin-mobile md:px-margin-desktop bg-surface-container border-b border-surface-variant text-center">
+    <div class="max-w-4xl mx-auto">
+      <div class="inline-block bg-primary-container/20 text-primary-container font-label-caps text-xs px-3 py-1 rounded mb-2 font-bold">
+        SMS FLIGHT DISPATCH & BLOG
+      </div>
+      <h1 class="font-headline-lg text-3xl sm:text-4xl text-white font-bold mb-3">ARTIKEL, EVENT & PANDUAN</h1>
+      <p class="text-on-surface-variant font-body-md text-sm md:text-base max-w-xl mx-auto">
+        Kumpulan dokumentasi kegiatan, ulasan event kompetisi, serta tutorial teknis seputar dunia multirotor dan aeromodeling.
+      </p>
+    </div>
+  </header>
+
+  <!-- Filter Category Tabs -->
+  <section class="px-margin-mobile md:px-margin-desktop py-6 max-w-7xl mx-auto">
+    <div class="flex flex-wrap gap-2 justify-center font-label-caps text-xs">
+      <button class="filter-tab-btn px-4 py-2 rounded bg-primary-container text-on-primary font-bold transition-all" data-category="all">SEMUA ARTIKEL</button>
+      <button class="filter-tab-btn px-4 py-2 rounded bg-surface-container text-on-surface-variant hover:text-primary-container border border-surface-variant transition-all" data-category="acara">ACARA & EVENT</button>
+      <button class="filter-tab-btn px-4 py-2 rounded bg-surface-container text-on-surface-variant hover:text-primary-container border border-surface-variant transition-all" data-category="pencapaian">PENCAPAIAN</button>
+      <button class="filter-tab-btn px-4 py-2 rounded bg-surface-container text-on-surface-variant hover:text-primary-container border border-surface-variant transition-all" data-category="komunitas">KOMUNITAS</button>
+      <button class="filter-tab-btn px-4 py-2 rounded bg-surface-container text-on-surface-variant hover:text-primary-container border border-surface-variant transition-all" data-category="panduan">TUTORIAL & PANDUAN</button>
+    </div>
+  </section>
+
+  <!-- Articles Grid -->
+  <section class="px-margin-mobile md:px-margin-desktop pb-xl max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      
+      <!-- Article 1: Throttle Warriors -->
+      <article class="filter-item bg-surface border border-surface-variant flex flex-col group hover:border-primary-container/40 transition-all rounded overflow-hidden" data-category="acara">
+        <div class="h-48 relative overflow-hidden">
+          <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Throttle Warriors gathering" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6U4puTproAtu2aI0vGMd-pgOs2Sz_v_5FmYk1p3AWi0TVI6z_z3ZhiNqjJYfXok77pOkzglIIKhmpKF0ZfEyYyV3uv-rG9oB6NSPTUwxiP95KJfaX4ZvhUHXwh1Gt2tvTR5uENUZkH0MsJ9rc4qrFtOLs1HcYHvGNNvsjVB3oVjn4i17UUXZ1-OJZu0sSoI5X6h-yy8juzqTJBo3wRy_2UEKy06c3BeSbyo8ieRj5Lue0LZ2bvzIZmg"/>
+          <div class="absolute top-sm left-sm bg-primary-container text-on-primary font-label-caps text-xs px-2 py-0.5 font-bold">ACARA</div>
+        </div>
+        <div class="p-md flex-grow flex flex-col justify-between card-active-border bg-surface-container-highest">
+          <div>
+            <div class="text-[11px] font-label-caps text-on-surface-variant/70 mb-1">14 JULI 2024 • BUKIT GAJAH BOGOR</div>
+            <h3 class="font-stats-lg text-xl text-white mb-2 group-hover:text-primary-container transition-colors">Throttle Warriors x Rambo FPV</h3>
+            <p class="text-on-surface-variant text-sm line-clamp-3 mb-4">
+              Salah satu event terakbar para pilot FPV nasional diselenggarakan oleh team Rambo FPV di perbukitan Bogor. Anggota SMS turut ambil bagian dalam race gate dan sesi freestyle epic.
+            </p>
+          </div>
+          <span class="text-primary-container font-label-caps text-xs font-bold flex items-center gap-1">
+            BACA ULASAN <span class="material-symbols-outlined text-xs">arrow_forward</span>
+          </span>
+        </div>
+      </article>
+
+      <!-- Article 2: Anniversary -->
+      <article class="filter-item bg-surface border border-surface-variant flex flex-col group hover:border-primary-container/40 transition-all rounded overflow-hidden" data-category="pencapaian">
+        <div class="h-48 relative overflow-hidden">
+          <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Anniversary SMS" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBN1FVDFPzissY73otSrz7K4n2h3zk0VupgvbP45aUp2IGlg0JvZcj7R7Jc6a6XvE-m-1Y9nCSmoqZSPBuGFE_Hjxxlh5Dv-DHCMjx8tEDTP5DIAtiU8R9yq1EZ8BGJk1FHZygrijRSm_Sr4TqprbMrnTsjnY4uAKmf8QAi2NS0TFiQdrU6PaXNPi1_teiLkzwLNcobii-d4LtL6NtmuNr848IO8_qgmff-NNEUHBRkl79etZv3Wx451w"/>
+          <div class="absolute top-sm left-sm bg-surface-bright text-white font-label-caps text-xs px-2 py-0.5 border border-surface-variant font-bold">PENCAPAIAN</div>
+        </div>
+        <div class="p-md flex-grow flex flex-col justify-between border-l-4 border-surface-variant bg-surface-container-highest group-hover:border-primary-container/60 transition-colors">
+          <div>
+            <div class="text-[11px] font-label-caps text-on-surface-variant/70 mb-1">02 MEI 2024 • PARADISO SERANG</div>
+            <h3 class="font-stats-lg text-xl text-white mb-2 group-hover:text-primary-container transition-colors">1st Anniversary At Paradiso</h3>
+            <p class="text-on-surface-variant text-sm line-clamp-3 mb-4">
+              Perayaan hari jadi ke-1 Sky Multirotor Squad dirayakan dengan makan bersama, sharing setup armada drone terbaru, serta pembagian merchandise komunitas.
+            </p>
+          </div>
+          <span class="text-primary-container font-label-caps text-xs font-bold flex items-center gap-1">
+            BACA ULASAN <span class="material-symbols-outlined text-xs">arrow_forward</span>
+          </span>
+        </div>
+      </article>
+
+      <!-- Article 3: Origins -->
+      <article class="filter-item bg-surface border border-surface-variant flex flex-col group hover:border-primary-container/40 transition-all rounded overflow-hidden" data-category="komunitas">
+        <div class="h-48 relative overflow-hidden">
+          <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Pendiri Sky Multirotor Squad" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_MlLefrzuNKolB5_vCOQnw3nyFxwJLVEQYghalM6Dh-PJqoOZdxFjV6r6Tq8ZIFxgtXbOFGyIgW5fKBZdyotOBpvDgnva_S0N05DN4_u_SNjox9EWnjlLfLdRuCdRY_h5H7IF3eKXITxKSgQP-pm6k1QMbfyyicsYjLi1jTjX06nmBleQ8tYa5tTi0RiwH83PPfofwV4t4osvhO_-dDGeZSedJ9jIYRBV7W8cK8aFHYVAk9RvGNDWWQ"/>
+          <div class="absolute top-sm left-sm bg-surface-bright text-white font-label-caps text-xs px-2 py-0.5 border border-surface-variant font-bold">KOMUNITAS</div>
+        </div>
+        <div class="p-md flex-grow flex flex-col justify-between border-l-4 border-surface-variant bg-surface-container-highest group-hover:border-primary-container/60 transition-colors">
+          <div>
+            <div class="text-[11px] font-label-caps text-on-surface-variant/70 mb-1">10 JANUARI 2023 • SERANG HQ</div>
+            <h3 class="font-stats-lg text-xl text-white mb-2 group-hover:text-primary-container transition-colors">Sky Multirotor Squad Origins</h3>
+            <p class="text-on-surface-variant text-sm line-clamp-3 mb-4">
+              Kilas balik awal mula 4 orang pendiri berkumpul dengan 1 pemikiran untuk membangun komunitas multirotor yang solid dan ramah untuk semua kalangan di tanah Jawara.
+            </p>
+          </div>
+          <span class="text-primary-container font-label-caps text-xs font-bold flex items-center gap-1">
+            BACA ULASAN <span class="material-symbols-outlined text-xs">arrow_forward</span>
+          </span>
+        </div>
+      </article>
+
+      <!-- Article 4: ELRS Guide -->
+      <article class="filter-item bg-surface border border-surface-variant flex flex-col group hover:border-primary-container/40 transition-all rounded overflow-hidden" data-category="panduan">
+        <div class="h-48 relative overflow-hidden bg-surface-container-low flex items-center justify-center p-6">
+          <span class="material-symbols-outlined text-6xl text-primary-container">wifi_tethering</span>
+          <div class="absolute top-sm left-sm bg-primary-container text-on-primary font-label-caps text-xs px-2 py-0.5 font-bold">TUTORIAL</div>
+        </div>
+        <div class="p-md flex-grow flex flex-col justify-between card-active-border bg-surface-container-highest">
+          <div>
+            <div class="text-[11px] font-label-caps text-on-surface-variant/70 mb-1">TECH WORKSHOP • PANDUAN</div>
+            <h3 class="font-stats-lg text-xl text-white mb-2 group-hover:text-primary-container transition-colors">Setup ExpressLRS (ELRS) 2.4GHz & Failsafe</h3>
+            <p class="text-on-surface-variant text-sm line-clamp-3 mb-4">
+              Langkah lengkap binding receiver ELRS, konfigurasi packet rate 250Hz/500Hz, serta setting failsafe drop motor wajib di Betaflight 4.4+.
+            </p>
+          </div>
+          <span class="text-primary-container font-label-caps text-xs font-bold flex items-center gap-1">
+            BACA PANDUAN <span class="material-symbols-outlined text-xs">arrow_forward</span>
+          </span>
+        </div>
+      </article>
+
+      <!-- Article 5: Flight Safety & KKOP -->
+      <article class="filter-item bg-surface border border-surface-variant flex flex-col group hover:border-primary-container/40 transition-all rounded overflow-hidden" data-category="panduan">
+        <div class="h-48 relative overflow-hidden bg-surface-container-low flex items-center justify-center p-6">
+          <span class="material-symbols-outlined text-6xl text-primary-container">gavel</span>
+          <div class="absolute top-sm left-sm bg-primary-container text-on-primary font-label-caps text-xs px-2 py-0.5 font-bold">REGULASI</div>
+        </div>
+        <div class="p-md flex-grow flex flex-col justify-between border-l-4 border-surface-variant bg-surface-container-highest group-hover:border-primary-container/60 transition-colors">
+          <div>
+            <div class="text-[11px] font-label-caps text-on-surface-variant/70 mb-1">SAFETY FIRST • REGULASI</div>
+            <h3 class="font-stats-lg text-xl text-white mb-2 group-hover:text-primary-container transition-colors">Regulasi KKOP & Batas Ketinggian Terbang Drone</h3>
+            <p class="text-on-surface-variant text-sm line-clamp-3 mb-4">
+              Ketahui zona batas terbang maksimal 120m (400 ft) AGL, area steril bandara/helipad, dan etika terbang di ruang publik untuk menghindari sanksi hukum.
+            </p>
+          </div>
+          <span class="text-primary-container font-label-caps text-xs font-bold flex items-center gap-1">
+            BACA PANDUAN <span class="material-symbols-outlined text-xs">arrow_forward</span>
+          </span>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- Footer Component -->
+  <footer class="bg-surface-container-lowest w-full border-t-4 border-primary-container">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-lg px-margin-mobile md:px-margin-desktop py-xl w-full max-w-7xl mx-auto">
+      <!-- Brand Info -->
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <img src="/logo.png" alt="Sky Multirotor Squad Logo" class="h-12 w-auto object-contain drop-shadow-[0_2px_10px_rgba(255,215,0,0.2)]"/>
+        </div>
+        <p class="text-on-surface-variant font-body-md text-sm mb-4 leading-relaxed">
+          Komunitas penggiat teknologi wahana tanpa awak (UAV), Drone Aerial, FPV, dan Aeromodeling di wilayah Serang, Cilegon, dan Banten.
+        </p>
+        <p class="text-on-surface-variant/70 font-label-caps text-xs">
+          © 2026 Sky Multirotor Squad. Hak Cipta Dilindungi.
+        </p>
+      </div>
+
+      <!-- Navigation Links -->
+      <div>
+        <h4 class="font-label-caps text-label-caps text-primary-container mb-md border-b border-surface-variant pb-xs inline-block">NAVIGASI</h4>
+        <div class="flex flex-col gap-2">
+          <a class="text-on-surface-variant hover:text-primary-container transition-colors font-body-md text-sm" href="/">Beranda</a>
+          <a class="text-on-surface-variant hover:text-primary-container transition-colors font-body-md text-sm" href="/pages/tentang-kami.html">Tentang Kami</a>
+          <a class="text-on-surface-variant hover:text-primary-container transition-colors font-body-md text-sm" href="/pages/galeri.html">Galeri Foto & Video</a>
+          <a class="text-on-surface-variant hover:text-primary-container transition-colors font-body-md text-sm" href="/pages/spot-terbang.html">Spot Terbang Banten</a>
+          <a class="text-on-surface-variant hover:text-primary-container transition-colors font-body-md text-sm" href="/pages/kontak.html">Kontak & Keanggotaan</a>
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div>
+        <h4 class="font-label-caps text-label-caps text-primary-container mb-md border-b border-surface-variant pb-xs inline-block">MARKAS & BASECAMP</h4>
+        <div class="text-on-surface-variant font-body-md text-sm flex items-start gap-sm mb-sm">
+          <span class="material-symbols-outlined text-primary-container mt-1">location_on</span>
+          <p class="leading-relaxed">
+            <strong>Ecopark Citra Garden BMW</strong><br/>
+            Jl. Raya Serang - Cilegon, Wanayasa,<br/>
+            Kec. Kramatwatu, Serang, Banten 42161
+          </p>
+        </div>
+        <div class="mt-4 flex gap-3">
+          <a href="https://instagram.com/skymultirotor" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" title="Instagram">
+            <span class="material-symbols-outlined text-base">photo_camera</span>
+          </a>
+          <a href="https://wa.me/6287772272928" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" title="WhatsApp">
+            <span class="material-symbols-outlined text-base">chat</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/js/main.js"></script>
+</body>
+</html>

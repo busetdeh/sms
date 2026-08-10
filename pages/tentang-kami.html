@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Tentang Kami | Sky Multirotor Squad</title>
+  <meta name="description" content="Profil, Struktur Organisasi, Pilot Skuad, dan Kode Etik Sky Multirotor Squad (SMS) Banten."/>
+  <link rel="icon" type="image/png" href="/logo.png"/>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <!-- Tailwind CSS Play CDN with custom theme -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-background": "#e2e2e2",
+            "on-tertiary-container": "#5f5f5f",
+            "primary-container": "#ffd700",
+            "tertiary-fixed": "#e4e2e1",
+            "on-secondary-container": "#b7b5b4",
+            "outline": "#999077",
+            "tertiary-container": "#dbd9d9",
+            "surface-bright": "#37393a",
+            "secondary-fixed-dim": "#c8c6c5",
+            "on-primary": "#3a3000",
+            "inverse-on-surface": "#2f3131",
+            "surface-variant": "#333535",
+            "surface-container": "#1e2020",
+            "primary-fixed": "#ffe16d",
+            "on-error": "#690005",
+            "error-container": "#93000a",
+            "error": "#ffb4ab",
+            "surface-tint": "#e9c400",
+            "on-tertiary-fixed": "#1b1c1c",
+            "tertiary-fixed-dim": "#c8c6c6",
+            "surface-container-low": "#1a1c1c",
+            "on-secondary": "#313030",
+            "primary": "#fff6df",
+            "on-surface": "#e2e2e2",
+            "surface-container-lowest": "#0c0f0f",
+            "primary-fixed-dim": "#e9c400",
+            "on-tertiary": "#303030",
+            "surface-container-highest": "#333535",
+            "secondary": "#c8c6c5",
+            "on-primary-fixed-variant": "#544600",
+            "tertiary": "#f8f6f5",
+            "on-primary-fixed": "#221b00",
+            "inverse-surface": "#e2e2e2",
+            "on-secondary-fixed-variant": "#474746",
+            "background": "#121414",
+            "on-primary-container": "#705e00",
+            "on-secondary-fixed": "#1c1b1b",
+            "on-surface-variant": "#d0c6ab",
+            "surface": "#121414",
+            "surface-dim": "#121414",
+            "secondary-fixed": "#e5e2e1",
+            "secondary-container": "#474746",
+            "outline-variant": "#4d4732",
+            "inverse-primary": "#705d00",
+            "on-error-container": "#ffdad6",
+            "on-tertiary-fixed-variant": "#474747",
+            "surface-container-high": "#282a2b"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "unit": "4px",
+            "margin-mobile": "16px",
+            "gutter": "24px",
+            "lg": "24px",
+            "md": "16px",
+            "xs": "4px",
+            "sm": "8px",
+            "margin-desktop": "64px",
+            "xl": "48px"
+          },
+          fontFamily: {
+            "stats-lg": ["Space Grotesk", "sans-serif"],
+            "headline-lg": ["Space Grotesk", "sans-serif"],
+            "label-caps": ["JetBrains Mono", "monospace"],
+            "headline-lg-mobile": ["Space Grotesk", "sans-serif"],
+            "body-md": ["Hanken Grotesk", "sans-serif"],
+            "display-lg": ["Space Grotesk", "sans-serif"]
+          },
+          fontSize: {
+            "stats-lg": ["24px", { "lineHeight": "1.0", "fontWeight": "700" }],
+            "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "600" }],
+            "label-caps": ["12px", { "lineHeight": "1.0", "letterSpacing": "0.1em", "fontWeight": "500" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "600" }],
+            "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+            "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+  
+  <link rel="stylesheet" href="/src/styles/main.css"/>
+  <style>
+    .slanted {
+      transform: skew(-15deg);
+    }
+    .slanted > * {
+      transform: skew(15deg);
+    }
+    .hud-border {
+      border: 1px solid #333535;
+    }
+    .tech-bg {
+      background-image: radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
+      background-size: 24px 24px;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen tech-bg antialiased overflow-x-hidden">
+
+  <!-- TopNavBar -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-md border-b border-outline-variant transition-all duration-300">
+    <div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-2.5 w-full max-w-7xl mx-auto">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center gap-3 group">
+        <img src="/logo.png" alt="Sky Multirotor Squad Logo" class="h-10 sm:h-12 w-auto object-contain group-hover:scale-105 transition-transform drop-shadow-[0_2px_10px_rgba(255,215,0,0.35)]"/>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <div class="hidden md:flex gap-gutter items-center font-label-caps text-xs uppercase">
+        <a class="text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high transition-colors px-3 py-2 rounded" href="/">Beranda</a>
+        <a class="text-primary-container font-bold border-b-2 border-primary-container pb-1 hover:bg-surface-container-high transition-colors px-3 py-2" href="/pages/tentang-kami.html">Tentang Kami</a>
+        <a class="text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high transition-colors px-3 py-2 rounded" href="/pages/galeri.html">Galeri</a>
+        <a class="text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high transition-colors px-3 py-2 rounded" href="/pages/spot-terbang.html">Spot Terbang</a>
+        <a class="text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high transition-colors px-3 py-2 rounded" href="/pages/kontak.html">Kontak</a>
+      </div>
+
+      <!-- Action Button / Mobile menu -->
+      <div class="flex items-center gap-sm">
+        <a href="/pages/kontak.html" class="hidden sm:flex slant-r bg-primary-container text-on-primary font-label-caps text-xs px-4 py-2 font-bold glow-hover transition-all items-center gap-1.5">
+          <span class="material-symbols-outlined text-sm">flight_takeoff</span>
+          GABUNG
+        </a>
+        <button id="open-menu-btn" class="md:hidden text-primary-container p-1 rounded hover:bg-surface-variant transition-colors" aria-label="Buka Menu">
+          <span class="material-symbols-outlined text-3xl">menu</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Drawer Overlay & Menu -->
+  <div id="drawer-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
+  <aside id="mobile-drawer" class="fixed top-0 right-0 bottom-0 w-[280px] bg-surface-container-high border-l border-surface-variant z-50 p-6 flex flex-col justify-between">
+    <div>
+      <div class="flex justify-between items-center mb-8 border-b border-surface-variant pb-4">
+        <a href="/" class="flex items-center gap-2">
+          <img src="/logo.png" alt="Sky Multirotor Squad Logo" class="h-9 w-auto object-contain"/>
+        </a>
+        <button id="close-menu-btn" class="text-on-surface-variant hover:text-primary-container p-1" aria-label="Tutup Menu">
+          <span class="material-symbols-outlined text-2xl">close</span>
+        </button>
+      </div>
+
+      <nav class="flex flex-col gap-4 font-label-caps text-sm">
+        <a class="text-on-surface-variant hover:text-primary-container py-2 px-3 hover:bg-surface-variant rounded transition-colors" href="/">BERANDA</a>
+        <a class="text-primary-container font-bold py-2 px-3 rounded bg-primary-container/10 border-l-2 border-primary-container" href="/pages/tentang-kami.html">TENTANG KAMI</a>
+        <a class="text-on-surface-variant hover:text-primary-container py-2 px-3 hover:bg-surface-variant rounded transition-colors" href="/pages/galeri.html">GALERI MEDIA</a>
+        <a class="text-on-surface-variant hover:text-primary-container py-2 px-3 hover:bg-surface-variant rounded transition-colors" href="/pages/spot-terbang.html">SPOT TERBANG</a>
+        <a class="text-on-surface-variant hover:text-primary-container py-2 px-3 hover:bg-surface-variant rounded transition-colors" href="/pages/kontak.html">KONTAK & SERVIS</a>
+      </nav>
+    </div>
+    
+    <div class="pt-6 border-t border-surface-variant">
+      <a href="/pages/kontak.html" class="w-full slant-r bg-primary-container text-on-primary font-label-caps text-xs py-3 font-bold glow-hover text-center flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-sm">flight_takeoff</span>
+        GABUNG SKUAD
+      </a>
+    </div>
+  </aside>
+
+  <!-- Header Section -->
+  <header class="pt-32 pb-12 px-margin-mobile md:px-margin-desktop text-center relative overflow-hidden">
+    <div class="absolute inset-0 z-0 opacity-20 pointer-events-none" style="background: linear-gradient(135deg, rgba(255,215,0,0.15) 0%, transparent 100%);"></div>
+    <div class="max-w-4xl mx-auto relative z-10">
+      <div class="inline-block bg-primary-container/20 text-primary-container font-label-caps text-xs px-3 py-1 rounded mb-3 font-bold">
+        SQUAD IDENTITY & DIRECTORY
+      </div>
+      <h1 class="font-display-lg text-3xl sm:text-4xl md:text-5xl text-primary-container uppercase tracking-tight mb-2">Tentang Kami</h1>
+      <p class="font-label-caps text-on-surface-variant text-xs sm:text-sm">
+        <a href="/" class="hover:text-primary-container">Beranda</a> &gt; <span class="text-primary-container font-bold">Tentang Kami</span>
+      </p>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="px-margin-mobile md:px-margin-desktop py-xl space-y-xl max-w-7xl mx-auto">
+    
+    <!-- Organizational Structure Section -->
+    <section class="space-y-lg relative">
+      <div class="flex items-center gap-sm mb-lg">
+        <div class="w-2 h-8 bg-primary-container"></div>
+        <h2 class="font-headline-lg-mobile md:font-headline-lg text-white uppercase font-bold">Struktur Organisasi</h2>
+      </div>
+
+      <!-- Simplified Hierarchy Chart (Bento/Glassmorphism inspired) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter bg-surface-container p-lg rounded-DEFAULT hud-border shadow-xl">
+        
+        <!-- Leadership Node -->
+        <div class="md:col-span-3 flex justify-center mb-lg">
+          <div class="bg-surface p-4 border-l-4 border-primary-container w-72 text-center shadow-lg rounded">
+            <span class="material-symbols-outlined text-primary-container mb-xs text-4xl" style="font-variation-settings: 'FILL' 1;">shield_person</span>
+            <h3 class="font-label-caps text-primary-container uppercase font-bold text-sm">Ketua Umum</h3>
+            <p class="font-body-md text-on-surface text-sm">Pembina &amp; Pengawas</p>
+          </div>
+        </div>
+
+        <!-- Department Nodes -->
+        <div class="bg-surface p-4 border-l-4 border-outline-variant hover:border-primary-container transition-colors rounded shadow flex flex-col justify-center">
+          <span class="material-symbols-outlined text-primary-container mb-2 text-2xl">flight</span>
+          <h4 class="font-label-caps text-on-surface uppercase font-bold text-sm mb-1">Kadiv Drone Aerial</h4>
+          <p class="text-xs text-on-surface-variant">Sinematografi, Pemetaan, &amp; Fotografi Udara</p>
+        </div>
+
+        <div class="bg-surface p-4 border-l-4 border-outline-variant hover:border-primary-container transition-colors rounded shadow flex flex-col justify-center">
+          <span class="material-symbols-outlined text-primary-container mb-2 text-2xl">speed</span>
+          <h4 class="font-label-caps text-on-surface uppercase font-bold text-sm mb-1">Kadiv Drone FPV</h4>
+          <p class="text-xs text-on-surface-variant">Racing, Freestyle Acro, &amp; DIY Workshop</p>
+        </div>
+
+        <div class="bg-surface p-4 border-l-4 border-outline-variant hover:border-primary-container transition-colors rounded shadow flex flex-col justify-center">
+          <span class="material-symbols-outlined text-primary-container mb-2 text-2xl">groups</span>
+          <h4 class="font-label-caps text-on-surface uppercase font-bold text-sm mb-1">Komunitas &amp; Humas</h4>
+          <p class="text-xs text-on-surface-variant">Gathering, Edukasi Safety, &amp; Hubungan Luar</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Member Profiles Section -->
+    <section class="space-y-lg">
+      <div class="flex items-center justify-between gap-sm mb-lg border-b border-surface-container-high pb-sm">
+        <div class="flex items-center gap-sm">
+          <div class="w-2 h-8 bg-primary-container"></div>
+          <h2 class="font-headline-lg-mobile md:font-headline-lg text-white uppercase font-bold">Pilot Skuad</h2>
+        </div>
+        <span class="bg-primary-container/20 text-primary-container font-label-caps text-xs px-3 py-1 rounded font-bold">
+          14 ACTIVE PILOTS
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-gutter">
+        
+        <!-- Pilot Card 1: Juang -->
+        <div class="bg-surface-container hud-border p-md flex flex-col items-center text-center group hover:border-primary-container transition-colors relative overflow-hidden rounded shadow-lg">
+          <div class="w-full h-1 bg-primary-container absolute top-0 left-0 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+          <img class="w-24 h-24 rounded-full object-cover mb-sm border-2 border-primary-container/40 group-hover:border-primary-container group-hover:scale-105 transition-all shadow-md" alt="Juang - Pilot Sky Multirotor Squad" src="/pilot/juang.webp"/>
+          <h3 class="font-stats-lg text-xl text-white mb-xs font-bold">Juang</h3>
+          <span class="bg-surface text-primary-container font-label-caps text-xs px-2.5 py-1 uppercase mb-sm rounded border border-surface-variant font-bold">Drone FPV &amp; Aerial</span>
+          <p class="font-label-caps text-on-surface-variant text-xs">Minat: Cinematic &amp; Freestyle</p>
+        </div>
+
+        <!-- Pilot Card 2: Derli -->
+        <div class="bg-surface-container hud-border p-md flex flex-col items-center text-center group hover:border-primary-container transition-colors relative overflow-hidden rounded shadow-lg">
+          <div class="w-full h-1 bg-primary-container absolute top-0 left-0 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+          <img class="w-24 h-24 rounded-full object-cover mb-sm border-2 border-primary-container/40 group-hover:border-primary-container group-hover:scale-105 transition-all shadow-md" alt="Derli - Pilot Sky Multirotor Squad" src="/pilot/derli.jpeg"/>
+          <h3 class="font-stats-lg text-xl text-white mb-xs font-bold">Derli</h3>
+          <span class="bg-surface text-primary-container font-label-caps text-xs px-2.5 py-1 uppercase mb-sm rounded border border-surface-variant font-bold">Drone Aerial</span>
+          <p class="font-label-caps text-on-surface-variant text-xs">Minat: Landscape &amp; Cinematic</p>
+        </div>
+
+        <!-- Pilot Card 3: Rijal -->
+        <div class="bg-surface-container hud-border p-md flex flex-col items-center text-center group hover:border-primary-container transition-colors relative overflow-hidden rounded shadow-lg">
+          <div class="w-full h-1 bg-primary-container absolute top-0 left-0 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+          <img class="w-24 h-24 rounded-full object-cover mb-sm border-2 border-primary-container/40 group-hover:border-primary-container group-hover:scale-105 transition-all shadow-md" alt="Rijal - Pilot Sky Multirotor Squad" src="/pilot/ijal-1.jpg"/>
+          <h3 class="font-stats-lg text-xl text-white mb-xs font-bold">Rijal</h3>
+          <span class="bg-surface text-primary-container font-label-caps text-xs px-2.5 py-1 uppercase mb-sm rounded border border-surface-variant font-bold">Drone FPV &amp; Aerial</span>
+          <p class="font-label-caps text-on-surface-variant text-xs">Minat: Cinematic &amp; Freestyle</p>
+        </div>
+
+        <!-- Pilot Card 4: Amarendra -->
+        <div class="bg-surface-container hud-border p-md flex flex-col items-center text-center group hover:border-primary-container transition-colors relative overflow-hidden rounded shadow-lg">
+          <div class="w-full h-1 bg-primary-container absolute top-0 left-0 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+          <img class="w-24 h-24 rounded-full object-cover mb-sm border-2 border-primary-container/40 group-hover:border-primary-container group-hover:scale-105 transition-all shadow-md" alt="Amarendra - Pilot Sky Multirotor Squad" src="/pilot/amarendra.jpeg"/>
+          <h3 class="font-stats-lg text-xl text-white mb-xs font-bold">Amarendra</h3>
+          <span class="bg-surface text-primary-container font-label-caps text-xs px-2.5 py-1 uppercase mb-sm rounded border border-surface-variant font-bold">Drone FPV</span>
+          <p class="font-label-caps text-on-surface-variant text-xs">Minat: Cinematic &amp; Freestyle</p>
+        </div>
+
+        <!-- Pilot Card 5: Hadi -->
+        <div class="bg-surface-container hud-border p-md flex flex-col items-center text-center group hover:border-primary-container transition-colors relative overflow-hidden rounded shadow-lg">
+          <div class="w-full h-1 bg-primary-container absolute top-0 left-0 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+          <img class="w-24 h-24 rounded-full object-cover mb-sm border-2 border-primary-container/40 group-hover:border-primary-container group-hover:scale-105 transition-all shadow-md" alt="Hadi - Pilot Sky Multirotor Squad" src="/pilot/hadi-3.jpg"/>
+          <h3 class="font-stats-lg text-xl text-white mb-xs font-bold">Hadi</h3>
+          <span class="bg-surface text-primary-container font-label-caps text-xs px-2.5 py-1 uppercase mb-sm rounded border border-surface-variant font-bold">Drone FPV &amp; Aerial</span>
+          <p class="font-label-caps text-on-surface-variant text-xs">Minat: Cinematic &amp; Freestyle</p>
+        </div>
+
+        <!-- Pilot Card 6: Yani -->
+        <div class="bg-surface-container hud-border p-md flex flex-col items-center text-center group hover:border-primary-container transition-colors relative overflow-hidden rounded shadow-lg">
+          <div class="w-full h-1 bg-primary-container absolute top-0 left-0 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+          <img class="w-24 h-24 rounded-full object-cover mb-sm border-2 border-primary-container/40 group-hover:border-primary-container group-hover:scale-105 transition-all shadow-md" alt="Yani - Pilot Sky Multirotor Squad" src="/pilot/yani.jpeg"/>
+          <h3 class="font-stats-lg text-xl text-white mb-xs font-bold">Yani</h3>
+          <span class="bg-surface text-primary-container font-label-caps text-xs px-2.5 py-1 uppercase mb-sm rounded border border-surface-variant font-bold">Drone FPV &amp; Aerial</span>
+          <p class="font-label-caps text-on-surface-variant text-xs">Minat: Cinematic &amp; Freestyle</p>
+        </div>
+
+        <!-- Pilot Card 7: Agus RDT -->
+        <div class="bg-surface-container hud-border p-md flex flex-col items-center text-center group hover:border-primary-container transition-colors relative overflow-hidden rounded shadow-lg">
+          <div class="w-full h-1 bg-primary-container absolute top-0 left-0 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+          <img class="w-24 h-24 rounded-full object-cover mb-sm border-2 border-primary-container/40 group-hover:border-primary-container group-hover:scale-105 transition-all shadow-md" alt="Agus RDT - Pilot Sky Multirotor Squad" src="/pilot/agusrdt-1.jpg"/>
+          <h3 class="font-stats-lg text-xl text-white mb-xs font-bold">Agus RDT</h3>
+          <span class="bg-surface text-primary-container font-label-caps text-xs px-2.5 py-1 uppercase mb-sm rounded border border-surface-variant font-bold">Drone FPV &amp; Aerial</span>
+          <p class="font-label-caps text-on-surface-variant text-xs">Minat: Cinematic &amp; Freestyle</p>
+        </div>
+
+        <!-- Pilot Card 8: Djane -->
+        <div class="bg-surface-container hud-border p-md flex flex-col items-center text-center group hover:border-primary-container transition-colors relative overflow-hidden rounded shadow-lg">
+          <div class="w-full h-1 bg-primary-container absolute top-0 left-0 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+          <img class="w-24 h-24 rounded-full object-cover mb-sm border-2 border-primary-container/40 group-hover:border-primary-container group-hover:scale-105 transition-all shadow-md" alt="Djane - Pilot Sky Multirotor Squad" src="/pilot/djane.jpeg"/>
+          <h3 class="font-stats-lg text-xl text-white mb-xs font-bold">Djane</h3>
+          <span class="bg-surface text-primary-container font-label-caps text-xs px-2.5 py-1 uppercase mb-sm rounded border border-surface-variant font-bold">Drone FPV</span>
+          <p class="font-label-caps text-on-surface-variant text-xs">Minat: Cinematic &amp; Freestyle</p>
+        </div>
+
+        <!-- Pilot Card 9: Ferry -->
+        <div class="bg-surface-container hud-border p-md flex flex-col items-center text-center group hover:border-primary-container transition-colors relative overflow-hidden rounded shadow-lg">
+          <div class="w-full h-1 bg-primary-container absolute top-0 left-0 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+          <img class="w-24 h-24 rounded-full object-cover mb-sm border-2 border-primary-container/40 group-hover:border-primary-container group-hover:scale-105 transition-all shadow-md" alt="Ferry - Pilot Sky Multirotor Squad" src="/pilot/ferry.jpeg"/>
+          <h3 class="font-stats-lg text-xl text-white mb-xs font-bold">Ferry</h3>
+          <span class="bg-surface text-primary-container font-label-caps text-xs px-2.5 py-1 uppercase mb-sm rounded border border-surface-variant font-bold">Drone FPV &amp; Aerial</span>
+          <p class="font-label-caps text-on-surface-variant text-xs">Minat: Cinematic &amp; Freestyle</p>
+        </div>
+
+        <!-- Pilot Card 10: Rhaka -->
+        <div class="bg-surface-container hud-border p-md flex flex-col items-center text-center group hover:border-primary-container transition-colors relative overflow-hidden rounded shadow-lg">
+          <div class="w-full h-1 bg-primary-container absolute top-0 left-0 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+          <img class="w-24 h-24 rounded-full object-cover mb-sm border-2 border-primary-container/40 group-hover:border-primary-container group-hover:scale-105 transition-all shadow-md" alt="Rhaka - Pilot Sky Multirotor Squad" src="/pilot/rhaka-1.jpg"/>
+          <h3 class="font-stats-lg text-xl text-white mb-xs font-bold">Rhaka</h3>
+          <span class="bg-surface text-primary-container font-label-caps text-xs px-2.5 py-1 uppercase mb-sm rounded border border-surface-variant font-bold">Drone FPV &amp; Aerial</span>
+          <p class="font-label-caps text-on-surface-variant text-xs">Minat: Cinematic &amp; Freestyle</p>
+        </div>
+
+        <!-- Pilot Card 11: Jerry -->
+        <div class="bg-surface-container hud-border p-md flex flex-col items-center text-center group hover:border-primary-container transition-colors relative overflow-hidden rounded shadow-lg">
+          <div class="w-full h-1 bg-primary-container absolute top-0 left-0 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+          <img class="w-24 h-24 rounded-full object-cover mb-sm border-2 border-primary-container/40 group-hover:border-primary-container group-hover:scale-105 transition-all shadow-md" alt="Jerry - Pilot Sky Multirotor Squad" src="/pilot/jerry-1.jpg"/>
+          <h3 class="font-stats-lg text-xl text-white mb-xs font-bold">Jerry</h3>
+          <span class="bg-surface text-primary-container font-label-caps text-xs px-2.5 py-1 uppercase mb-sm rounded border border-surface-variant font-bold">Drone FPV &amp; Aerial</span>
+          <p class="font-label-caps text-on-surface-variant text-xs">Minat: Cinematic &amp; Freestyle</p>
+        </div>
+
+        <!-- Pilot Card 12: Arief -->
+        <div class="bg-surface-container hud-border p-md flex flex-col items-center text-center group hover:border-primary-container transition-colors relative overflow-hidden rounded shadow-lg">
+          <div class="w-full h-1 bg-primary-container absolute top-0 left-0 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+          <img class="w-24 h-24 rounded-full object-cover mb-sm border-2 border-primary-container/40 group-hover:border-primary-container group-hover:scale-105 transition-all shadow-md" alt="Arief - Pilot Sky Multirotor Squad" src="/pilot/ARIEF-1.jpeg"/>
+          <h3 class="font-stats-lg text-xl text-white mb-xs font-bold">Arief</h3>
+          <span class="bg-surface text-primary-container font-label-caps text-xs px-2.5 py-1 uppercase mb-sm rounded border border-surface-variant font-bold">Drone Race</span>
+          <p class="font-label-caps text-on-surface-variant text-xs">Minat: Race &amp; Freestyle</p>
+        </div>
+
+        <!-- Pilot Card 13: Hanif -->
+        <div class="bg-surface-container hud-border p-md flex flex-col items-center text-center group hover:border-primary-container transition-colors relative overflow-hidden rounded shadow-lg">
+          <div class="w-full h-1 bg-primary-container absolute top-0 left-0 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+          <img class="w-24 h-24 rounded-full object-cover mb-sm border-2 border-primary-container/40 group-hover:border-primary-container group-hover:scale-105 transition-all shadow-md" alt="Hanif - Pilot Sky Multirotor Squad" src="/pilot/hanif-1.jpg"/>
+          <h3 class="font-stats-lg text-xl text-white mb-xs font-bold">Hanif</h3>
+          <span class="bg-surface text-primary-container font-label-caps text-xs px-2.5 py-1 uppercase mb-sm rounded border border-surface-variant font-bold">Drone FPV</span>
+          <p class="font-label-caps text-on-surface-variant text-xs">Minat: Cinematic &amp; Freestyle</p>
+        </div>
+
+        <!-- Pilot Card 14: Taufik -->
+        <div class="bg-surface-container hud-border p-md flex flex-col items-center text-center group hover:border-primary-container transition-colors relative overflow-hidden rounded shadow-lg">
+          <div class="w-full h-1 bg-primary-container absolute top-0 left-0 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+          <img class="w-24 h-24 rounded-full object-cover mb-sm border-2 border-primary-container/40 group-hover:border-primary-container group-hover:scale-105 transition-all shadow-md" alt="Taufik - Pilot Sky Multirotor Squad" src="/pilot/taufik-.jpg"/>
+          <h3 class="font-stats-lg text-xl text-white mb-xs font-bold">Taufik</h3>
+          <span class="bg-surface text-primary-container font-label-caps text-xs px-2.5 py-1 uppercase mb-sm rounded border border-surface-variant font-bold">Aeromodeling &amp; Drone FPV</span>
+          <p class="font-label-caps text-on-surface-variant text-xs">Minat: Freestyle</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Code of Ethics Section (Kode Etik) -->
+    <section class="space-y-lg mt-xl">
+      <div class="flex items-center gap-sm mb-lg">
+        <div class="w-2 h-8 bg-primary-container"></div>
+        <h2 class="font-headline-lg-mobile md:font-headline-lg text-white uppercase font-bold">Kode Etik Komunitas</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+        
+        <!-- Ethic Item 1 -->
+        <div class="bg-surface-container p-md border-l-4 border-outline-variant hover:border-primary-container transition-all group rounded shadow">
+          <h3 class="font-stats-lg text-primary-container mb-sm flex items-center gap-2 text-lg font-bold">
+            <span class="material-symbols-outlined text-primary-container text-xl">my_location</span>
+            Setia dan Menjaga Kehormatan
+          </h3>
+          <p class="text-on-surface-variant font-body-md text-sm leading-relaxed">
+            Menyatakan dengan sungguh-sungguh janji kesetiaan dan kehormatan menjaga nama baik Sky Multirotor Squad dalam berbakti, berkarya dan ikut berpartisipasi aktif dalam dunia kedirgantaraan nasional.
+          </p>
+        </div>
+
+        <!-- Ethic Item 2 -->
+        <div class="bg-surface-container p-md border-l-4 border-outline-variant hover:border-primary-container transition-all group rounded shadow">
+          <h3 class="font-stats-lg text-primary-container mb-sm flex items-center gap-2 text-lg font-bold">
+            <span class="material-symbols-outlined text-primary-container text-xl">handshake</span>
+            Menghormati Persaudaraan
+          </h3>
+          <p class="text-on-surface-variant font-body-md text-sm leading-relaxed">
+            Mempunyai satu visi dengan mengedepankan rasa Tanggung Jawab, Keamanan (keselamatan) dan Martabat. Dan satu misi yaitu saling menghormati dan bersatu dalam pengembangan kelangsungan kegiatan kedirgantaraan.
+          </p>
+        </div>
+
+        <!-- Ethic Item 3 -->
+        <div class="bg-surface-container p-md border-l-4 border-outline-variant hover:border-primary-container transition-all group rounded shadow">
+          <h3 class="font-stats-lg text-primary-container mb-sm flex items-center gap-2 text-lg font-bold">
+            <span class="material-symbols-outlined text-primary-container text-xl">gavel</span>
+            Prosedur Standar Operasi
+          </h3>
+          <p class="text-on-surface-variant font-body-md text-sm leading-relaxed">
+            Menjalankan prosedur baku dalam pengoperasian pesawat terbang tanpa awak termasuk pre-flight checklist, komunikasi dengan pihak terkait dan pemenuhan sebagai pilot yang berprinsip aman, bertanggung jawab dan bermartabat.
+          </p>
+        </div>
+
+        <!-- Ethic Item 4 -->
+        <div class="bg-surface-container p-md border-l-4 border-outline-variant hover:border-primary-container transition-all group rounded shadow">
+          <h3 class="font-stats-lg text-primary-container mb-sm flex items-center gap-2 text-lg font-bold">
+            <span class="material-symbols-outlined text-primary-container text-xl">health_and_safety</span>
+            Kepentingan dan Keselamatan Umum
+          </h3>
+          <p class="text-on-surface-variant font-body-md text-sm leading-relaxed">
+            Menyadari dan melakukan proteksi, antisipasi, perencanaan yang matang dalam setiap penerbangan yang akan berdampak kepada khalayak ramai, aset-aset milik pihak lain dan perlindungan kepada flora/fauna serta peninggalan berharga.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer Component -->
+  <footer class="bg-surface-container-lowest w-full border-t-4 border-primary-container">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-lg px-margin-mobile md:px-margin-desktop py-xl w-full max-w-7xl mx-auto">
+      <!-- Brand Info -->
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <img src="/logo.png" alt="Sky Multirotor Squad Logo" class="h-12 w-auto object-contain drop-shadow-[0_2px_10px_rgba(255,215,0,0.2)]"/>
+        </div>
+        <p class="text-on-surface-variant font-body-md text-sm mb-4 leading-relaxed">
+          Komunitas penggiat teknologi wahana tanpa awak (UAV), Drone Aerial, FPV, dan Aeromodeling di wilayah Serang, Cilegon, dan Banten.
+        </p>
+        <p class="text-on-surface-variant/70 font-label-caps text-xs">
+          © 2026 Sky Multirotor Squad. Hak Cipta Dilindungi.
+        </p>
+      </div>
+
+      <!-- Navigation Links -->
+      <div>
+        <h4 class="font-label-caps text-label-caps text-primary-container mb-md border-b border-surface-variant pb-xs inline-block">NAVIGASI</h4>
+        <div class="flex flex-col gap-2">
+          <a class="text-on-surface-variant hover:text-primary-container transition-colors font-body-md text-sm" href="/">Beranda</a>
+          <a class="text-primary-container font-bold hover:text-primary-container transition-colors font-body-md text-sm" href="/pages/tentang-kami.html">Tentang Kami</a>
+          <a class="text-on-surface-variant hover:text-primary-container transition-colors font-body-md text-sm" href="/pages/galeri.html">Galeri Foto & Video</a>
+          <a class="text-on-surface-variant hover:text-primary-container transition-colors font-body-md text-sm" href="/pages/spot-terbang.html">Spot Terbang Banten</a>
+          <a class="text-on-surface-variant hover:text-primary-container transition-colors font-body-md text-sm" href="/pages/kontak.html">Kontak & Keanggotaan</a>
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div>
+        <h4 class="font-label-caps text-label-caps text-primary-container mb-md border-b border-surface-variant pb-xs inline-block">MARKAS & BASECAMP</h4>
+        <div class="text-on-surface-variant font-body-md text-sm flex items-start gap-sm mb-sm">
+          <span class="material-symbols-outlined text-primary-container mt-1">location_on</span>
+          <p class="leading-relaxed">
+            <strong>Ecopark Citra Garden BMW</strong><br/>
+            Jl. Raya Serang - Cilegon, Wanayasa,<br/>
+            Kec. Kramatwatu, Serang, Banten 42161
+          </p>
+        </div>
+        <div class="mt-4 flex gap-3">
+          <a href="https://instagram.com/skymultirotor" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" title="Instagram">
+            <span class="material-symbols-outlined text-base">photo_camera</span>
+          </a>
+          <a href="https://wa.me/6287772272928" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" title="WhatsApp">
+            <span class="material-symbols-outlined text-base">chat</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/src/js/main.js"></script>
+</body>
+</html>

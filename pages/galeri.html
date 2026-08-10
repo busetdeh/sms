@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Galeri Misi & Log Visual | Sky Multirotor Squad</title>
+  <meta name="description" content="Log visual operasi udara, balap FPV, sinematografi aerial, dan dokumentasi komunitas Sky Multirotor Squad (SMS) Banten."/>
+  <link rel="icon" type="image/png" href="/logo.png"/>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <!-- Tailwind CSS Play CDN with custom theme -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-background": "#e2e2e2",
+            "on-tertiary-container": "#5f5f5f",
+            "primary-container": "#ffd700",
+            "tertiary-fixed": "#e4e2e1",
+            "on-secondary-container": "#b7b5b4",
+            "outline": "#999077",
+            "tertiary-container": "#dbd9d9",
+            "surface-bright": "#37393a",
+            "secondary-fixed-dim": "#c8c6c5",
+            "on-primary": "#3a3000",
+            "inverse-on-surface": "#2f3131",
+            "surface-variant": "#333535",
+            "surface-container": "#1e2020",
+            "primary-fixed": "#ffe16d",
+            "on-error": "#690005",
+            "error-container": "#93000a",
+            "error": "#ffb4ab",
+            "surface-tint": "#e9c400",
+            "on-tertiary-fixed": "#1b1c1c",
+            "tertiary-fixed-dim": "#c8c6c6",
+            "surface-container-low": "#1a1c1c",
+            "on-secondary": "#313030",
+            "primary": "#fff6df",
+            "on-surface": "#e2e2e2",
+            "surface-container-lowest": "#0c0f0f",
+            "primary-fixed-dim": "#e9c400",
+            "on-tertiary": "#303030",
+            "surface-container-highest": "#333535",
+            "secondary": "#c8c6c5",
+            "on-primary-fixed-variant": "#544600",
+            "tertiary": "#f8f6f5",
+            "on-primary-fixed": "#221b00",
+            "inverse-surface": "#e2e2e2",
+            "on-secondary-fixed-variant": "#474746",
+            "background": "#121414",
+            "on-primary-container": "#705e00",
+            "on-secondary-fixed": "#1c1b1b",
+            "on-surface-variant": "#d0c6ab",
+            "surface": "#121414",
+            "surface-dim": "#121414",
+            "secondary-fixed": "#e5e2e1",
+            "secondary-container": "#474746",
+            "outline-variant": "#4d4732",
+            "inverse-primary": "#705d00",
+            "on-error-container": "#ffdad6",
+            "on-tertiary-fixed-variant": "#474747",
+            "surface-container-high": "#282a2b"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "unit": "4px",
+            "margin-mobile": "16px",
+            "gutter": "24px",
+            "lg": "24px",
+            "md": "16px",
+            "xs": "4px",
+            "sm": "8px",
+            "margin-desktop": "64px",
+            "xl": "48px"
+          },
+          fontFamily: {
+            "stats-lg": ["Space Grotesk", "sans-serif"],
+            "headline-lg": ["Space Grotesk", "sans-serif"],
+            "label-caps": ["JetBrains Mono", "monospace"],
+            "headline-lg-mobile": ["Space Grotesk", "sans-serif"],
+            "body-md": ["Hanken Grotesk", "sans-serif"],
+            "display-lg": ["Space Grotesk", "sans-serif"]
+          },
+          fontSize: {
+            "stats-lg": ["24px", { "lineHeight": "1.0", "fontWeight": "700" }],
+            "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "600" }],
+            "label-caps": ["12px", { "lineHeight": "1.0", "letterSpacing": "0.1em", "fontWeight": "500" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "600" }],
+            "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+            "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+  
+  <link rel="stylesheet" href="/src/styles/main.css"/>
+  <style>
+    .slanted-edge {
+      clip-path: polygon(0 0, 100% 0, 92% 100%, 0% 100%);
+    }
+    .slanted-btn {
+      clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%);
+      transition: all 0.3s ease;
+    }
+    .slanted-btn:hover {
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+    }
+    .tech-border {
+      border: 1px solid #333535;
+      position: relative;
+    }
+    .tech-border::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background-color: #ffd700;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 20;
+    }
+    .group:hover .tech-border::before {
+      opacity: 1;
+    }
+    .tech-bg {
+      background-image: radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
+      background-size: 24px 24px;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md overflow-x-hidden tech-bg antialiased">
+
+  <!-- TopNavBar -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-surface/90 backdrop-blur-md border-b border-outline-variant transition-all duration-300">
+    <div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-2.5 w-full max-w-7xl mx-auto">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center gap-3 group">
+        <img src="/logo.png" alt="Sky Multirotor Squad Logo" class="h-10 sm:h-12 w-auto object-contain group-hover:scale-105 transition-transform drop-shadow-[0_2px_10px_rgba(255,215,0,0.35)]"/>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <div class="hidden md:flex gap-gutter items-center font-label-caps text-xs uppercase">
+        <a class="text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high px-3 py-2 rounded transition-colors" href="/">Beranda</a>
+        <a class="text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high px-3 py-2 rounded transition-colors" href="/pages/tentang-kami.html">Tentang Kami</a>
+        <a class="text-primary-container font-bold border-b-2 border-primary-container pb-1 hover:bg-surface-container-high px-3 py-2 transition-colors" href="/pages/galeri.html">Galeri</a>
+        <a class="text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high px-3 py-2 rounded transition-colors" href="/pages/spot-terbang.html">Spot Terbang</a>
+        <a class="text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high px-3 py-2 rounded transition-colors" href="/pages/kontak.html">Kontak</a>
+      </div>
+
+      <!-- Action Button / Mobile menu -->
+      <div class="flex items-center gap-sm">
+        <a href="/pages/kontak.html" class="hidden sm:flex slant-r bg-primary-container text-on-primary font-label-caps text-xs px-4 py-2 font-bold glow-hover transition-all items-center gap-1.5">
+          <span class="material-symbols-outlined text-sm">flight_takeoff</span>
+          GABUNG
+        </a>
+        <button id="open-menu-btn" class="md:hidden text-primary-container p-1 rounded hover:bg-surface-variant transition-colors" aria-label="Buka Menu">
+          <span class="material-symbols-outlined text-3xl">menu</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Drawer Overlay & Menu -->
+  <div id="drawer-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
+  <aside id="mobile-drawer" class="fixed top-0 right-0 bottom-0 w-[280px] bg-surface-container-high border-l border-surface-variant z-50 p-6 flex flex-col justify-between">
+    <div>
+      <div class="flex justify-between items-center mb-8 border-b border-surface-variant pb-4">
+        <a href="/" class="flex items-center gap-2">
+          <img src="/logo.png" alt="Sky Multirotor Squad Logo" class="h-9 w-auto object-contain"/>
+        </a>
+        <button id="close-menu-btn" class="text-on-surface-variant hover:text-primary-container p-1" aria-label="Tutup Menu">
+          <span class="material-symbols-outlined text-2xl">close</span>
+        </button>
+      </div>
+
+      <nav class="flex flex-col gap-4 font-label-caps text-sm">
+        <a class="text-on-surface-variant hover:text-primary-container py-2 px-3 hover:bg-surface-variant rounded transition-colors" href="/">BERANDA</a>
+        <a class="text-on-surface-variant hover:text-primary-container py-2 px-3 hover:bg-surface-variant rounded transition-colors" href="/pages/tentang-kami.html">TENTANG KAMI</a>
+        <a class="text-primary-container font-bold py-2 px-3 rounded bg-primary-container/10 border-l-2 border-primary-container" href="/pages/galeri.html">GALERI MEDIA</a>
+        <a class="text-on-surface-variant hover:text-primary-container py-2 px-3 hover:bg-surface-variant rounded transition-colors" href="/pages/spot-terbang.html">SPOT TERBANG</a>
+        <a class="text-on-surface-variant hover:text-primary-container py-2 px-3 hover:bg-surface-variant rounded transition-colors" href="/pages/kontak.html">KONTAK & SERVIS</a>
+      </nav>
+    </div>
+    
+    <div class="pt-6 border-t border-surface-variant">
+      <a href="/pages/kontak.html" class="w-full slant-r bg-primary-container text-on-primary font-label-caps text-xs py-3 font-bold glow-hover text-center flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-sm">flight_takeoff</span>
+        GABUNG SKUAD
+      </a>
+    </div>
+  </aside>
+
+  <!-- Header Section -->
+  <header class="relative pt-32 pb-12 px-margin-mobile md:px-margin-desktop text-center bg-surface-container-lowest overflow-hidden border-b border-surface-variant">
+    <!-- Abstract HUD Elements -->
+    <div class="absolute inset-0 pointer-events-none opacity-20 hidden md:flex justify-between">
+      <div class="w-36 h-full border-r border-outline-variant flex flex-col justify-between py-8 items-end pr-3 font-label-caps text-xs text-on-surface-variant">
+        <span>[SYS_OK]</span>
+        <span>[ALT: 120M]</span>
+        <span>[SPD: 90KMH]</span>
+      </div>
+      <div class="w-36 h-full border-l border-outline-variant flex flex-col justify-between py-8 items-start pl-3 font-label-caps text-xs text-on-surface-variant">
+        <span>[REC_ON]</span>
+        <span>[SIG_STR: 99%]</span>
+        <span>[4K_60FPS]</span>
+      </div>
+    </div>
+
+    <div class="max-w-3xl mx-auto relative z-10">
+      <div class="inline-block bg-primary-container/20 text-primary-container font-label-caps text-xs px-3 py-1 rounded mb-3 font-bold">
+        FPV &amp; AERIAL FOOTAGE ARCHIVE
+      </div>
+      <h1 class="font-display-lg text-3xl sm:text-4xl md:text-5xl text-white relative z-10 mb-sm tracking-tight font-bold">
+        GALERI <span class="text-primary-container">MISI</span>
+      </h1>
+      <p class="font-body-md text-on-surface-variant max-w-2xl mx-auto relative z-10 mb-8 text-sm sm:text-base leading-relaxed">
+        Log visual dari operasi udara kami, pertemuan komunitas, dan acara balapan kompetitif. Diambil melalui lensa pilot FPV dan sinematografi kami.
+      </p>
+
+      <!-- Filter Tabs -->
+      <div class="flex flex-wrap justify-center gap-2 sm:gap-3 font-label-caps text-xs relative z-10" id="gallery-tabs">
+        <button class="gallery-filter-btn active bg-primary-container text-background px-4 py-2 slanted-btn font-bold" data-category="all">SEMUA_MISI</button>
+        <button class="gallery-filter-btn bg-surface-container border border-primary-container text-primary-container px-4 py-2 slanted-btn hover:bg-primary-container hover:text-background transition-colors font-bold" data-category="fpv">BALAP_FPV</button>
+        <button class="gallery-filter-btn bg-surface-container border border-primary-container text-primary-container px-4 py-2 slanted-btn hover:bg-primary-container hover:text-background transition-colors font-bold" data-category="aerial">SINEMA_UDARA</button>
+        <button class="gallery-filter-btn bg-surface-container border border-primary-container text-primary-container px-4 py-2 slanted-btn hover:bg-primary-container hover:text-background transition-colors font-bold" data-category="komunitas">KOMUNITAS</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Canvas -->
+  <main class="flex-grow px-margin-mobile md:px-margin-desktop py-xl bg-background max-w-7xl mx-auto w-full">
+    <!-- Gallery Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter" id="gallery-grid">
+      
+      <!-- Gallery Item 1 -->
+      <article class="gallery-item group bg-surface-container tech-border flex flex-col overflow-hidden relative rounded shadow-xl" data-category="fpv" data-title="Throttle Warriors Part 2" data-loc="Bukit Gajah Bogor" data-type="FPV Race &amp; Gathering" data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuAsBsUKaFCe5c_3b8WL0O_963PCe8e4CuzKC0T6q3XLhv0N3XvUPl6xNuopm9NMO4DJfMx718H7GTLEt-4IsKDKUupcSjhVQLgE_m4HnMCdt5fYAc-ry6sHC13IIIi_XOMOJVRCYSVjF_h5nwD4WhUCQ8_piM8VQQjQb4FqDKr6Gy1C3Fhv_wfCqjHx9tueFLzTzWQgsGkdYQ9lBzCfupaMW20tBzkpy5wIkzGGfMoi-I4Bz9bOnaKOTg">
+        <div class="relative h-64 overflow-hidden bg-surface-container-high">
+          <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-85 group-hover:opacity-100 mix-blend-luminosity group-hover:mix-blend-normal" alt="Throttle Warriors Part 2 - Bukit Gajah Bogor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsBsUKaFCe5c_3b8WL0O_963PCe8e4CuzKC0T6q3XLhv0N3XvUPl6xNuopm9NMO4DJfMx718H7GTLEt-4IsKDKUupcSjhVQLgE_m4HnMCdt5fYAc-ry6sHC13IIIi_XOMOJVRCYSVjF_h5nwD4WhUCQ8_piM8VQQjQb4FqDKr6Gy1C3Fhv_wfCqjHx9tueFLzTzWQgsGkdYQ9lBzCfupaMW20tBzkpy5wIkzGGfMoi-I4Bz9bOnaKOTg"/>
+          <div class="absolute top-4 left-4 bg-background/90 backdrop-blur-sm px-2.5 py-1 font-label-caps text-[10px] text-primary-container border border-primary-container slanted-edge z-10 font-bold">
+            OP_001
+          </div>
+          <div class="absolute bottom-3 right-3 bg-black/70 px-2 py-0.5 rounded font-label-caps text-[10px] text-white">
+            BALAP_FPV
+          </div>
+        </div>
+        <div class="p-6 flex flex-col flex-grow z-10 bg-surface-container">
+          <h2 class="font-headline-lg-mobile text-lg md:text-xl text-white mb-1 uppercase font-bold group-hover:text-primary-container transition-colors">Throttle Warriors Part 2</h2>
+          <p class="font-label-caps text-on-surface-variant mb-6 text-xs flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs text-primary-container">location_on</span>
+            [LOKASI: BUKIT GAJAH BOGOR]
+          </p>
+          <div class="mt-auto">
+            <button onclick="openGalleryModal('Throttle Warriors Part 2', 'Bukit Gajah Bogor', 'Kompetisi balap FPV tahunan dengan gate teknis di ketinggian bukit, menguji ketangkasan respon pilot dan kehandalan link video 5.8GHz.', 'https://lh3.googleusercontent.com/aida-public/AB6AXuAsBsUKaFCe5c_3b8WL0O_963PCe8e4CuzKC0T6q3XLhv0N3XvUPl6xNuopm9NMO4DJfMx718H7GTLEt-4IsKDKUupcSjhVQLgE_m4HnMCdt5fYAc-ry6sHC13IIIi_XOMOJVRCYSVjF_h5nwD4WhUCQ8_piM8VQQjQb4FqDKr6Gy1C3Fhv_wfCqjHx9tueFLzTzWQgsGkdYQ9lBzCfupaMW20tBzkpy5wIkzGGfMoi-I4Bz9bOnaKOTg')" class="w-full bg-primary-container text-on-primary font-label-caps text-xs py-3 slanted-btn font-bold flex items-center justify-center gap-2 glow-hover">
+              <span>Go to Gallery</span>
+              <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Gallery Item 2 -->
+      <article class="gallery-item group bg-surface-container tech-border flex flex-col overflow-hidden relative rounded shadow-xl" data-category="aerial" data-title="Pengibaran Bendera – Pulau Sangiang" data-loc="Pulau Sangiang" data-type="Aerial Cinema" data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuCSBibKdo7R64e6wqpKPl0-Z9EktRtwqO9rgY0ekNsMJo8hg-TBpYiq7fAaNru2x_veslYa7HGtZq0bh0GIJJJPBV9erhiavY97ofYDazF_i6lJDtS_qnwkKtSpoRtNHv2WM-vpmHjhqZkT-BQFZ33VjR_TJM9S8e_GeqQoW-1kVGWJbCQJTeeKvbtCSDYSdfptzRlDs9n_21p94xkxsAzAJaw5Ij13aI20ZDucGkWEI55LezfIf5Qz6g">
+        <div class="relative h-64 overflow-hidden bg-surface-container-high">
+          <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-85 group-hover:opacity-100 mix-blend-luminosity group-hover:mix-blend-normal" alt="Pengibaran Bendera – Pulau Sangiang" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSBibKdo7R64e6wqpKPl0-Z9EktRtwqO9rgY0ekNsMJo8hg-TBpYiq7fAaNru2x_veslYa7HGtZq0bh0GIJJJPBV9erhiavY97ofYDazF_i6lJDtS_qnwkKtSpoRtNHv2WM-vpmHjhqZkT-BQFZ33VjR_TJM9S8e_GeqQoW-1kVGWJbCQJTeeKvbtCSDYSdfptzRlDs9n_21p94xkxsAzAJaw5Ij13aI20ZDucGkWEI55LezfIf5Qz6g"/>
+          <div class="absolute top-4 left-4 bg-background/90 backdrop-blur-sm px-2.5 py-1 font-label-caps text-[10px] text-primary-container border border-primary-container slanted-edge z-10 font-bold">
+            OP_002
+          </div>
+          <div class="absolute bottom-3 right-3 bg-black/70 px-2 py-0.5 rounded font-label-caps text-[10px] text-white">
+            SINEMA_UDARA
+          </div>
+        </div>
+        <div class="p-6 flex flex-col flex-grow z-10 bg-surface-container">
+          <h2 class="font-headline-lg-mobile text-lg md:text-xl text-white mb-1 uppercase font-bold group-hover:text-primary-container transition-colors">Pengibaran Bendera – Pulau Sangiang</h2>
+          <p class="font-label-caps text-on-surface-variant mb-6 text-xs flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs text-primary-container">location_on</span>
+            [LOKASI: PULAU SANGIANG]
+          </p>
+          <div class="mt-auto">
+            <button onclick="openGalleryModal('Pengibaran Bendera – Pulau Sangiang', 'Pulau Sangiang, Selat Sunda', 'Misi ekspedisi kemerdekaan melintasi tebing karang Selat Sunda untuk mendokumentasikan pengibaran bendera Merah Putih dari sudut pandang udara 4K.', 'https://lh3.googleusercontent.com/aida-public/AB6AXuCSBibKdo7R64e6wqpKPl0-Z9EktRtwqO9rgY0ekNsMJo8hg-TBpYiq7fAaNru2x_veslYa7HGtZq0bh0GIJJJPBV9erhiavY97ofYDazF_i6lJDtS_qnwkKtSpoRtNHv2WM-vpmHjhqZkT-BQFZ33VjR_TJM9S8e_GeqQoW-1kVGWJbCQJTeeKvbtCSDYSdfptzRlDs9n_21p94xkxsAzAJaw5Ij13aI20ZDucGkWEI55LezfIf5Qz6g')" class="w-full bg-primary-container text-on-primary font-label-caps text-xs py-3 slanted-btn font-bold flex items-center justify-center gap-2 glow-hover">
+              <span>Go to Gallery</span>
+              <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Gallery Item 3 -->
+      <article class="gallery-item group bg-surface-container tech-border flex flex-col overflow-hidden relative rounded shadow-xl" data-category="komunitas" data-title="Sky Multirotor Squad 1st Anniversary" data-loc="Paradiso Cafe" data-type="Community Gathering" data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuC3qXATCLpPTGrMsha48R-eDDZTfVgkufqgF25i3sBJr6Xrnx5HShxLkamG4p6_M8T9pW1cjBnmNxjC1oDb7bYq5Uxv4XN0cPYK_N87nIMYMVhQI3Ef1asvm5HFw3dlafX5m0Z4445bFdI5cZxtagpwVEKrlbMHGJe5JgqcdZVXqzE4A3jg4kwkzbEJQ8wqduKgPK88APAbAdpjSj1i7K5_x27nT5jqPwmWn8SZCRz-L_w0zVzcOwMj4g">
+        <div class="relative h-64 overflow-hidden bg-surface-container-high">
+          <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-85 group-hover:opacity-100 mix-blend-luminosity group-hover:mix-blend-normal" alt="Sky Multirotor Squad 1st Anniversary" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3qXATCLpPTGrMsha48R-eDDZTfVgkufqgF25i3sBJr6Xrnx5HShxLkamG4p6_M8T9pW1cjBnmNxjC1oDb7bYq5Uxv4XN0cPYK_N87nIMYMVhQI3Ef1asvm5HFw3dlafX5m0Z4445bFdI5cZxtagpwVEKrlbMHGJe5JgqcdZVXqzE4A3jg4kwkzbEJQ8wqduKgPK88APAbAdpjSj1i7K5_x27nT5jqPwmWn8SZCRz-L_w0zVzcOwMj4g"/>
+          <div class="absolute top-4 left-4 bg-background/90 backdrop-blur-sm px-2.5 py-1 font-label-caps text-[10px] text-primary-container border border-primary-container slanted-edge z-10 font-bold">
+            OP_003
+          </div>
+          <div class="absolute bottom-3 right-3 bg-black/70 px-2 py-0.5 rounded font-label-caps text-[10px] text-white">
+            KOMUNITAS
+          </div>
+        </div>
+        <div class="p-6 flex flex-col flex-grow z-10 bg-surface-container">
+          <h2 class="font-headline-lg-mobile text-lg md:text-xl text-white mb-1 uppercase font-bold group-hover:text-primary-container transition-colors">Sky Multirotor Squad 1st Anniversary</h2>
+          <p class="font-label-caps text-on-surface-variant mb-6 text-xs flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs text-primary-container">location_on</span>
+            [LOKASI: PARADISO CAFE]
+          </p>
+          <div class="mt-auto">
+            <button onclick="openGalleryModal('Sky Multirotor Squad 1st Anniversary', 'Paradiso Cafe, Cilegon', 'Malam perayaan satu tahun kebersamaan skuad dengan workshop tuning PID, showcase build drone terbaru, dan pengukuhan anggota kehormatan.', 'https://lh3.googleusercontent.com/aida-public/AB6AXuC3qXATCLpPTGrMsha48R-eDDZTfVgkufqgF25i3sBJr6Xrnx5HShxLkamG4p6_M8T9pW1cjBnmNxjC1oDb7bYq5Uxv4XN0cPYK_N87nIMYMVhQI3Ef1asvm5HFw3dlafX5m0Z4445bFdI5cZxtagpwVEKrlbMHGJe5JgqcdZVXqzE4A3jg4kwkzbEJQ8wqduKgPK88APAbAdpjSj1i7K5_x27nT5jqPwmWn8SZCRz-L_w0zVzcOwMj4g')" class="w-full bg-primary-container text-on-primary font-label-caps text-xs py-3 slanted-btn font-bold flex items-center justify-center gap-2 glow-hover">
+              <span>Go to Gallery</span>
+              <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Gallery Item 4 -->
+      <article class="gallery-item group bg-surface-container tech-border flex flex-col overflow-hidden relative rounded shadow-xl" data-category="fpv" data-title="Bando – Waterpark" data-loc="Waterpark Cilegon" data-type="FPV Freestyle" data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuB3yxPqRZx29iWKCLy3JIomksNhGstTWotxcLWe0anX0rYvyD-kk6hr1YmPeMq-qXNQ2bH9acYzy-Xpy0NJ2XPfQQ1JkdovSiz_QqBQQtwFf6SzLmNdiKbMS8kIAu4DNXblQuNqjnSusY1F6cRjLj9hcw-RUixR7eQwCwOTcs78H5yn3bDjvpcFopPoqQUMeyKKcGwQojbWBocAmC-IEmhO9kX8mAcucaEW6pRwpF1PG6bfJSC_FWWx8A">
+        <div class="relative h-64 overflow-hidden bg-surface-container-high">
+          <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-85 group-hover:opacity-100 mix-blend-luminosity group-hover:mix-blend-normal" alt="Bando – Waterpark" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3yxPqRZx29iWKCLy3JIomksNhGstTWotxcLWe0anX0rYvyD-kk6hr1YmPeMq-qXNQ2bH9acYzy-Xpy0NJ2XPfQQ1JkdovSiz_QqBQQtwFf6SzLmNdiKbMS8kIAu4DNXblQuNqjnSusY1F6cRjLj9hcw-RUixR7eQwCwOTcs78H5yn3bDjvpcFopPoqQUMeyKKcGwQojbWBocAmC-IEmhO9kX8mAcucaEW6pRwpF1PG6bfJSC_FWWx8A"/>
+          <div class="absolute top-4 left-4 bg-background/90 backdrop-blur-sm px-2.5 py-1 font-label-caps text-[10px] text-primary-container border border-primary-container slanted-edge z-10 font-bold">
+            OP_004
+          </div>
+          <div class="absolute bottom-3 right-3 bg-black/70 px-2 py-0.5 rounded font-label-caps text-[10px] text-white">
+            BALAP_FPV
+          </div>
+        </div>
+        <div class="p-6 flex flex-col flex-grow z-10 bg-surface-container">
+          <h2 class="font-headline-lg-mobile text-lg md:text-xl text-white mb-1 uppercase font-bold group-hover:text-primary-container transition-colors">Bando – Waterpark</h2>
+          <p class="font-label-caps text-on-surface-variant mb-6 text-xs flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs text-primary-container">sports_motorsports</span>
+            [TIPE: FPV_FREESTYLE]
+          </p>
+          <div class="mt-auto">
+            <button onclick="openGalleryModal('Bando – Waterpark', 'Waterpark Cilegon (Off-Hours)', 'Sesi freestyle FPV meluncur melalui celah bando perosotan air dan struktur melingkar dengan manuver power-loop kecepatan tinggi.', 'https://lh3.googleusercontent.com/aida-public/AB6AXuB3yxPqRZx29iWKCLy3JIomksNhGstTWotxcLWe0anX0rYvyD-kk6hr1YmPeMq-qXNQ2bH9acYzy-Xpy0NJ2XPfQQ1JkdovSiz_QqBQQtwFf6SzLmNdiKbMS8kIAu4DNXblQuNqjnSusY1F6cRjLj9hcw-RUixR7eQwCwOTcs78H5yn3bDjvpcFopPoqQUMeyKKcGwQojbWBocAmC-IEmhO9kX8mAcucaEW6pRwpF1PG6bfJSC_FWWx8A')" class="w-full bg-primary-container text-on-primary font-label-caps text-xs py-3 slanted-btn font-bold flex items-center justify-center gap-2 glow-hover">
+              <span>Go to Gallery</span>
+              <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Gallery Item 5 -->
+      <article class="gallery-item group bg-surface-container tech-border flex flex-col overflow-hidden relative rounded shadow-xl" data-category="fpv" data-title="Diving Menara TVRI Cilegon" data-loc="Menara TVRI Cilegon" data-type="Cinematic Dive" data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuB4ZssekUCK4pd4Rc1N1L4LZ-s-2Ps-1lKh6QRo9mfKoEcazIcSXyY4Tlcm8P-W4SdZeYzdkf_S_MMv4LRrDBU34ZHbr0w0ZaiXn_B5noKQIET3jPte0VWZBxC_rMfTamtMwJv_W9rn0wZpYH5Ba2iTJRIV_5L2Dzs08gtRcbpqs-rWGHmPrxFOuSM_LQGqKukVZh5o3Rh8zlvQJzBZouUC-XTlXP3qrhWrtXLZTFd12F_wan2XIsUDAw">
+        <div class="relative h-64 overflow-hidden bg-surface-container-high">
+          <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-85 group-hover:opacity-100 mix-blend-luminosity group-hover:mix-blend-normal" alt="Diving Menara TVRI Cilegon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4ZssekUCK4pd4Rc1N1L4LZ-s-2Ps-1lKh6QRo9mfKoEcazIcSXyY4Tlcm8P-W4SdZeYzdkf_S_MMv4LRrDBU34ZHbr0w0ZaiXn_B5noKQIET3jPte0VWZBxC_rMfTamtMwJv_W9rn0wZpYH5Ba2iTJRIV_5L2Dzs08gtRcbpqs-rWGHmPrxFOuSM_LQGqKukVZh5o3Rh8zlvQJzBZouUC-XTlXP3qrhWrtXLZTFd12F_wan2XIsUDAw"/>
+          <div class="absolute top-4 left-4 bg-background/90 backdrop-blur-sm px-2.5 py-1 font-label-caps text-[10px] text-primary-container border border-primary-container slanted-edge z-10 font-bold">
+            OP_005
+          </div>
+          <div class="absolute bottom-3 right-3 bg-black/70 px-2 py-0.5 rounded font-label-caps text-[10px] text-white">
+            BALAP_FPV
+          </div>
+        </div>
+        <div class="p-6 flex flex-col flex-grow z-10 bg-surface-container">
+          <h2 class="font-headline-lg-mobile text-lg md:text-xl text-white mb-1 uppercase font-bold group-hover:text-primary-container transition-colors">Diving Menara TVRI Cilegon</h2>
+          <p class="font-label-caps text-on-surface-variant mb-6 text-xs flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs text-primary-container">speed</span>
+            [TIPE: CINEMATIC_DIVE]
+          </p>
+          <div class="mt-auto">
+            <button onclick="openGalleryModal('Diving Menara TVRI Cilegon', 'Menara TVRI, Cilegon', 'Manuver vertical dive 120 meter sepanjang rangka baja transmisi TVRI Cilegon menggunakan 5-inch long range FPV rig dengan zero-jitter footage.', 'https://lh3.googleusercontent.com/aida-public/AB6AXuB4ZssekUCK4pd4Rc1N1L4LZ-s-2Ps-1lKh6QRo9mfKoEcazIcSXyY4Tlcm8P-W4SdZeYzdkf_S_MMv4LRrDBU34ZHbr0w0ZaiXn_B5noKQIET3jPte0VWZBxC_rMfTamtMwJv_W9rn0wZpYH5Ba2iTJRIV_5L2Dzs08gtRcbpqs-rWGHmPrxFOuSM_LQGqKukVZh5o3Rh8zlvQJzBZouUC-XTlXP3qrhWrtXLZTFd12F_wan2XIsUDAw')" class="w-full bg-primary-container text-on-primary font-label-caps text-xs py-3 slanted-btn font-bold flex items-center justify-center gap-2 glow-hover">
+              <span>Go to Gallery</span>
+              <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Gallery Item 6 -->
+      <article class="gallery-item group bg-surface-container tech-border flex flex-col overflow-hidden relative rounded shadow-xl" data-category="aerial" data-title="Tukik Sailing Regatta 2024" data-loc="Pantai Anyer" data-type="Aerial Tracking" data-img="https://lh3.googleusercontent.com/aida-public/AB6AXuAQ115By97WeWvbfgtljRIhyK9kxyMbnflDQ3UKoZZzvHUdgpKiroEUQoHTavp9qkB_bAbF1XRL1An58C3RdXNtV0kRWMfPS5ayVz0iKrRXdN7QlQxxY1DmNx40U4XptQhH3kzQgL_POywyfGzzUz4sGe7bM4m4VRL-4uYiUgVy6WHNQgzHq-dF-5LIHDW64bR-b5nGWows9nbQiXAfFZxxoNxqpXv3ICcdX8DoBRQvvnMgoZhuH5bapQ">
+        <div class="relative h-64 overflow-hidden bg-surface-container-high">
+          <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-85 group-hover:opacity-100 mix-blend-luminosity group-hover:mix-blend-normal" alt="Tukik Sailing Regatta 2024" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQ115By97WeWvbfgtljRIhyK9kxyMbnflDQ3UKoZZzvHUdgpKiroEUQoHTavp9qkB_bAbF1XRL1An58C3RdXNtV0kRWMfPS5ayVz0iKrRXdN7QlQxxY1DmNx40U4XptQhH3kzQgL_POywyfGzzUz4sGe7bM4m4VRL-4uYiUgVy6WHNQgzHq-dF-5LIHDW64bR-b5nGWows9nbQiXAfFZxxoNxqpXv3ICcdX8DoBRQvvnMgoZhuH5bapQ"/>
+          <div class="absolute top-4 left-4 bg-background/90 backdrop-blur-sm px-2.5 py-1 font-label-caps text-[10px] text-primary-container border border-primary-container slanted-edge z-10 font-bold">
+            OP_006
+          </div>
+          <div class="absolute bottom-3 right-3 bg-black/70 px-2 py-0.5 rounded font-label-caps text-[10px] text-white">
+            SINEMA_UDARA
+          </div>
+        </div>
+        <div class="p-6 flex flex-col flex-grow z-10 bg-surface-container">
+          <h2 class="font-headline-lg-mobile text-lg md:text-xl text-white mb-1 uppercase font-bold group-hover:text-primary-container transition-colors">Tukik Sailing Regatta 2024</h2>
+          <p class="font-label-caps text-on-surface-variant mb-6 text-xs flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs text-primary-container">photo_camera</span>
+            [TIPE: AERIAL_TRACKING]
+          </p>
+          <div class="mt-auto">
+            <button onclick="openGalleryModal('Tukik Sailing Regatta 2024', 'Pantai Anyer, Banten', 'Dokumentasi resmi kejuaraan layar Tukik Regatta dengan dynamic tracking di atas perairan laut terbuka berkecepatan 40 knot.', 'https://lh3.googleusercontent.com/aida-public/AB6AXuAQ115By97WeWvbfgtljRIhyK9kxyMbnflDQ3UKoZZzvHUdgpKiroEUQoHTavp9qkB_bAbF1XRL1An58C3RdXNtV0kRWMfPS5ayVz0iKrRXdN7QlQxxY1DmNx40U4XptQhH3kzQgL_POywyfGzzUz4sGe7bM4m4VRL-4uYiUgVy6WHNQgzHq-dF-5LIHDW64bR-b5nGWows9nbQiXAfFZxxoNxqpXv3ICcdX8DoBRQvvnMgoZhuH5bapQ')" class="w-full bg-primary-container text-on-primary font-label-caps text-xs py-3 slanted-btn font-bold flex items-center justify-center gap-2 glow-hover">
+              <span>Go to Gallery</span>
+              <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- Load More -->
+    <div class="mt-xl flex justify-center">
+      <button onclick="alert('Semua arsip misi utama telah dimuat. Untuk video lengkap, kunjungi Instagram @skymultirotor!')" class="bg-surface-container border border-outline-variant text-on-surface-variant hover:text-primary-container hover:border-primary-container px-8 py-3 slanted-btn font-label-caps uppercase transition-all duration-300 flex items-center gap-2 font-bold shadow">
+        <span class="material-symbols-outlined text-[16px]">refresh</span>
+        MUAT_LEBIH_BANYAK_LOG
+      </button>
+    </div>
+  </main>
+
+  <!-- Pre-Footer CTA Sections -->
+  <section class="grid grid-cols-1 md:grid-cols-2 mt-auto">
+    <!-- Instagram CTA -->
+    <div class="bg-primary-container text-on-primary p-8 md:p-12 flex flex-col justify-center items-center text-center relative overflow-hidden group">
+      <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+      <span class="material-symbols-outlined text-5xl mb-3" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
+      <h3 class="font-headline-lg text-2xl font-bold mb-2 uppercase tracking-tight">Instagram</h3>
+      <p class="font-body-md max-w-sm mb-6 text-sm opacity-90 leading-relaxed">
+        Follow kami untuk terus mendapat info-info terbaru di timeline kamu atau ada pertanyaan seputar keanggotaan?
+      </p>
+      <a class="border-2 border-on-primary text-on-primary px-6 py-2.5 slanted-btn font-label-caps font-bold hover:bg-on-primary hover:text-primary-container transition-colors flex items-center gap-2 text-xs" href="https://instagram.com/skymultirotor" target="_blank" rel="noopener noreferrer">
+        <span class="material-symbols-outlined text-base">alternate_email</span>
+        skymultirotor
+      </a>
+    </div>
+
+    <!-- Repair CTA -->
+    <div class="bg-surface-tint text-on-primary p-8 md:p-12 flex flex-col justify-center items-center text-center relative overflow-hidden group">
+      <div class="absolute inset-0 bg-primary-container opacity-0 group-hover:opacity-30 transition-opacity duration-300 pointer-events-none"></div>
+      <span class="material-symbols-outlined text-5xl mb-3" style="font-variation-settings: 'FILL' 1;">build</span>
+      <h3 class="font-headline-lg text-2xl font-bold mb-2 uppercase tracking-tight">Rakit atau Repair Drone?</h3>
+      <p class="font-body-md max-w-sm mb-6 text-sm opacity-90 leading-relaxed">
+        Untuk pilot beginner atau expert yang ingin rakit drone FPV, tuning Betaflight/ELRS, atau perbaikan action cam, hubungi tim mekanik kami!
+      </p>
+      <a class="border-2 border-on-primary text-on-primary px-6 py-2.5 slanted-btn font-label-caps font-bold hover:bg-on-primary hover:text-surface-tint transition-colors flex items-center gap-2 text-xs" href="https://wa.me/6287772272928?text=Halo%20Admin%20Sky%20Multirotor%20Squad,%20saya%20ingin%20konsultasi%20rakit/servis%20drone" target="_blank" rel="noopener noreferrer">
+        <span class="material-symbols-outlined text-base">call</span>
+        +62 877-7227-2928
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer Component -->
+  <footer class="bg-surface-container-lowest w-full border-t-4 border-primary-container">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-lg px-margin-mobile md:px-margin-desktop py-xl w-full max-w-7xl mx-auto">
+      <!-- Brand Info -->
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <img src="/logo.png" alt="Sky Multirotor Squad Logo" class="h-12 w-auto object-contain drop-shadow-[0_2px_10px_rgba(255,215,0,0.2)]"/>
+        </div>
+        <p class="text-on-surface-variant font-body-md text-sm mb-4 leading-relaxed">
+          Komunitas penggiat teknologi wahana tanpa awak (UAV), Drone Aerial, FPV, dan Aeromodeling di wilayah Serang, Cilegon, dan Banten.
+        </p>
+        <p class="text-on-surface-variant/70 font-label-caps text-xs">
+          © 2026 Sky Multirotor Squad. Hak Cipta Dilindungi.
+        </p>
+      </div>
+
+      <!-- Navigation Links -->
+      <div>
+        <h4 class="font-label-caps text-label-caps text-primary-container mb-md border-b border-surface-variant pb-xs inline-block">NAVIGASI</h4>
+        <div class="flex flex-col gap-2">
+          <a class="text-on-surface-variant hover:text-primary-container transition-colors font-body-md text-sm" href="/">Beranda</a>
+          <a class="text-on-surface-variant hover:text-primary-container transition-colors font-body-md text-sm" href="/pages/tentang-kami.html">Tentang Kami</a>
+          <a class="text-primary-container font-bold hover:text-primary-container transition-colors font-body-md text-sm" href="/pages/galeri.html">Galeri Foto & Video</a>
+          <a class="text-on-surface-variant hover:text-primary-container transition-colors font-body-md text-sm" href="/pages/spot-terbang.html">Spot Terbang Banten</a>
+          <a class="text-on-surface-variant hover:text-primary-container transition-colors font-body-md text-sm" href="/pages/kontak.html">Kontak & Keanggotaan</a>
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div>
+        <h4 class="font-label-caps text-label-caps text-primary-container mb-md border-b border-surface-variant pb-xs inline-block">MARKAS & BASECAMP</h4>
+        <div class="text-on-surface-variant font-body-md text-sm flex items-start gap-sm mb-sm">
+          <span class="material-symbols-outlined text-primary-container mt-1">location_on</span>
+          <p class="leading-relaxed">
+            <strong>Ecopark Citra Garden BMW</strong><br/>
+            Jl. Raya Serang - Cilegon, Wanayasa,<br/>
+            Kec. Kramatwatu, Serang, Banten 42161
+          </p>
+        </div>
+        <div class="mt-4 flex gap-3">
+          <a href="https://instagram.com/skymultirotor" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" title="Instagram">
+            <span class="material-symbols-outlined text-base">photo_camera</span>
+          </a>
+          <a href="https://wa.me/6287772272928" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-primary-container hover:bg-primary-container hover:text-on-primary transition-colors" title="WhatsApp">
+            <span class="material-symbols-outlined text-base">chat</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Gallery Lightbox Modal -->
+  <div id="gallery-modal" class="modal-backdrop fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="modal-content bg-surface-container-high border border-outline-variant rounded-lg max-w-2xl w-full p-6 text-left relative overflow-hidden shadow-2xl">
+      <button onclick="closeModal('gallery-modal')" class="absolute top-4 right-4 text-on-surface-variant hover:text-primary-container bg-surface p-1 rounded">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+
+      <div class="w-full h-72 rounded mb-4 overflow-hidden bg-black flex items-center justify-center border border-surface-variant">
+        <img id="modal-img" src="" alt="Detail Misi" class="w-full h-full object-cover"/>
+      </div>
+
+      <div class="flex items-center gap-2 mb-1">
+        <span class="bg-primary-container text-black font-label-caps text-[10px] font-bold px-2 py-0.5 rounded uppercase">MISSION_LOG</span>
+        <span id="modal-loc" class="font-label-caps text-xs text-primary-container"></span>
+      </div>
+
+      <h3 id="modal-title" class="font-stats-lg text-2xl text-white font-bold mb-2"></h3>
+      <p id="modal-desc" class="text-on-surface-variant text-sm mb-6 leading-relaxed"></p>
+
+      <div class="flex justify-end gap-3 font-label-caps text-xs">
+        <button onclick="closeModal('gallery-modal')" class="bg-surface-container border border-surface-variant text-white px-5 py-2.5 rounded hover:border-primary-container transition-colors">
+          TUTUP
+        </button>
+        <a href="https://instagram.com/skymultirotor" target="_blank" rel="noopener noreferrer" class="bg-primary-container text-black font-bold px-5 py-2.5 rounded flex items-center gap-1.5 hover:opacity-90">
+          <span class="material-symbols-outlined text-sm">open_in_new</span>
+          LIHAT DI INSTAGRAM
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/js/main.js"></script>
+  <script>
+    // Gallery Lightbox helper
+    window.openGalleryModal = function(title, loc, desc, img) {
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-loc').textContent = '[' + loc + ']';
+      document.getElementById('modal-desc').textContent = desc;
+      document.getElementById('modal-img').src = img;
+      openModal('gallery-modal');
+    };
+
+    // Gallery Category Filtering
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabs = document.querySelectorAll('#gallery-tabs button');
+      const items = document.querySelectorAll('#gallery-grid article');
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => {
+            t.classList.remove('bg-primary-container', 'text-background', 'active');
+            t.classList.add('bg-surface-container', 'text-primary-container');
+          });
+          tab.classList.add('bg-primary-container', 'text-background', 'active');
+          tab.classList.remove('bg-surface-container', 'text-primary-container');
+
+          const filter = tab.getAttribute('data-category');
+          items.forEach(item => {
+            const cat = item.getAttribute('data-category');
+            if (filter === 'all' || cat === filter) {
+              item.style.display = 'flex';
+            } else {
+              item.style.display = 'none';
+            }
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>
