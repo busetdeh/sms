@@ -799,6 +799,11 @@ function loadSpeelwijkSettings() {
 
   setVal('setting-speelwijk-title', cachedSpeelwijkSettings.title);
   setVal('setting-speelwijk-subtitle', cachedSpeelwijkSettings.subtitle);
+  const slug = cachedSpeelwijkSettings.slug || 'sms-fly-through-history';
+  setVal('setting-speelwijk-slug', slug);
+  const liveBtn = document.getElementById('speelwijk-btn-view-live');
+  if (liveBtn) liveBtn.href = `/${slug}`;
+
   setVal('setting-speelwijk-date', cachedSpeelwijkSettings.date);
   setVal('setting-speelwijk-fee', cachedSpeelwijkSettings.fee);
   setVal('setting-speelwijk-wa', cachedSpeelwijkSettings.waNumber);
@@ -1245,6 +1250,15 @@ function initFormSubmissions() {
     e.preventDefault();
     const title = document.getElementById('setting-speelwijk-title').value.trim();
     const subtitle = document.getElementById('setting-speelwijk-subtitle').value.trim();
+    
+    let rawSlug = document.getElementById('setting-speelwijk-slug')?.value.trim() || 'sms-fly-through-history';
+    const slug = rawSlug.replace(/^\/+/, '').replace(/\s+/g, '-').toLowerCase();
+    const slugInput = document.getElementById('setting-speelwijk-slug');
+    if (slugInput) slugInput.value = slug;
+
+    const liveBtn = document.getElementById('speelwijk-btn-view-live');
+    if (liveBtn) liveBtn.href = `/${slug}`;
+
     const date = document.getElementById('setting-speelwijk-date').value.trim();
     const fee = document.getElementById('setting-speelwijk-fee').value.trim();
     const waNumber = document.getElementById('setting-speelwijk-wa').value.trim();
@@ -1263,6 +1277,7 @@ function initFormSubmissions() {
     const payload = { 
       title, 
       subtitle, 
+      slug,
       date, 
       fee, 
       waNumber, 
@@ -1279,7 +1294,7 @@ function initFormSubmissions() {
     };
 
     saveSpeelwijkSettings(payload);
-    showToast('Pengaturan informasi, tiket & rekening microsite berhasil disimpan!', 'success');
+    showToast(`Pengaturan berhasil disimpan! Slug aktif: /${slug}`, 'success');
   });
 }
 

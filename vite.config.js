@@ -1,69 +1,58 @@
 import { resolve } from 'node:path';
+import { existsSync } from 'node:fs';
 
 function cleanUrlsPlugin() {
+  const handleRequest = (req) => {
+    if (!req.url) return;
+    const urlObj = new URL(req.url, 'http://localhost');
+    const pathname = urlObj.pathname;
+    
+    if (!pathname.includes('.') && !pathname.endsWith('/')) {
+      const pageMap = {
+        '/admin': '/admin.html',
+        '/pages/admin': '/pages/admin.html',
+        '/tentang-kami': '/pages/tentang-kami.html',
+        '/galeri': '/pages/galeri.html',
+        '/spot-terbang': '/pages/spot-terbang.html',
+        '/kontak': '/pages/kontak.html',
+        '/artikel': '/pages/artikel.html',
+        '/sms-fly-through-history': '/benteng-speelwijk.html',
+        '/pages/sms-fly-through-history': '/pages/benteng-speelwijk.html',
+        '/benteng-speelwijk': '/benteng-speelwijk.html',
+        '/pages/benteng-speelwijk': '/pages/benteng-speelwijk.html',
+        '/pages/tentang-kami': '/pages/tentang-kami.html',
+        '/pages/galeri': '/pages/galeri.html',
+        '/pages/spot-terbang': '/pages/spot-terbang.html',
+        '/pages/kontak': '/pages/kontak.html',
+        '/pages/artikel': '/pages/artikel.html',
+      };
+      
+      if (pageMap[pathname]) {
+        req.url = pageMap[pathname] + urlObj.search;
+      } else {
+        // Dynamic fallback check
+        const directFile = resolve(process.cwd(), pathname.slice(1) + '.html');
+        const pagesFile = resolve(process.cwd(), 'pages' + pathname + '.html');
+        if (existsSync(directFile)) {
+          req.url = pathname + '.html' + urlObj.search;
+        } else if (existsSync(pagesFile)) {
+          req.url = '/pages' + pathname + '.html' + urlObj.search;
+        }
+      }
+    }
+  };
+
   return {
     name: 'vite-plugin-clean-urls',
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
-        if (req.url) {
-          const urlObj = new URL(req.url, 'http://localhost');
-          const pathname = urlObj.pathname;
-          
-          if (!pathname.includes('.') && !pathname.endsWith('/')) {
-            const pageMap = {
-              '/admin': '/admin.html',
-              '/pages/admin': '/pages/admin.html',
-              '/tentang-kami': '/pages/tentang-kami.html',
-              '/galeri': '/pages/galeri.html',
-              '/spot-terbang': '/pages/spot-terbang.html',
-              '/kontak': '/pages/kontak.html',
-              '/artikel': '/pages/artikel.html',
-              '/benteng-speelwijk': '/benteng-speelwijk.html',
-              '/pages/benteng-speelwijk': '/pages/benteng-speelwijk.html',
-              '/pages/tentang-kami': '/pages/tentang-kami.html',
-              '/pages/galeri': '/pages/galeri.html',
-              '/pages/spot-terbang': '/pages/spot-terbang.html',
-              '/pages/kontak': '/pages/kontak.html',
-              '/pages/artikel': '/pages/artikel.html',
-            };
-            
-            if (pageMap[pathname]) {
-              req.url = pageMap[pathname] + urlObj.search;
-            }
-          }
-        }
+        handleRequest(req);
         next();
       });
     },
     configurePreviewServer(server) {
       server.middlewares.use((req, res, next) => {
-        if (req.url) {
-          const urlObj = new URL(req.url, 'http://localhost');
-          const pathname = urlObj.pathname;
-          
-          if (!pathname.includes('.') && !pathname.endsWith('/')) {
-            const pageMap = {
-              '/admin': '/admin.html',
-              '/pages/admin': '/pages/admin.html',
-              '/tentang-kami': '/pages/tentang-kami.html',
-              '/galeri': '/pages/galeri.html',
-              '/spot-terbang': '/pages/spot-terbang.html',
-              '/kontak': '/pages/kontak.html',
-              '/artikel': '/pages/artikel.html',
-              '/benteng-speelwijk': '/benteng-speelwijk.html',
-              '/pages/benteng-speelwijk': '/pages/benteng-speelwijk.html',
-              '/pages/tentang-kami': '/pages/tentang-kami.html',
-              '/pages/galeri': '/pages/galeri.html',
-              '/pages/spot-terbang': '/pages/spot-terbang.html',
-              '/pages/kontak': '/pages/kontak.html',
-              '/pages/artikel': '/pages/artikel.html',
-            };
-            
-            if (pageMap[pathname]) {
-              req.url = pageMap[pathname] + urlObj.search;
-            }
-          }
-        }
+        handleRequest(req);
         next();
       });
     },

@@ -412,7 +412,7 @@ function initEventCalendar() {
       time: '08:00 - 17:00 WIB (2 Hari)',
       description: 'Kompetisi balap FPV menembus reruntuhan cagar budaya Benteng Speelwijk abad ke-17. Kategori: Racing FPV, Cinematic Heritage & Long Range.',
       slots: 'Slot Pilot Terbuka',
-      custom_link: '/benteng-speelwijk'
+      custom_link: '/sms-fly-through-history'
     },
     {
       id: 'ev-6',
