@@ -661,9 +661,26 @@
                   </div>
                 </div>
 
-                <div>
-                  <label class="block font-label-caps text-primary-container text-xs mb-1">URL / FOTO GAMBAR QRIS (OPSIONAL)</label>
-                  <input id="setting-speelwijk-qris-image" type="text" placeholder="https://... atau data:image/..." class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div class="md:col-span-3">
+                    <label class="block font-label-caps text-primary-container text-xs mb-1">URL / FOTO GAMBAR QRIS (OPSIONAL)</label>
+                    <input id="setting-speelwijk-qris-image" type="text" placeholder="https://... atau data:image/..." class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                    
+                    <!-- QRIS Dropzone -->
+                    <div id="speelwijk-qris-dropzone" class="mt-2 border-2 border-dashed border-surface-variant hover:border-primary-container hover:bg-surface-container-high/40 rounded p-4 text-center cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5 group">
+                      <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary-container text-2xl transition-colors">cloud_upload</span>
+                      <span class="text-[11px] text-white font-medium">Klik atau Seret Foto QRIS Ke Sini</span>
+                      <span class="text-[9px] text-on-surface-variant">Maksimal file 2MB (PNG/JPG)</span>
+                      <input id="setting-speelwijk-qris-file" type="file" accept="image/*" class="hidden"/>
+                    </div>
+                  </div>
+                  
+                  <div class="flex flex-col items-center justify-center border border-surface-variant rounded-lg p-3 bg-surface-container-low">
+                    <span class="text-[9px] font-label-caps text-on-surface-variant mb-1.5 uppercase">Preview QRIS</span>
+                    <div class="w-24 h-24 bg-white rounded flex items-center justify-center overflow-hidden border border-outline-variant p-1">
+                      <img id="setting-speelwijk-qris-preview" src="/logo.png" alt="QRIS Preview" class="w-full h-full object-contain"/>
+                    </div>
+                  </div>
                 </div>
               </div>
 

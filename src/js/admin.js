@@ -76,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initModalListeners();
   initFormSubmissions();
   initPilotSync();
+  initSpeelwijkQrisUpload();
   setupRealtimeListeners();
 });
 
@@ -814,7 +815,15 @@ function loadSpeelwijkSettings() {
   // QRIS & Bank transfer fields
   setVal('setting-speelwijk-qris-merchant', cachedSpeelwijkSettings.qrisMerchant || 'Sky Multirotor Squad');
   setVal('setting-speelwijk-qris-nmid', cachedSpeelwijkSettings.qrisNmid || 'ID1020038849502');
-  setVal('setting-speelwijk-qris-image', cachedSpeelwijkSettings.qrisImageUrl || '');
+  
+  const qrisImgUrl = cachedSpeelwijkSettings.qrisImageUrl || '';
+  setVal('setting-speelwijk-qris-image', qrisImgUrl);
+  const qrisPreview = document.getElementById('setting-speelwijk-qris-preview');
+  if (qrisPreview) {
+    qrisPreview.src = qrisImgUrl || '/logo.png';
+    qrisPreview.onerror = () => { qrisPreview.src = '/logo.png'; };
+  }
+
   setVal('setting-speelwijk-bank-name', cachedSpeelwijkSettings.bankName || 'BCA (Bank Central Asia)');
   setVal('setting-speelwijk-bank-account', cachedSpeelwijkSettings.bankAccount || '883-091-2839');
   setVal('setting-speelwijk-bank-holder', cachedSpeelwijkSettings.bankHolder || 'SKY MULTIROTOR SQUAD');
@@ -999,6 +1008,86 @@ function initPilotPhotoUploadListeners() {
     }
   });
 }
+
+/* -------------------------------------------------------------------------- */
+/* SPEELWIJK QRIS PHOTO UPLOAD CONTROLLER                                     */
+/* -------------------------------------------------------------------------- */
+function initSpeelwijkQrisUpload() {
+  const fileInput = document.getElementById('setting-speelwijk-qris-file');
+  const dropzone = document.getElementById('speelwijk-qris-dropzone');
+  const qrisInput = document.getElementById('setting-speelwijk-qris-image');
+  const qrisPreview = document.getElementById('setting-speelwijk-qris-preview');
+
+  if (!fileInput || !dropzone) return;
+
+  // Click dropzone to trigger file input
+  dropzone.addEventListener('click', () => fileInput.click());
+
+  // Input value change live preview
+  if (qrisInput && qrisPreview) {
+    const updatePreview = () => {
+      const val = qrisInput.value.trim();
+      qrisPreview.src = val || '/logo.png';
+      qrisPreview.onerror = () => { qrisPreview.src = '/logo.png'; };
+    };
+    qrisInput.addEventListener('input', updatePreview);
+    qrisInput.addEventListener('change', updatePreview);
+  }
+
+  // Handle selected file
+  async function handleFileSelected(file) {
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      showToast('File harus berupa gambar (JPG, PNG, WEBP).', 'error');
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      showToast('Ukuran QRIS maksimal 2 MB.', 'error');
+      return;
+    }
+
+    // Instant preview & base64 conversion
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (qrisPreview) qrisPreview.src = e.target.result;
+      if (qrisInput) {
+        qrisInput.value = e.target.result;
+      }
+      showToast('Gambar QRIS berhasil dimuat!', 'success');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // File input change
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFileSelected(e.target.files[0]);
+    }
+  });
+
+  // Drag and Drop
+  dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.classList.add('border-primary-container', 'bg-surface-container-high/40');
+  });
+
+  ['dragleave', 'dragend'].forEach(type => {
+    dropzone.addEventListener(type, () => {
+      dropzone.classList.remove('border-primary-container', 'bg-surface-container-high/40');
+    });
+  });
+
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('border-primary-container', 'bg-surface-container-high/40');
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileSelected(e.dataTransfer.files[0]);
+    }
+  });
+}
+
 
 // Spot Modal
 function openSpotModal(spotData = null) {
