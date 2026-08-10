@@ -11,6 +11,8 @@ function cleanUrlsPlugin() {
           
           if (!pathname.includes('.') && !pathname.endsWith('/')) {
             const pageMap = {
+              '/admin': '/pages/admin.html',
+              '/pages/admin': '/pages/admin.html',
               '/tentang-kami': '/pages/tentang-kami.html',
               '/galeri': '/pages/galeri.html',
               '/spot-terbang': '/pages/spot-terbang.html',
@@ -39,6 +41,8 @@ function cleanUrlsPlugin() {
           
           if (!pathname.includes('.') && !pathname.endsWith('/')) {
             const pageMap = {
+              '/admin': '/pages/admin.html',
+              '/pages/admin': '/pages/admin.html',
               '/tentang-kami': '/pages/tentang-kami.html',
               '/galeri': '/pages/galeri.html',
               '/spot-terbang': '/pages/spot-terbang.html',
@@ -76,6 +80,7 @@ export default {
     rollupOptions: {
       input: {
         main: resolve(process.cwd(), 'index.html'),
+        admin: resolve(process.cwd(), 'pages/admin.html'),
         about: resolve(process.cwd(), 'pages/tentang-kami.html'),
         articles: resolve(process.cwd(), 'pages/artikel.html'),
         gallery: resolve(process.cwd(), 'pages/galeri.html'),

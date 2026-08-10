@@ -1,6 +1,6 @@
 /**
  * Supabase Client & Data Integration for Sky Multirotor Squad
- * Handles dynamic fetching and realtime synchronization for Events, Pilots, Spots, Gallery, and Contacts.
+ * Handles authentication, dynamic fetching, realtime synchronization, and full CRUD operations.
  */
 
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
@@ -10,9 +10,54 @@ const SUPABASE_ANON_KEY = import.meta.env?.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOi
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/**
- * Fetch all events sorted by date
- */
+/* -------------------------------------------------------------------------- */
+/* AUTHENTICATION METHODS                                                     */
+/* -------------------------------------------------------------------------- */
+
+export async function adminLogin(email, password) {
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+    if (error) throw error;
+    return { success: true, user: data.user, session: data.session };
+  } catch (err) {
+    return { success: false, error: err.message || 'Gagal login. Periksa email & password.' };
+  }
+}
+
+export async function adminLogout() {
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function getAdminUser() {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    return user;
+  } catch (err) {
+    return null;
+  }
+}
+
+export function onAuthChange(callback) {
+  return supabase.auth.onAuthStateChange((event, session) => {
+    if (typeof callback === 'function') {
+      callback(event, session);
+    }
+  });
+}
+
+/* -------------------------------------------------------------------------- */
+/* EVENTS CRUD                                                                */
+/* -------------------------------------------------------------------------- */
+
 export async function getSupabaseEvents() {
   try {
     const { data, error } = await supabase
@@ -20,100 +65,275 @@ export async function getSupabaseEvents() {
       .select('*')
       .order('date', { ascending: true });
 
-    if (error) {
-      console.warn('Supabase events fetch warning:', error.message);
-      return null;
-    }
-    return data && data.length > 0 ? data : null;
+    if (error) throw error;
+    return data;
   } catch (err) {
-    console.warn('Supabase offline or table not ready, using fallback local events:', err);
+    console.warn('Events fetch error:', err.message);
     return null;
   }
 }
 
-/**
- * Fetch all squad pilots sorted by display order
- */
+export async function createSupabaseEvent(eventData) {
+  try {
+    const { data, error } = await supabase
+      .from('events')
+      .insert([eventData])
+      .select();
+    if (error) throw error;
+    return { success: true, data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function updateSupabaseEvent(id, eventData) {
+  try {
+    const { data, error } = await supabase
+      .from('events')
+      .update(eventData)
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return { success: true, data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function deleteSupabaseEvent(id) {
+  try {
+    const { error } = await supabase
+      .from('events')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* PILOTS CRUD                                                                */
+/* -------------------------------------------------------------------------- */
+
 export async function getSupabasePilots() {
   try {
     const { data, error } = await supabase
       .from('pilots')
       .select('*')
       .order('display_order', { ascending: true });
-
-    if (error) {
-      console.warn('Supabase pilots fetch warning:', error.message);
-      return null;
-    }
-    return data && data.length > 0 ? data : null;
+    if (error) throw error;
+    return data;
   } catch (err) {
-    console.warn('Supabase pilots offline, using fallback:', err);
+    console.warn('Pilots fetch error:', err.message);
     return null;
   }
 }
 
-/**
- * Fetch all flying spots
- */
+export async function createSupabasePilot(pilotData) {
+  try {
+    const { data, error } = await supabase
+      .from('pilots')
+      .insert([pilotData])
+      .select();
+    if (error) throw error;
+    return { success: true, data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function updateSupabasePilot(id, pilotData) {
+  try {
+    const { data, error } = await supabase
+      .from('pilots')
+      .update(pilotData)
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return { success: true, data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function deleteSupabasePilot(id) {
+  try {
+    const { error } = await supabase
+      .from('pilots')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* FLYING SPOTS CRUD                                                          */
+/* -------------------------------------------------------------------------- */
+
 export async function getSupabaseSpots() {
   try {
     const { data, error } = await supabase
       .from('flying_spots')
       .select('*')
       .order('created_at', { ascending: true });
-
-    if (error) {
-      console.warn('Supabase flying_spots fetch warning:', error.message);
-      return null;
-    }
-    return data && data.length > 0 ? data : null;
+    if (error) throw error;
+    return data;
   } catch (err) {
-    console.warn('Supabase spots offline, using fallback:', err);
+    console.warn('Spots fetch error:', err.message);
     return null;
   }
 }
 
-/**
- * Fetch all gallery entries
- */
+export async function createSupabaseSpot(spotData) {
+  try {
+    const { data, error } = await supabase
+      .from('flying_spots')
+      .insert([spotData])
+      .select();
+    if (error) throw error;
+    return { success: true, data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function updateSupabaseSpot(id, spotData) {
+  try {
+    const { data, error } = await supabase
+      .from('flying_spots')
+      .update(spotData)
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return { success: true, data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function deleteSupabaseSpot(id) {
+  try {
+    const { error } = await supabase
+      .from('flying_spots')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* GALLERY CRUD                                                               */
+/* -------------------------------------------------------------------------- */
+
 export async function getSupabaseGallery() {
   try {
     const { data, error } = await supabase
       .from('gallery')
       .select('*')
       .order('display_order', { ascending: true });
-
-    if (error) {
-      console.warn('Supabase gallery fetch warning:', error.message);
-      return null;
-    }
-    return data && data.length > 0 ? data : null;
+    if (error) throw error;
+    return data;
   } catch (err) {
-    console.warn('Supabase gallery offline, using fallback:', err);
+    console.warn('Gallery fetch error:', err.message);
     return null;
   }
 }
 
-/**
- * Submit message or member registration to contacts table
- */
+export async function createSupabaseGalleryItem(itemData) {
+  try {
+    const { data, error } = await supabase
+      .from('gallery')
+      .insert([itemData])
+      .select();
+    if (error) throw error;
+    return { success: true, data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function updateSupabaseGalleryItem(id, itemData) {
+  try {
+    const { data, error } = await supabase
+      .from('gallery')
+      .update(itemData)
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return { success: true, data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function deleteSupabaseGalleryItem(id) {
+  try {
+    const { error } = await supabase
+      .from('gallery')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* CONTACTS / INBOX CRUD                                                      */
+/* -------------------------------------------------------------------------- */
+
+export async function getSupabaseContacts() {
+  try {
+    const { data, error } = await supabase
+      .from('contacts')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return data;
+  } catch (err) {
+    console.warn('Contacts fetch error:', err.message);
+    return null;
+  }
+}
+
 export async function submitSupabaseContact(contactData) {
   try {
     const { data, error } = await supabase
       .from('contacts')
       .insert([contactData]);
-
     if (error) throw error;
     return { success: true, data };
   } catch (err) {
-    console.error('Failed to submit contact to Supabase:', err);
     return { success: false, error: err.message };
   }
 }
 
-/**
- * Setup Realtime Subscription on any table
- */
+export async function deleteSupabaseContact(id) {
+  try {
+    const { error } = await supabase
+      .from('contacts')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* REALTIME SUBSCRIPTION                                                      */
+/* -------------------------------------------------------------------------- */
+
 export function subscribeToTable(tableName, onUpdateCallback) {
   try {
     return supabase

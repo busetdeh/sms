@@ -3,6 +3,8 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
+    { "source": "/admin", "destination": "/pages/admin.html" },
+    { "source": "/pages/admin", "destination": "/pages/admin.html" },
     { "source": "/tentang-kami", "destination": "/pages/tentang-kami.html" },
     { "source": "/galeri", "destination": "/pages/galeri.html" },
     { "source": "/spot-terbang", "destination": "/pages/spot-terbang.html" },

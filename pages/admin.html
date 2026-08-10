@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Admin Command Center | Sky Multirotor Squad</title>
+  <link rel="icon" type="image/png" href="/logo.png"/>
+
+  <!-- Fonts & Icons -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#ffc700",
+            "primary-container": "#ffc700",
+            "on-primary": "#000000",
+            "surface": "#121313",
+            "surface-container": "#1d1e1e",
+            "surface-container-high": "#282829",
+            "surface-variant": "#353535",
+            "on-surface": "#e5e2e1",
+            "on-surface-variant": "#c4c7c5",
+            "outline": "#8e918f",
+            "outline-variant": "#444746"
+          },
+          fontFamily: {
+            "headline": ["Space Grotesk", "sans-serif"],
+            "body": ["Space Grotesk", "sans-serif"],
+            "label-caps": ["Space Grotesk", "sans-serif"],
+            "stats-lg": ["Space Grotesk", "sans-serif"]
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #0c0d0d;
+      color: #e5e2e1;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .hud-grid {
+      background-size: 30px 30px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 199, 0, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 199, 0, 0.04) 1px, transparent 1px);
+    }
+    .slant-btn {
+      clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    }
+    .modal-backdrop {
+      display: none;
+    }
+    .modal-backdrop.active {
+      display: flex;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #121313;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #353535;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ffc700;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col antialiased selection:bg-primary selection:text-black">
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-[9999] flex flex-col gap-2 max-w-md w-full px-4 pointer-events-none *:pointer-events-auto"></div>
+
+  <!-- ========================================================================= -->
+  <!-- 1. LOGIN VIEW (DISPLAYED WHEN UNAUTHENTICATED)                            -->
+  <!-- ========================================================================= -->
+  <div id="login-view" class="min-h-screen flex items-center justify-center p-4 hud-grid relative">
+    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black pointer-events-none"></div>
+
+    <div class="max-w-md w-full bg-surface-container border border-surface-variant p-8 rounded-xl shadow-2xl relative z-10">
+      <div class="text-center mb-6">
+        <img src="/logo.png" alt="Sky Multirotor Squad Logo" class="w-16 h-16 mx-auto mb-3 object-contain drop-shadow-[0_0_15px_rgba(255,199,0,0.5)]"/>
+        <div class="font-label-caps text-xs text-primary-container tracking-widest uppercase mb-1">COMMAND CENTER AUTENTIKASI</div>
+        <h1 class="font-stats-lg text-2xl text-white font-bold tracking-wide">SKY MULTIROTOR SQUAD</h1>
+        <p class="font-body-md text-xs text-on-surface-variant mt-1">Masuk untuk mengelola agenda, pilot, galeri, dan kontak database.</p>
+      </div>
+
+      <form id="admin-login-form" class="space-y-4">
+        <div>
+          <label for="login-email" class="block font-label-caps text-xs text-primary-container mb-1">EMAIL ADMINISTRATOR</label>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-base">mail</span>
+            <input id="login-email" type="email" required placeholder="admin@skymultirotor.com" class="w-full bg-surface-container-high border border-surface-variant rounded pl-10 pr-3 py-2.5 text-white font-body-md text-sm focus:border-primary-container focus:outline-none"/>
+          </div>
+        </div>
+
+        <div>
+          <label for="login-password" class="block font-label-caps text-xs text-primary-container mb-1">KATA SANDI / SECURITY KEY</label>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-base">lock</span>
+            <input id="login-password" type="password" required placeholder="••••••••••••" class="w-full bg-surface-container-high border border-surface-variant rounded pl-10 pr-3 py-2.5 text-white font-body-md text-sm focus:border-primary-container focus:outline-none"/>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full bg-primary-container text-on-primary font-label-caps text-xs py-3 font-bold slant-btn flex items-center justify-center gap-2 hover:bg-yellow-400 transition-all shadow-lg mt-2">
+          <span class="material-symbols-outlined text-base">login</span>
+          OTORISASI &amp; MASUK DASHBOARD
+        </button>
+      </form>
+
+      <div class="mt-6 pt-4 border-t border-surface-variant text-center flex items-center justify-between text-xs font-label-caps text-on-surface-variant">
+        <a href="/" class="hover:text-primary-container flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">arrow_back</span> Kembali ke Web
+        </a>
+        <span class="text-[10px] opacity-70">Supabase Auth Secure</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 2. DASHBOARD VIEW (DISPLAYED WHEN AUTHENTICATED)                          -->
+  <!-- ========================================================================= -->
+  <div id="dashboard-view" class="hidden min-h-screen flex flex-col bg-surface">
+    
+    <!-- Top Navigation Bar -->
+    <header class="bg-surface-container border-b border-surface-variant sticky top-0 z-40 px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="/logo.png" alt="SMS Logo" class="w-9 h-9 object-contain"/>
+        <div>
+          <div class="font-stats-lg text-sm font-bold text-white tracking-wider flex items-center gap-1.5">
+            SKY MULTIROTOR SQUAD <span class="bg-primary-container text-black text-[9px] font-bold px-1.5 py-0.2 rounded">ADMIN</span>
+          </div>
+          <div class="font-label-caps text-[10px] text-primary-container tracking-widest">COMMAND CENTER v2.0</div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="/" target="_blank" class="hidden sm:flex items-center gap-1 text-xs font-label-caps text-on-surface-variant hover:text-primary-container border border-surface-variant px-3 py-1.5 rounded transition-colors">
+          <span class="material-symbols-outlined text-sm">open_in_new</span> Lihat Website
+        </a>
+
+        <div class="flex items-center gap-2 bg-surface-container-high px-3 py-1 rounded border border-surface-variant text-xs">
+          <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+          <span id="admin-user-email" class="text-on-surface-variant font-label-caps truncate max-w-[150px] sm:max-w-[200px]">admin@skymultirotor.com</span>
+        </div>
+
+        <button id="admin-logout-btn" class="text-xs font-label-caps text-red-400 hover:text-red-300 border border-red-500/30 hover:bg-red-950/40 px-3 py-1.5 rounded transition-colors flex items-center gap-1" title="Logout">
+          <span class="material-symbols-outlined text-sm">logout</span>
+          <span class="hidden sm:inline">Keluar</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace (Sidebar + Content Canvas) -->
+    <div class="flex-grow flex flex-col md:flex-row">
+      
+      <!-- Sidebar Navigation -->
+      <aside class="w-full md:w-64 bg-surface-container border-r border-surface-variant p-4 flex md:flex-col gap-1.5 overflow-x-auto md:overflow-x-visible shrink-0">
+        <div class="hidden md:block font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest px-3 mb-2">MODUL KONTROL</div>
+
+        <button data-tab="overview" class="admin-tab-btn flex items-center gap-2 px-3 py-2.5 rounded font-label-caps text-xs whitespace-nowrap bg-primary-container text-on-primary font-bold transition-all">
+          <span class="material-symbols-outlined text-base">dashboard</span>
+          <span>Overview Stats</span>
+        </button>
+
+        <button data-tab="events" class="admin-tab-btn flex items-center gap-2 px-3 py-2.5 rounded font-label-caps text-xs whitespace-nowrap text-on-surface-variant hover:bg-surface-container-high transition-all">
+          <span class="material-symbols-outlined text-base">calendar_month</span>
+          <span>Jadwal Acara</span>
+        </button>
+
+        <button data-tab="pilots" class="admin-tab-btn flex items-center gap-2 px-3 py-2.5 rounded font-label-caps text-xs whitespace-nowrap text-on-surface-variant hover:bg-surface-container-high transition-all">
+          <span class="material-symbols-outlined text-base">groups</span>
+          <span>Pilot Skuad</span>
+        </button>
+
+        <button data-tab="spots" class="admin-tab-btn flex items-center gap-2 px-3 py-2.5 rounded font-label-caps text-xs whitespace-nowrap text-on-surface-variant hover:bg-surface-container-high transition-all">
+          <span class="material-symbols-outlined text-base">share_location</span>
+          <span>Spot Terbang</span>
+        </button>
+
+        <button data-tab="gallery" class="admin-tab-btn flex items-center gap-2 px-3 py-2.5 rounded font-label-caps text-xs whitespace-nowrap text-on-surface-variant hover:bg-surface-container-high transition-all">
+          <span class="material-symbols-outlined text-base">photo_library</span>
+          <span>Galeri Misi</span>
+        </button>
+
+        <button data-tab="inbox" class="admin-tab-btn flex items-center gap-2 px-3 py-2.5 rounded font-label-caps text-xs whitespace-nowrap text-on-surface-variant hover:bg-surface-container-high transition-all">
+          <span class="material-symbols-outlined text-base">inbox</span>
+          <span>Kotak Masuk</span>
+        </button>
+      </aside>
+
+      <!-- Content Area -->
+      <main class="flex-grow p-4 sm:p-6 md:p-8 max-w-7xl w-full">
+        
+        <!-- Header Bar -->
+        <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-surface-variant pb-4">
+          <h2 id="admin-page-title" class="font-stats-lg text-xl sm:text-2xl text-white font-bold uppercase">
+            Dashboard Overview &amp; Statistik
+          </h2>
+          <div class="font-label-caps text-xs text-primary-container flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-primary-container shadow-[0_0_8px_rgba(255,199,0,0.8)]"></span>
+            <span>DATABASE SUPABASE REALTIME SYNC</span>
+          </div>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- TAB 1: OVERVIEW                                                   -->
+        <!-- ================================================================= -->
+        <section id="section-overview" class="admin-tab-section space-y-6">
+          <!-- KPI Stat Cards -->
+          <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            <div class="bg-surface-container border border-surface-variant p-4 rounded-lg">
+              <div class="flex items-center justify-between text-on-surface-variant mb-1">
+                <span class="font-label-caps text-[10px]">TOTAL ACARA</span>
+                <span class="material-symbols-outlined text-primary-container text-base">event</span>
+              </div>
+              <div id="stat-events-count" class="font-stats-lg text-3xl font-bold text-white">0</div>
+              <div class="text-[10px] text-primary-container mt-1 font-label-caps">Agenda Terjadwal</div>
+            </div>
+
+            <div class="bg-surface-container border border-surface-variant p-4 rounded-lg">
+              <div class="flex items-center justify-between text-on-surface-variant mb-1">
+                <span class="font-label-caps text-[10px]">PILOT SKUAD</span>
+                <span class="material-symbols-outlined text-primary-container text-base">person</span>
+              </div>
+              <div id="stat-pilots-count" class="font-stats-lg text-3xl font-bold text-white">0</div>
+              <div class="text-[10px] text-primary-container mt-1 font-label-caps">Roster Anggota</div>
+            </div>
+
+            <div class="bg-surface-container border border-surface-variant p-4 rounded-lg">
+              <div class="flex items-center justify-between text-on-surface-variant mb-1">
+                <span class="font-label-caps text-[10px]">SPOT TERBANG</span>
+                <span class="material-symbols-outlined text-primary-container text-base">location_on</span>
+              </div>
+              <div id="stat-spots-count" class="font-stats-lg text-3xl font-bold text-white">0</div>
+              <div class="text-[10px] text-primary-container mt-1 font-label-caps">Zona Banten</div>
+            </div>
+
+            <div class="bg-surface-container border border-surface-variant p-4 rounded-lg">
+              <div class="flex items-center justify-between text-on-surface-variant mb-1">
+                <span class="font-label-caps text-[10px]">ARSIP GALERI</span>
+                <span class="material-symbols-outlined text-primary-container text-base">photo_camera</span>
+              </div>
+              <div id="stat-gallery-count" class="font-stats-lg text-3xl font-bold text-white">0</div>
+              <div class="text-[10px] text-primary-container mt-1 font-label-caps">Log Misi Visual</div>
+            </div>
+
+            <div class="bg-surface-container border border-surface-variant p-4 rounded-lg col-span-2 lg:col-span-1">
+              <div class="flex items-center justify-between text-on-surface-variant mb-1">
+                <span class="font-label-caps text-[10px]">TRANSMISI MASUK</span>
+                <span class="material-symbols-outlined text-primary-container text-base">mail</span>
+              </div>
+              <div id="stat-inbox-count" class="font-stats-lg text-3xl font-bold text-white">0</div>
+              <div class="text-[10px] text-primary-container mt-1 font-label-caps">Pesan Pengunjung</div>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="p-6 bg-surface-container border border-surface-variant rounded-lg">
+            <h3 class="font-stats-lg text-lg text-white font-bold mb-4 flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary-container">bolt</span>
+              Pintasan Aksi Cepat
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+              <button onclick="document.querySelector('[data-tab=events]').click(); setTimeout(() => document.getElementById('btn-add-event').click(), 100);" class="bg-surface-container-high hover:border-primary-container border border-surface-variant p-3.5 rounded text-left flex items-center gap-3 transition-colors">
+                <span class="material-symbols-outlined text-primary-container text-2xl">add_circle</span>
+                <div>
+                  <div class="font-bold text-white text-xs font-label-caps">Tambah Acara</div>
+                  <div class="text-[10px] text-on-surface-variant">Update kalender</div>
+                </div>
+              </button>
+
+              <button onclick="document.querySelector('[data-tab=pilots]').click(); setTimeout(() => document.getElementById('btn-add-pilot').click(), 100);" class="bg-surface-container-high hover:border-primary-container border border-surface-variant p-3.5 rounded text-left flex items-center gap-3 transition-colors">
+                <span class="material-symbols-outlined text-primary-container text-2xl">person_add</span>
+                <div>
+                  <div class="font-bold text-white text-xs font-label-caps">Tambah Pilot</div>
+                  <div class="text-[10px] text-on-surface-variant">Update skuad</div>
+                </div>
+              </button>
+
+              <button onclick="document.querySelector('[data-tab=spots]').click(); setTimeout(() => document.getElementById('btn-add-spot').click(), 100);" class="bg-surface-container-high hover:border-primary-container border border-surface-variant p-3.5 rounded text-left flex items-center gap-3 transition-colors">
+                <span class="material-symbols-outlined text-primary-container text-2xl">add_location_alt</span>
+                <div>
+                  <div class="font-bold text-white text-xs font-label-caps">Tambah Spot</div>
+                  <div class="text-[10px] text-on-surface-variant">Lokasi terbang baru</div>
+                </div>
+              </button>
+
+              <button onclick="document.querySelector('[data-tab=inbox]').click();" class="bg-surface-container-high hover:border-primary-container border border-surface-variant p-3.5 rounded text-left flex items-center gap-3 transition-colors">
+                <span class="material-symbols-outlined text-primary-container text-2xl">mark_email_unread</span>
+                <div>
+                  <div class="font-bold text-white text-xs font-label-caps">Cek Transmisi</div>
+                  <div class="text-[10px] text-on-surface-variant">Lihat pesan masuk</div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- TAB 2: EVENTS (JADWAL ACARA)                                      -->
+        <!-- ================================================================= -->
+        <section id="section-events" class="admin-tab-section hidden space-y-4">
+          <div class="flex justify-between items-center">
+            <div class="text-xs text-on-surface-variant font-label-caps">Daftar agenda yang tayang di Kalender Interaktif Homepage.</div>
+            <button id="btn-add-event" class="bg-primary-container text-on-primary font-label-caps text-xs px-4 py-2 font-bold slant-btn flex items-center gap-1 hover:bg-yellow-400 transition-colors">
+              <span class="material-symbols-outlined text-sm">add</span> TAMBAH ACARA
+            </button>
+          </div>
+
+          <div class="bg-surface-container border border-surface-variant rounded-lg overflow-x-auto shadow-xl">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-surface-variant font-label-caps text-[10px] text-on-surface-variant bg-surface-container-high">
+                  <th class="p-3.5">TANGGAL</th>
+                  <th class="p-3.5">JUDUL ACARA &amp; LOKASI</th>
+                  <th class="p-3.5">KATEGORI</th>
+                  <th class="p-3.5">WAKTU</th>
+                  <th class="p-3.5">SLOT / STATUS</th>
+                  <th class="p-3.5 text-right">AKSI</th>
+                </tr>
+              </thead>
+              <tbody id="admin-events-tbody">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- TAB 3: PILOTS (PILOT SKUAD)                                       -->
+        <!-- ================================================================= -->
+        <section id="section-pilots" class="admin-tab-section hidden space-y-4">
+          <div class="flex justify-between items-center">
+            <div class="text-xs text-on-surface-variant font-label-caps">Daftar pilot dan struktur kepengurusan di halaman Tentang Kami.</div>
+            <button id="btn-add-pilot" class="bg-primary-container text-on-primary font-label-caps text-xs px-4 py-2 font-bold slant-btn flex items-center gap-1 hover:bg-yellow-400 transition-colors">
+              <span class="material-symbols-outlined text-sm">person_add</span> TAMBAH PILOT
+            </button>
+          </div>
+
+          <div class="bg-surface-container border border-surface-variant rounded-lg overflow-x-auto shadow-xl">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-surface-variant font-label-caps text-[10px] text-on-surface-variant bg-surface-container-high">
+                  <th class="p-3.5">PILOT</th>
+                  <th class="p-3.5">DIVISI / PERAN</th>
+                  <th class="p-3.5">MINAT &amp; SPESIALISASI</th>
+                  <th class="p-3.5">INSTAGRAM</th>
+                  <th class="p-3.5 text-right">AKSI</th>
+                </tr>
+              </thead>
+              <tbody id="admin-pilots-tbody">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- TAB 4: SPOTS (SPOT TERBANG)                                       -->
+        <!-- ================================================================= -->
+        <section id="section-spots" class="admin-tab-section hidden space-y-4">
+          <div class="flex justify-between items-center">
+            <div class="text-xs text-on-surface-variant font-label-caps">Katalog spot terbang dan basecamp di Banten.</div>
+            <button id="btn-add-spot" class="bg-primary-container text-on-primary font-label-caps text-xs px-4 py-2 font-bold slant-btn flex items-center gap-1 hover:bg-yellow-400 transition-colors">
+              <span class="material-symbols-outlined text-sm">add_location_alt</span> TAMBAH SPOT
+            </button>
+          </div>
+
+          <div class="bg-surface-container border border-surface-variant rounded-lg overflow-x-auto shadow-xl">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-surface-variant font-label-caps text-[10px] text-on-surface-variant bg-surface-container-high">
+                  <th class="p-3.5">KODE</th>
+                  <th class="p-3.5">NAMA SPOT &amp; KOTA</th>
+                  <th class="p-3.5">KATEGORI</th>
+                  <th class="p-3.5">DESKRIPSI</th>
+                  <th class="p-3.5 text-right">AKSI</th>
+                </tr>
+              </thead>
+              <tbody id="admin-spots-tbody">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- TAB 5: GALLERY (GALERI MISI)                                      -->
+        <!-- ================================================================= -->
+        <section id="section-gallery" class="admin-tab-section hidden space-y-4">
+          <div class="flex justify-between items-center">
+            <div class="text-xs text-on-surface-variant font-label-caps">Dokumentasi log misi foto & video aerial skuad.</div>
+            <button id="btn-add-gallery" class="bg-primary-container text-on-primary font-label-caps text-xs px-4 py-2 font-bold slant-btn flex items-center gap-1 hover:bg-yellow-400 transition-colors">
+              <span class="material-symbols-outlined text-sm">add_photo_alternate</span> TAMBAH GALERI
+            </button>
+          </div>
+
+          <div class="bg-surface-container border border-surface-variant rounded-lg overflow-x-auto shadow-xl">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-surface-variant font-label-caps text-[10px] text-on-surface-variant bg-surface-container-high">
+                  <th class="p-3.5">MISI / FOTO</th>
+                  <th class="p-3.5">KATEGORI</th>
+                  <th class="p-3.5">LOKASI</th>
+                  <th class="p-3.5">TANGGAL</th>
+                  <th class="p-3.5 text-right">AKSI</th>
+                </tr>
+              </thead>
+              <tbody id="admin-gallery-tbody">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- TAB 6: INBOX (TRANSMISI PESAN & PENDAFTARAN)                      -->
+        <!-- ================================================================= -->
+        <section id="section-inbox" class="admin-tab-section hidden space-y-4">
+          <div class="flex justify-between items-center">
+            <div class="text-xs text-on-surface-variant font-label-caps">Transmisi pesan & formulir pendaftaran anggota baru yang masuk dari website.</div>
+          </div>
+
+          <div id="admin-inbox-container" class="space-y-3">
+            <!-- Populated via JS -->
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: ADD / EDIT EVENT                                                   -->
+  <!-- ========================================================================= -->
+  <div id="admin-event-modal" class="modal-backdrop fixed inset-0 bg-black/85 backdrop-blur-md z-50 items-center justify-center p-4">
+    <div class="modal-content bg-surface-container border border-outline-variant rounded-lg max-w-xl w-full p-6 text-left relative max-h-[90vh] overflow-y-auto">
+      <button onclick="document.getElementById('admin-event-modal').classList.remove('active')" class="absolute top-4 right-4 text-on-surface-variant hover:text-primary-container">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+
+      <h3 id="event-modal-heading" class="font-stats-lg text-xl text-white font-bold mb-4">TAMBAH ACARA BARU</h3>
+
+      <form id="form-event" class="space-y-3 font-body-md text-xs">
+        <input type="hidden" id="event-form-id"/>
+
+        <div>
+          <label class="block font-label-caps text-primary-container mb-1">JUDUL ACARA *</label>
+          <input id="event-input-title" type="text" required placeholder="Contoh: Regional FPV Race Banten 2026" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">TANGGAL (YYYY-MM-DD) *</label>
+            <input id="event-input-date" type="date" required class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">BADGE TANGGAL *</label>
+            <input id="event-input-badge" type="text" required placeholder="Contoh: 15 MEI" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">KATEGORI *</label>
+            <select id="event-input-category" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none">
+              <option value="GATHERING">GATHERING</option>
+              <option value="KOMPETISI">KOMPETISI</option>
+              <option value="WORKSHOP">WORKSHOP</option>
+              <option value="CHARITY">CHARITY</option>
+              <option value="AEROMODEL">AEROMODEL</option>
+              <option value="SPECIAL">SPECIAL</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">WAKTU / JAM</label>
+            <input id="event-input-time" type="text" placeholder="08:00 - 17:00 WIB" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-label-caps text-primary-container mb-1">LOKASI *</label>
+          <input id="event-input-location" type="text" required placeholder="Sirkuit Ecopark Citra Garden BMW, Serang" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">SLOT / STATUS</label>
+            <input id="event-input-slots" type="text" placeholder="Terbuka Untuk Umum / 8 Slot Sisa" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">LINK GOOGLE MAPS</label>
+            <input id="event-input-maps" type="url" placeholder="https://maps.google.com/?q=..." class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-label-caps text-primary-container mb-1">DESKRIPSI LENGKAP</label>
+          <textarea id="event-input-desc" rows="3" placeholder="Rincian teknis acara..." class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"></textarea>
+        </div>
+
+        <div class="pt-3 flex justify-end gap-2 border-t border-surface-variant">
+          <button type="button" onclick="document.getElementById('admin-event-modal').classList.remove('active')" class="px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-high">Batal</button>
+          <button type="submit" class="bg-primary-container text-on-primary font-bold px-6 py-2 rounded slant-btn hover:bg-yellow-400">SIMPAN KE DATABASE</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: ADD / EDIT PILOT                                                   -->
+  <!-- ========================================================================= -->
+  <div id="admin-pilot-modal" class="modal-backdrop fixed inset-0 bg-black/85 backdrop-blur-md z-50 items-center justify-center p-4">
+    <div class="modal-content bg-surface-container border border-outline-variant rounded-lg max-w-xl w-full p-6 text-left relative max-h-[90vh] overflow-y-auto">
+      <button onclick="document.getElementById('admin-pilot-modal').classList.remove('active')" class="absolute top-4 right-4 text-on-surface-variant hover:text-primary-container">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+
+      <h3 id="pilot-modal-heading" class="font-stats-lg text-xl text-white font-bold mb-4">TAMBAH PILOT SKUAD</h3>
+
+      <form id="form-pilot" class="space-y-3 font-body-md text-xs">
+        <input type="hidden" id="pilot-form-id"/>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">NAMA LENGKAP *</label>
+            <input id="pilot-input-name" type="text" required placeholder="Contoh: Juang Pratama" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">CALLSIGN</label>
+            <input id="pilot-input-callsign" type="text" placeholder="Contoh: RED_FOX" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">DIVISI / PERAN *</label>
+            <input id="pilot-input-division" type="text" required placeholder="Contoh: PENDIRI & KETUA / FPV RACING" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">URUTAN TAMPIL</label>
+            <input id="pilot-input-order" type="number" value="0" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-label-caps text-primary-container mb-1">MINAT / SPESIALISASI</label>
+          <input id="pilot-input-interests" type="text" placeholder="FPV Freestyle, Aeromodeling, 7-inch Long Range" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">PATH / URL FOTO *</label>
+            <input id="pilot-input-photo" type="text" required placeholder="/pilot/juang.webp" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">INSTAGRAM HANDLE</label>
+            <input id="pilot-input-ig" type="text" placeholder="@pilot_instagram" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+        </div>
+
+        <div class="pt-3 flex justify-end gap-2 border-t border-surface-variant">
+          <button type="button" onclick="document.getElementById('admin-pilot-modal').classList.remove('active')" class="px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-high">Batal</button>
+          <button type="submit" class="bg-primary-container text-on-primary font-bold px-6 py-2 rounded slant-btn hover:bg-yellow-400">SIMPAN PILOT</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: ADD / EDIT SPOT                                                    -->
+  <!-- ========================================================================= -->
+  <div id="admin-spot-modal" class="modal-backdrop fixed inset-0 bg-black/85 backdrop-blur-md z-50 items-center justify-center p-4">
+    <div class="modal-content bg-surface-container border border-outline-variant rounded-lg max-w-xl w-full p-6 text-left relative max-h-[90vh] overflow-y-auto">
+      <button onclick="document.getElementById('admin-spot-modal').classList.remove('active')" class="absolute top-4 right-4 text-on-surface-variant hover:text-primary-container">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+
+      <h3 id="spot-modal-heading" class="font-stats-lg text-xl text-white font-bold mb-4">TAMBAH SPOT TERBANG</h3>
+
+      <form id="form-spot" class="space-y-3 font-body-md text-xs">
+        <input type="hidden" id="spot-form-id"/>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">NOMOR SPOT</label>
+            <input id="spot-input-number" type="text" placeholder="SPOT #01" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">KATEGORI *</label>
+            <select id="spot-input-category" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none">
+              <option value="BALAP_FPV">BALAP FPV</option>
+              <option value="SINEMA_UDARA">SINEMA UDARA</option>
+              <option value="AEROMODELING">AEROMODELING</option>
+              <option value="BASECAMP">BASECAMP</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-label-caps text-primary-container mb-1">NAMA SPOT *</label>
+          <input id="spot-input-name" type="text" required placeholder="Ecopark Citra Garden BMW" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-label-caps text-primary-container mb-1">LOKASI / KOTA *</label>
+          <input id="spot-input-location" type="text" required placeholder="KEC. KRAMATWATU, KAB. SERANG" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">URL FOTO</label>
+            <input id="spot-input-photo" type="text" placeholder="https://images.unsplash.com/..." class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">LINK GOOGLE MAPS</label>
+            <input id="spot-input-maps" type="url" placeholder="https://maps.google.com/?q=..." class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-label-caps text-primary-container mb-1">PLAYLIST PILOT</label>
+          <input id="spot-input-playlist" type="text" placeholder="Juang, Rhaka, Obenk, Taufik" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-label-caps text-primary-container mb-1">DESKRIPSI</label>
+          <textarea id="spot-input-desc" rows="3" placeholder="Karakter angin, obstacles, dan izin terbang..." class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"></textarea>
+        </div>
+
+        <div class="pt-3 flex justify-end gap-2 border-t border-surface-variant">
+          <button type="button" onclick="document.getElementById('admin-spot-modal').classList.remove('active')" class="px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-high">Batal</button>
+          <button type="submit" class="bg-primary-container text-on-primary font-bold px-6 py-2 rounded slant-btn hover:bg-yellow-400">SIMPAN SPOT</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: ADD / EDIT GALLERY                                                 -->
+  <!-- ========================================================================= -->
+  <div id="admin-gallery-modal" class="modal-backdrop fixed inset-0 bg-black/85 backdrop-blur-md z-50 items-center justify-center p-4">
+    <div class="modal-content bg-surface-container border border-outline-variant rounded-lg max-w-xl w-full p-6 text-left relative max-h-[90vh] overflow-y-auto">
+      <button onclick="document.getElementById('admin-gallery-modal').classList.remove('active')" class="absolute top-4 right-4 text-on-surface-variant hover:text-primary-container">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+
+      <h3 id="gallery-modal-heading" class="font-stats-lg text-xl text-white font-bold mb-4">TAMBAH ARSIP GALERI</h3>
+
+      <form id="form-gallery" class="space-y-3 font-body-md text-xs">
+        <input type="hidden" id="gallery-form-id"/>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">KODE MISI</label>
+            <input id="gallery-input-code" type="text" placeholder="OP_001" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">KATEGORI *</label>
+            <select id="gallery-input-category" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none">
+              <option value="FPV Freestyle">FPV Freestyle</option>
+              <option value="Aerial Cinema">Aerial Cinema</option>
+              <option value="Aeromodeling">Aeromodeling</option>
+              <option value="Gathering">Gathering</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-label-caps text-primary-container mb-1">JUDUL DOKUMENTASI *</label>
+          <input id="gallery-input-title" type="text" required placeholder="Sunrise Flight Citra BMW" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">LOKASI *</label>
+            <input id="gallery-input-location" type="text" required placeholder="Citra BMW Serang" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">TANGGAL / PERIODE</label>
+            <input id="gallery-input-date" type="text" placeholder="Mei 2026" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-label-caps text-primary-container mb-1">URL FOTO / GAMBAR *</label>
+          <input id="gallery-input-photo" type="text" required placeholder="https://images.unsplash.com/..." class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"/>
+        </div>
+
+        <div>
+          <label class="block font-label-caps text-primary-container mb-1">DESKRIPSI</label>
+          <textarea id="gallery-input-desc" rows="2" placeholder="Catatan penerbangan..." class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none"></textarea>
+        </div>
+
+        <div class="pt-3 flex justify-end gap-2 border-t border-surface-variant">
+          <button type="button" onclick="document.getElementById('admin-gallery-modal').classList.remove('active')" class="px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-high">Batal</button>
+          <button type="submit" class="bg-primary-container text-on-primary font-bold px-6 py-2 rounded slant-btn hover:bg-yellow-400">SIMPAN GALERI</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin JavaScript Engine -->
+  <script type="module" src="/src/js/admin.js"></script>
+</body>
+</html>
