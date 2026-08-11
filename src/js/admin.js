@@ -24,6 +24,10 @@ import {
   createSupabaseGalleryItem,
   updateSupabaseGalleryItem,
   deleteSupabaseGalleryItem,
+  getSupabaseArticles,
+  createSupabaseArticle,
+  updateSupabaseArticle,
+  deleteSupabaseArticle,
   getSupabaseContacts,
   deleteSupabaseContact,
   uploadSupabaseFile,
@@ -64,6 +68,7 @@ let cachedEvents = [];
 let cachedPilots = [];
 let cachedSpots = [];
 let cachedGallery = [];
+let cachedArticles = [];
 let cachedContacts = [];
 let cachedSpeelwijkRegs = [];
 let cachedSpeelwijkRundown = [];
@@ -227,6 +232,7 @@ function initTabNavigation() {
           pilots: 'Manajemen Pilot Skuad (Pilots)',
           spots: 'Manajemen Spot Terbang Banten',
           gallery: 'Manajemen Galeri & Log Misi',
+          articles: 'Manajemen Blog & Article',
           inbox: 'Kotak Masuk Pesan & Pendaftaran',
           speelwijk: 'Manajemen Event Benteng Speelwijk Drone Fest 2026'
         };
@@ -274,6 +280,7 @@ async function loadAllDashboardData() {
     loadPilots(),
     loadSpots(),
     loadGallery(),
+    loadArticles(),
     loadContacts(),
     loadSpeelwijkData()
   ]);
@@ -533,7 +540,50 @@ async function loadGallery() {
   });
 }
 
-// 5. Contacts / Inbox
+// 5. Blog & Article
+async function loadArticles() {
+  const tableBody = document.getElementById('admin-articles-tbody');
+  const remoteArticles = await getSupabaseArticles();
+  cachedArticles = remoteArticles || JSON.parse(localStorage.getItem('sms_articles') || '[]');
+  if (!tableBody) return;
+  tableBody.innerHTML = '';
+
+  if (cachedArticles.length === 0) {
+    tableBody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-on-surface-variant font-label-caps text-xs">Belum ada artikel. Klik "+ Tambah Artikel" untuk mulai menulis.</td></tr>`;
+    return;
+  }
+
+  cachedArticles.forEach(article => {
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-surface-variant hover:bg-surface-container-high/50 transition-colors text-xs font-body-md';
+    const statusClass = article.status === 'published' ? 'text-green-300 bg-green-950/40 border-green-500/40' : 'text-yellow-300 bg-yellow-950/40 border-yellow-500/40';
+    tr.innerHTML = `
+      <td class="p-3.5"><div class="font-bold text-white text-sm">${article.title}</div><div class="text-[11px] text-on-surface-variant">${article.location || article.slug || ''}</div></td>
+      <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-surface-container font-label-caps text-[10px] text-primary-container border border-primary-container/40">${article.category || '-'}</span></td>
+      <td class="p-3.5 text-on-surface-variant font-label-caps">${article.published_at || '-'}</td>
+      <td class="p-3.5"><span class="px-2 py-0.5 rounded border font-label-caps text-[10px] ${statusClass}">${article.status || 'draft'}</span></td>
+      <td class="p-3.5 text-right whitespace-nowrap"><button data-id="${article.id}" class="btn-edit-article p-1.5 text-primary-container hover:bg-surface-container rounded mr-1" title="Edit"><span class="material-symbols-outlined text-base">edit</span></button><button data-id="${article.id}" class="btn-delete-article p-1.5 text-red-400 hover:bg-red-950/40 rounded" title="Hapus"><span class="material-symbols-outlined text-base">delete</span></button></td>`;
+    tableBody.appendChild(tr);
+  });
+
+  tableBody.querySelectorAll('.btn-edit-article').forEach(button => button.addEventListener('click', () => {
+    const article = cachedArticles.find(item => String(item.id) === button.dataset.id);
+    if (article) openArticleModal(article);
+  }));
+  tableBody.querySelectorAll('.btn-delete-article').forEach(button => button.addEventListener('click', async () => {
+    if (!confirm('Hapus artikel ini?')) return;
+    const id = button.dataset.id;
+    const remoteResult = await deleteSupabaseArticle(id);
+    if (!remoteResult.success) {
+      const local = cachedArticles.filter(article => String(article.id) !== id);
+      localStorage.setItem('sms_articles', JSON.stringify(local));
+    }
+    showToast('Artikel berhasil dihapus.', 'success');
+    loadArticles();
+  }));
+}
+
+// 6. Contacts / Inbox
 async function loadContacts() {
   const container = document.getElementById('admin-inbox-container');
   cachedContacts = (await getSupabaseContacts()) || [];
@@ -848,10 +898,27 @@ function initModalListeners() {
   document.getElementById('btn-add-pilot')?.addEventListener('click', () => openPilotModal());
   document.getElementById('btn-add-spot')?.addEventListener('click', () => openSpotModal());
   document.getElementById('btn-add-gallery')?.addEventListener('click', () => openGalleryModal());
+  document.getElementById('btn-add-article')?.addEventListener('click', () => openArticleModal());
   document.getElementById('btn-add-speelwijk-reg')?.addEventListener('click', () => openSpeelwijkRegModal());
   document.getElementById('btn-add-speelwijk-session')?.addEventListener('click', () => openSpeelwijkSessionModal());
 
   initPilotPhotoUploadListeners();
+}
+
+function openArticleModal(article = null) {
+  const modal = document.getElementById('admin-article-modal');
+  if (!modal) return;
+  document.getElementById('article-form-id').value = article?.id || '';
+  document.getElementById('article-input-title').value = article?.title || '';
+  document.getElementById('article-input-category').value = article?.category || 'acara';
+  document.getElementById('article-input-date').value = article?.published_at || new Date().toISOString().slice(0, 10);
+  document.getElementById('article-input-status').value = article?.status || 'draft';
+  document.getElementById('article-input-location').value = article?.location || '';
+  document.getElementById('article-input-image').value = article?.image_url || '';
+  document.getElementById('article-input-excerpt').value = article?.excerpt || '';
+  document.getElementById('article-input-content').value = article?.content || '';
+  document.getElementById('article-modal-heading').textContent = article ? 'EDIT ARTIKEL' : 'TAMBAH ARTIKEL';
+  modal.classList.add('active');
 }
 
 // Event Modal
@@ -1233,6 +1300,35 @@ function openSpeelwijkSessionModal(sessionData = null) {
 /* FORM SUBMISSIONS (SAVE TO SUPABASE)                                        */
 /* -------------------------------------------------------------------------- */
 function initFormSubmissions() {
+  // 0. Blog & Article Form
+  document.getElementById('form-article')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('article-form-id').value;
+    const title = document.getElementById('article-input-title').value.trim();
+    const payload = {
+      title,
+      slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+      category: document.getElementById('article-input-category').value,
+      published_at: document.getElementById('article-input-date').value,
+      status: document.getElementById('article-input-status').value,
+      location: document.getElementById('article-input-location').value.trim(),
+      image_url: document.getElementById('article-input-image').value.trim(),
+      excerpt: document.getElementById('article-input-excerpt').value.trim(),
+      content: document.getElementById('article-input-content').value.trim()
+    };
+    const remoteResult = id ? await updateSupabaseArticle(id, payload) : await createSupabaseArticle(payload);
+    if (!remoteResult.success) {
+      const local = JSON.parse(localStorage.getItem('sms_articles') || '[]');
+      const localArticle = { ...payload, id: id || `local-${Date.now()}` };
+      const index = local.findIndex(article => String(article.id) === String(id));
+      if (index >= 0) local[index] = localArticle; else local.unshift(localArticle);
+      localStorage.setItem('sms_articles', JSON.stringify(local));
+    }
+    document.getElementById('admin-article-modal')?.classList.remove('active');
+    showToast(id ? 'Artikel berhasil diperbarui.' : 'Artikel berhasil ditambahkan.', 'success');
+    loadArticles();
+  });
+
   // 1. Event Form
   document.getElementById('form-event')?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -1501,10 +1597,10 @@ function setupRealtimeListeners() {
   subscribeToTable('pilots', () => loadPilots());
   subscribeToTable('flying_spots', () => loadSpots());
   subscribeToTable('gallery', () => loadGallery());
+  subscribeToTable('articles', () => loadArticles());
   subscribeToTable('contacts', () => {
     showToast('Transmisi data kontak / pendaftar diterima!', 'info');
     loadContacts();
     loadSpeelwijkRegistrations();
   });
 }
-

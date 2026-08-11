@@ -288,6 +288,54 @@ export async function deleteSupabaseGalleryItem(id) {
 }
 
 /* -------------------------------------------------------------------------- */
+/* BLOG & ARTICLES CRUD                                                       */
+/* -------------------------------------------------------------------------- */
+
+export async function getSupabaseArticles() {
+  try {
+    const { data, error } = await supabase
+      .from('articles')
+      .select('*')
+      .order('published_at', { ascending: false });
+    if (error) throw error;
+    return data;
+  } catch (err) {
+    console.warn('Articles fetch error:', err.message);
+    return null;
+  }
+}
+
+export async function createSupabaseArticle(articleData) {
+  try {
+    const { data, error } = await supabase.from('articles').insert([articleData]).select();
+    if (error) throw error;
+    return { success: true, data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function updateSupabaseArticle(id, articleData) {
+  try {
+    const { data, error } = await supabase.from('articles').update(articleData).eq('id', id).select();
+    if (error) throw error;
+    return { success: true, data };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function deleteSupabaseArticle(id) {
+  try {
+    const { error } = await supabase.from('articles').delete().eq('id', id);
+    if (error) throw error;
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+/* -------------------------------------------------------------------------- */
 /* CONTACTS / INBOX CRUD                                                      */
 /* -------------------------------------------------------------------------- */
 
@@ -604,4 +652,3 @@ export function saveSpeelwijkSettings(settingsData) {
   localStorage.setItem('sms_speelwijk_settings', JSON.stringify(payload));
   return { success: true, data: payload };
 }
-
