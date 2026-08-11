@@ -394,7 +394,7 @@
           <div class="h-0.5 w-20 bg-primary-container mx-auto mt-2"></div>
         </div>
 
-        <div class="space-y-12">
+        <div id="speelwijk-prizes-container" class="space-y-12">
           <!-- Category 1: RACE PRO -->
           <div class="space-y-4">
             <h3 class="font-headline-md text-primary tracking-wider uppercase border-l-2 border-primary pl-4 text-lg font-bold">RACE PRO</h3>
@@ -758,7 +758,8 @@
       getSpeelwijkRundown, 
       getSpeelwijkSettings, 
       saveSpeelwijkRegistration,
-      getSpeelwijkPartners
+      getSpeelwijkPartners,
+      getSpeelwijkPrizes
     } from '/src/js/supabase.js';
 
     // 1. Mobile Menu Toggle
@@ -910,6 +911,58 @@
               `;
             }).join('');
           }
+        }
+
+        // Prizes sync
+        const prizes = getSpeelwijkPrizes();
+        const prizesEl = document.getElementById('speelwijk-prizes-container');
+        if (prizesEl && prizes && prizes.length > 0) {
+          // Group by category
+          const categories = {};
+          prizes.forEach(p => {
+            if (!categories[p.category]) {
+              categories[p.category] = [];
+            }
+            categories[p.category].push(p);
+          });
+
+          // Sort each category by rank (Juara 1, Juara 2, Juara 3)
+          const rankOrder = { 'Juara 1': 1, 'Juara 2': 2, 'Juara 3': 3 };
+          
+          prizesEl.innerHTML = Object.keys(categories).map(catName => {
+            const catPrizes = categories[catName].sort((a, b) => {
+              return (rankOrder[a.rank] || 99) - (rankOrder[b.rank] || 99);
+            });
+
+            return `
+              <div class="space-y-4">
+                <h3 class="font-headline-md text-primary tracking-wider uppercase border-l-2 border-primary pl-4 text-lg font-bold">${catName}</h3>
+                <div class="grid grid-cols-3 gap-2.5 sm:gap-6">
+                  ${catPrizes.map(p => {
+                    let iconColor = '#ffd700';
+                    let rankClass = 'text-primary';
+                    let amountClass = 'text-primary-fixed-dim';
+                    if (p.rank === 'Juara 2') {
+                      iconColor = '#c0c0c0';
+                      rankClass = 'text-secondary';
+                      amountClass = 'text-on-surface';
+                    } else if (p.rank === 'Juara 3') {
+                      iconColor = '#cd7f32';
+                      rankClass = 'text-orange-400';
+                      amountClass = 'text-on-surface';
+                    }
+                    return `
+                      <div class="bg-surface-container-low border border-surface-variant rounded-lg p-3 sm:p-6 flex flex-col items-center text-center group hover:border-primary transition-all duration-300">
+                        <span class="material-symbols-outlined text-2xl sm:text-[48px] mb-2 sm:mb-4" style="color: ${iconColor};">military_tech</span>
+                        <h4 class="font-headline-md ${rankClass} uppercase mb-1 sm:mb-2 font-bold text-[10px] sm:text-sm">${p.rank}</h4>
+                        <p class="font-display-lg text-xs sm:text-lg md:text-2xl ${amountClass} font-bold font-mono-data">${p.amount}</p>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+            `;
+          }).join('');
         }
       } catch (e) {
         console.warn('Sync live content notice:', e);

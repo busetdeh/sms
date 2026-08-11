@@ -528,6 +528,10 @@
               <span class="material-symbols-outlined text-base">handshake</span>
               <span>SPONSOR &amp; SUPPORTERS</span>
             </button>
+            <button id="subtab-btn-speelwijk-prizes" class="speelwijk-subtab-btn px-4 py-2.5 text-on-surface-variant hover:text-white border-b-2 border-transparent flex items-center gap-1.5 transition-colors">
+              <span class="material-symbols-outlined text-base">military_tech</span>
+              <span>HADIAH &amp; TROFI</span>
+            </button>
           </div>
 
           <!-- SUB-VIEW 1: REGISTRATIONS TABLE -->
@@ -780,6 +784,46 @@
                   </tr>
                 </thead>
                 <tbody id="admin-speelwijk-partners-tbody">
+                  <!-- Populated via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- SUB-VIEW 5: PRIZES & TROPHIES -->
+          <div id="speelwijk-subview-prizes" class="speelwijk-subview hidden space-y-4">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+              <div class="relative w-full sm:w-72">
+                <span class="material-symbols-outlined absolute left-3 top-2 text-on-surface-variant text-base">search</span>
+                <input id="speelwijk-prizes-search" type="text" placeholder="Cari kategori atau peringkat..." class="w-full bg-surface-container border border-surface-variant rounded pl-9 pr-3 py-1.5 text-xs text-white focus:border-primary-container focus:outline-none"/>
+              </div>
+
+              <div class="flex items-center gap-2 w-full sm:w-auto ml-auto">
+                <select id="speelwijk-prizes-filter-category" class="bg-surface-container border border-surface-variant rounded px-3 py-1.5 text-xs text-white focus:border-primary-container focus:outline-none font-label-caps font-bold">
+                  <option value="ALL">SEMUA KATEGORI</option>
+                  <option value="RACE PRO">RACE PRO</option>
+                  <option value="RACE BEGINNER">RACE BEGINNER</option>
+                  <option value="FREESTYLE PRO">FREESTYLE PRO</option>
+                  <option value="FREESTYLE BEGINNER">FREESTYLE BEGINNER</option>
+                </select>
+                <button id="btn-add-speelwijk-prize" class="bg-primary-container text-black font-bold font-label-caps text-xs px-4 py-2 rounded slant-btn hover:bg-yellow-400 flex items-center gap-1 shadow">
+                  <span class="material-symbols-outlined text-sm">add_circle</span>
+                  <span>+ TAMBAH HADIAH</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="bg-surface-container border border-surface-variant rounded-lg overflow-x-auto">
+              <table class="w-full text-left border-collapse min-w-[600px]">
+                <thead>
+                  <tr class="border-b border-surface-variant font-label-caps text-[11px] text-primary-container bg-surface-container-high/50">
+                    <th class="p-3">KATEGORI</th>
+                    <th class="p-3">PERINGKAT</th>
+                    <th class="p-3">HADIAH / NOMINAL</th>
+                    <th class="p-3 text-right">AKSI</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-speelwijk-prizes-tbody">
                   <!-- Populated via JS -->
                 </tbody>
               </table>
@@ -1316,6 +1360,54 @@
         <div class="pt-3 flex justify-end gap-2 border-t border-surface-variant">
           <button type="button" onclick="document.getElementById('admin-speelwijk-partner-modal').classList.remove('active')" class="px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-high">Batal</button>
           <button type="submit" class="bg-primary-container text-black font-bold px-6 py-2 rounded slant-btn hover:bg-yellow-400">SIMPAN PARTNER</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: ADD / EDIT SPEELWIJK PRIZE                                         -->
+  <!-- ========================================================================= -->
+  <div id="admin-speelwijk-prize-modal" class="modal-backdrop fixed inset-0 bg-black/85 backdrop-blur-md z-50 items-center justify-center p-4">
+    <div class="modal-content bg-surface-container border border-outline-variant rounded-lg max-w-md w-full p-6 text-left relative max-h-[90vh] overflow-y-auto">
+      <button onclick="document.getElementById('admin-speelwijk-prize-modal').classList.remove('active')" class="absolute top-4 right-4 text-on-surface-variant hover:text-primary-container">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+
+      <h3 id="speelwijk-prize-modal-heading" class="font-stats-lg text-xl text-white font-bold mb-4 text-primary-container">
+        TAMBAH / EDIT HADIAH
+      </h3>
+
+      <form id="form-speelwijk-prize" class="space-y-3 font-body-md text-xs">
+        <input type="hidden" id="speelwijk-prize-form-id"/>
+
+        <div>
+          <label class="block font-label-caps text-primary-container mb-1">KATEGORI PERLOMBAAN *</label>
+          <select id="speelwijk-prize-input-category" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none font-bold">
+            <option value="RACE PRO">RACE PRO</option>
+            <option value="RACE BEGINNER">RACE BEGINNER</option>
+            <option value="FREESTYLE PRO">FREESTYLE PRO</option>
+            <option value="FREESTYLE BEGINNER">FREESTYLE BEGINNER</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-label-caps text-primary-container mb-1">PERINGKAT / JUARA *</label>
+          <select id="speelwijk-prize-input-rank" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none font-bold">
+            <option value="Juara 1">Juara 1</option>
+            <option value="Juara 2">Juara 2</option>
+            <option value="Juara 3">Juara 3</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-label-caps text-primary-container mb-1">NOMINAL / HADIAH *</label>
+          <input id="speelwijk-prize-input-amount" type="text" required placeholder="Contoh: Rp 3.000.000 atau Trophy + Rp 1.000.000" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none font-bold"/>
+        </div>
+
+        <div class="pt-3 flex justify-end gap-2 border-t border-surface-variant">
+          <button type="button" onclick="document.getElementById('admin-speelwijk-prize-modal').classList.remove('active')" class="px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-high">Batal</button>
+          <button type="submit" class="bg-primary-container text-black font-bold px-6 py-2 rounded slant-btn hover:bg-yellow-400">SIMPAN HADIAH</button>
         </div>
       </form>
     </div>

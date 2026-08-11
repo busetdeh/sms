@@ -42,7 +42,10 @@ import {
   saveSpeelwijkSettings,
   getSpeelwijkPartners,
   saveSpeelwijkPartner,
-  deleteSpeelwijkPartner
+  deleteSpeelwijkPartner,
+  getSpeelwijkPrizes,
+  saveSpeelwijkPrize,
+  deleteSpeelwijkPrize
 } from './supabase.js';
 
 let currentUser = null;
@@ -77,6 +80,7 @@ let cachedSpeelwijkRegs = [];
 let cachedSpeelwijkRundown = [];
 let cachedSpeelwijkSettings = {};
 let cachedSpeelwijkPartners = [];
+let cachedSpeelwijkPrizes = [];
 
 document.addEventListener('DOMContentLoaded', () => {
   initAdminAuth();
@@ -254,7 +258,8 @@ function initSpeelwijkSubtabs() {
     { btn: document.getElementById('subtab-btn-speelwijk-regs'), view: document.getElementById('speelwijk-subview-regs') },
     { btn: document.getElementById('subtab-btn-speelwijk-rundown'), view: document.getElementById('speelwijk-subview-rundown') },
     { btn: document.getElementById('subtab-btn-speelwijk-settings'), view: document.getElementById('speelwijk-subview-settings') },
-    { btn: document.getElementById('subtab-btn-speelwijk-partners'), view: document.getElementById('speelwijk-subview-partners') }
+    { btn: document.getElementById('subtab-btn-speelwijk-partners'), view: document.getElementById('speelwijk-subview-partners') },
+    { btn: document.getElementById('subtab-btn-speelwijk-prizes'), view: document.getElementById('speelwijk-subview-prizes') }
   ];
 
   subtabBtns.forEach(({ btn, view }) => {
@@ -661,7 +666,8 @@ async function loadSpeelwijkData() {
     loadSpeelwijkRegistrations(),
     loadSpeelwijkRundown(),
     loadSpeelwijkSettings(),
-    loadSpeelwijkPartners()
+    loadSpeelwijkPartners(),
+    loadSpeelwijkPrizes()
   ]);
 }
 
@@ -990,6 +996,106 @@ function renderSpeelwijkPartners() {
   });
 }
 
+function loadSpeelwijkPrizes() {
+  cachedSpeelwijkPrizes = getSpeelwijkPrizes();
+  renderSpeelwijkPrizes();
+
+  // Search and filter listeners
+  const searchInput = document.getElementById('speelwijk-prizes-search');
+  const catFilter = document.getElementById('speelwijk-prizes-filter-category');
+
+  if (searchInput && !searchInput.dataset.hasListener) {
+    searchInput.dataset.hasListener = 'true';
+    searchInput.addEventListener('input', () => renderSpeelwijkPrizes());
+  }
+  if (catFilter && !catFilter.dataset.hasListener) {
+    catFilter.dataset.hasListener = 'true';
+    catFilter.addEventListener('change', () => renderSpeelwijkPrizes());
+  }
+}
+
+function renderSpeelwijkPrizes() {
+  const tbody = document.getElementById('admin-speelwijk-prizes-tbody');
+  if (!tbody) return;
+
+  const searchQuery = (document.getElementById('speelwijk-prizes-search')?.value || '').toLowerCase().trim();
+  const filterCat = document.getElementById('speelwijk-prizes-filter-category')?.value || 'ALL';
+
+  const filtered = cachedSpeelwijkPrizes.filter(p => {
+    const matchesSearch = p.category.toLowerCase().includes(searchQuery) || p.rank.toLowerCase().includes(searchQuery) || p.amount.toLowerCase().includes(searchQuery);
+    const matchesCat = filterCat === 'ALL' || p.category === filterCat;
+    return matchesSearch && matchesCat;
+  });
+
+  tbody.innerHTML = '';
+  if (filtered.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="4" class="p-6 text-center text-on-surface-variant font-label-caps text-xs">
+          Tidak ada data hadiah ditemukan.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  // Sort by category first, then by rank rankOrder
+  const categoryOrder = { 'RACE PRO': 1, 'RACE BEGINNER': 2, 'FREESTYLE PRO': 3, 'FREESTYLE BEGINNER': 4 };
+  const rankOrder = { 'Juara 1': 1, 'Juara 2': 2, 'Juara 3': 3 };
+
+  filtered.sort((a, b) => {
+    const catA = categoryOrder[a.category] || 99;
+    const catB = categoryOrder[b.category] || 99;
+    if (catA !== catB) return catA - catB;
+
+    const rankA = rankOrder[a.rank] || 99;
+    const rankB = rankOrder[b.rank] || 99;
+    return rankA - rankB;
+  });
+
+  filtered.forEach(p => {
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-surface-variant hover:bg-surface-container-high/40 transition-colors text-xs text-white';
+
+    tr.innerHTML = `
+      <td class="p-3 font-mono-data font-bold text-primary-container">${p.category}</td>
+      <td class="p-3 font-bold">${p.rank}</td>
+      <td class="p-3 font-mono-data font-bold text-white">${p.amount}</td>
+      <td class="p-3 text-right">
+        <div class="flex items-center justify-end gap-1.5">
+          <button data-id="${p.id}" class="btn-edit-speelwijk-prize p-1.5 text-primary hover:bg-surface-container rounded transition-colors" title="Edit Hadiah">
+            <span class="material-symbols-outlined text-sm">edit</span>
+          </button>
+          <button data-id="${p.id}" class="btn-delete-speelwijk-prize p-1.5 text-red-400 hover:bg-red-950/40 rounded transition-colors" title="Hapus Hadiah">
+            <span class="material-symbols-outlined text-sm">delete</span>
+          </button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // Attach button listeners
+  tbody.querySelectorAll('.btn-edit-speelwijk-prize').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-id');
+      const prize = cachedSpeelwijkPrizes.find(p => p.id === id);
+      if (prize) openSpeelwijkPrizeModal(prize);
+    });
+  });
+
+  tbody.querySelectorAll('.btn-delete-speelwijk-prize').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-id');
+      if (confirm('Apakah Anda yakin ingin menghapus data hadiah ini?')) {
+        deleteSpeelwijkPrize(id);
+        showToast('Data hadiah berhasil dihapus.', 'success');
+        loadSpeelwijkPrizes();
+      }
+    });
+  });
+}
+
 /* -------------------------------------------------------------------------- */
 /* MODAL EDIT / CREATE HANDLERS                                               */
 /* -------------------------------------------------------------------------- */
@@ -1002,6 +1108,7 @@ function initModalListeners() {
   document.getElementById('btn-add-speelwijk-reg')?.addEventListener('click', () => openSpeelwijkRegModal());
   document.getElementById('btn-add-speelwijk-session')?.addEventListener('click', () => openSpeelwijkSessionModal());
   document.getElementById('btn-add-speelwijk-partner')?.addEventListener('click', () => openSpeelwijkPartnerModal());
+  document.getElementById('btn-add-speelwijk-prize')?.addEventListener('click', () => openSpeelwijkPrizeModal());
 
   initPilotPhotoUploadListeners();
   initSpeelwijkPartnerLogoUploadListeners();
@@ -1418,6 +1525,19 @@ function openSpeelwijkPartnerModal(partner = null) {
   modal.classList.add('active');
 }
 
+function openSpeelwijkPrizeModal(prize = null) {
+  const modal = document.getElementById('admin-speelwijk-prize-modal');
+  if (!modal) return;
+
+  document.getElementById('speelwijk-prize-form-id').value = prize?.id || '';
+  document.getElementById('speelwijk-prize-input-category').value = prize?.category || 'RACE PRO';
+  document.getElementById('speelwijk-prize-input-rank').value = prize?.rank || 'Juara 1';
+  document.getElementById('speelwijk-prize-input-amount').value = prize?.amount || '';
+
+  document.getElementById('speelwijk-prize-modal-heading').textContent = prize ? 'EDIT DATA HADIAH' : 'TAMBAH DATA HADIAH';
+  modal.classList.add('active');
+}
+
 function initSpeelwijkPartnerLogoUploadListeners() {
   const fileInput = document.getElementById('speelwijk-partner-logo-file');
   const dropzone = document.getElementById('speelwijk-partner-logo-dropzone');
@@ -1745,6 +1865,21 @@ function initFormSubmissions() {
     showToast(id ? 'Partner / sponsor diperbarui!' : 'Partner / sponsor baru berhasil ditambahkan!', 'success');
     document.getElementById('admin-speelwijk-partner-modal')?.classList.remove('active');
     loadSpeelwijkPartners();
+  });
+
+  // 9. Speelwijk Prize Form
+  document.getElementById('form-speelwijk-prize')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const id = document.getElementById('speelwijk-prize-form-id').value;
+    const category = document.getElementById('speelwijk-prize-input-category').value;
+    const rank = document.getElementById('speelwijk-prize-input-rank').value;
+    const amount = document.getElementById('speelwijk-prize-input-amount').value.trim();
+
+    const payload = { id: id || undefined, category, rank, amount };
+    saveSpeelwijkPrize(payload);
+    showToast(id ? 'Data hadiah diperbarui!' : 'Data hadiah baru berhasil ditambahkan!', 'success');
+    document.getElementById('admin-speelwijk-prize-modal')?.classList.remove('active');
+    loadSpeelwijkPrizes();
   });
 }
 

@@ -698,3 +698,52 @@ export function deleteSpeelwijkPartner(id) {
   localStorage.setItem('sms_speelwijk_partners', JSON.stringify(filtered));
   return { success: true };
 }
+
+// 5. Prizes CRUD
+const DEFAULT_SPEELWIJK_PRIZES = [
+  { id: 'pr1', category: 'RACE PRO', rank: 'Juara 1', amount: 'Rp 3.000.000' },
+  { id: 'pr2', category: 'RACE PRO', rank: 'Juara 2', amount: 'Rp 2.000.000' },
+  { id: 'pr3', category: 'RACE PRO', rank: 'Juara 3', amount: 'Rp 1.000.000' },
+  { id: 'pr4', category: 'RACE BEGINNER', rank: 'Juara 1', amount: 'Rp 2.000.000' },
+  { id: 'pr5', category: 'RACE BEGINNER', rank: 'Juara 2', amount: 'Rp 1.000.000' },
+  { id: 'pr6', category: 'RACE BEGINNER', rank: 'Juara 3', amount: 'Rp 500.000' },
+  { id: 'pr7', category: 'FREESTYLE PRO', rank: 'Juara 1', amount: 'Rp 3.000.000' },
+  { id: 'pr8', category: 'FREESTYLE PRO', rank: 'Juara 2', amount: 'Rp 2.000.000' },
+  { id: 'pr9', category: 'FREESTYLE PRO', rank: 'Juara 3', amount: 'Rp 1.000.000' },
+  { id: 'pr10', category: 'FREESTYLE BEGINNER', rank: 'Juara 1', amount: 'Rp 2.000.000' },
+  { id: 'pr11', category: 'FREESTYLE BEGINNER', rank: 'Juara 2', amount: 'Rp 1.000.000' },
+  { id: 'pr12', category: 'FREESTYLE BEGINNER', rank: 'Juara 3', amount: 'Rp 500.000' }
+];
+
+export function getSpeelwijkPrizes() {
+  const local = localStorage.getItem('sms_speelwijk_prizes');
+  if (local) {
+    try {
+      return JSON.parse(local);
+    } catch (e) {}
+  }
+  localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(DEFAULT_SPEELWIJK_PRIZES));
+  return DEFAULT_SPEELWIJK_PRIZES;
+}
+
+export function saveSpeelwijkPrize(prizeData) {
+  const current = getSpeelwijkPrizes();
+  if (prizeData.id) {
+    const idx = current.findIndex(p => p.id === prizeData.id);
+    if (idx !== -1) {
+      current[idx] = { ...current[idx], ...prizeData };
+    }
+  } else {
+    prizeData.id = 'pr_' + Math.random().toString(36).substr(2, 9);
+    current.push(prizeData);
+  }
+  localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(current));
+  return { success: true, data: prizeData };
+}
+
+export function deleteSpeelwijkPrize(id) {
+  const current = getSpeelwijkPrizes();
+  const filtered = current.filter(p => p.id !== id);
+  localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(filtered));
+  return { success: true };
+}
