@@ -39,7 +39,10 @@ import {
   saveSpeelwijkRundownItem,
   deleteSpeelwijkRundownItem,
   getSpeelwijkSettings,
-  saveSpeelwijkSettings
+  saveSpeelwijkSettings,
+  getSpeelwijkPartners,
+  saveSpeelwijkPartner,
+  deleteSpeelwijkPartner
 } from './supabase.js';
 
 let currentUser = null;
@@ -73,6 +76,7 @@ let cachedContacts = [];
 let cachedSpeelwijkRegs = [];
 let cachedSpeelwijkRundown = [];
 let cachedSpeelwijkSettings = {};
+let cachedSpeelwijkPartners = [];
 
 document.addEventListener('DOMContentLoaded', () => {
   initAdminAuth();
@@ -249,7 +253,8 @@ function initSpeelwijkSubtabs() {
   const subtabBtns = [
     { btn: document.getElementById('subtab-btn-speelwijk-regs'), view: document.getElementById('speelwijk-subview-regs') },
     { btn: document.getElementById('subtab-btn-speelwijk-rundown'), view: document.getElementById('speelwijk-subview-rundown') },
-    { btn: document.getElementById('subtab-btn-speelwijk-settings'), view: document.getElementById('speelwijk-subview-settings') }
+    { btn: document.getElementById('subtab-btn-speelwijk-settings'), view: document.getElementById('speelwijk-subview-settings') },
+    { btn: document.getElementById('subtab-btn-speelwijk-partners'), view: document.getElementById('speelwijk-subview-partners') }
   ];
 
   subtabBtns.forEach(({ btn, view }) => {
@@ -655,7 +660,8 @@ async function loadSpeelwijkData() {
   await Promise.all([
     loadSpeelwijkRegistrations(),
     loadSpeelwijkRundown(),
-    loadSpeelwijkSettings()
+    loadSpeelwijkSettings(),
+    loadSpeelwijkPartners()
   ]);
 }
 
@@ -890,6 +896,100 @@ function loadSpeelwijkSettings() {
   setVal('setting-speelwijk-payment-instructions', cachedSpeelwijkSettings.paymentInstructions || 'Setelah menekan tombol "KIRIM PENDAFTARAN & RSVP", data pendaftaran Anda akan otomatis tercatat di sistem dan admin panitia SMS akan segera mengirimkan konfirmasi slot via WhatsApp resmi.');
 }
 
+function loadSpeelwijkPartners() {
+  cachedSpeelwijkPartners = getSpeelwijkPartners();
+  renderSpeelwijkPartners();
+
+  // Search and filter listeners
+  const searchInput = document.getElementById('speelwijk-partners-search');
+  const typeFilter = document.getElementById('speelwijk-partners-filter-type');
+
+  if (searchInput && !searchInput.dataset.hasListener) {
+    searchInput.dataset.hasListener = 'true';
+    searchInput.addEventListener('input', () => renderSpeelwijkPartners());
+  }
+  if (typeFilter && !typeFilter.dataset.hasListener) {
+    typeFilter.dataset.hasListener = 'true';
+    typeFilter.addEventListener('change', () => renderSpeelwijkPartners());
+  }
+}
+
+function renderSpeelwijkPartners() {
+  const tbody = document.getElementById('admin-speelwijk-partners-tbody');
+  if (!tbody) return;
+
+  const searchQuery = (document.getElementById('speelwijk-partners-search')?.value || '').toLowerCase().trim();
+  const filterType = document.getElementById('speelwijk-partners-filter-type')?.value || 'ALL';
+
+  const filtered = cachedSpeelwijkPartners.filter(p => {
+    const matchesSearch = p.name.toLowerCase().includes(searchQuery);
+    const matchesType = filterType === 'ALL' || p.type === filterType;
+    return matchesSearch && matchesType;
+  });
+
+  tbody.innerHTML = '';
+  if (filtered.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="4" class="p-6 text-center text-on-surface-variant font-label-caps text-xs">
+          Tidak ada data partner/sponsor ditemukan.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  filtered.forEach(p => {
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-surface-variant hover:bg-surface-container-high/40 transition-colors text-xs text-white';
+
+    const logoHtml = p.logo_url 
+      ? `<img src="${p.logo_url}" alt="${p.name}" class="h-8 max-w-[80px] object-contain bg-black/30 p-1 rounded border border-surface-variant"/>`
+      : `<span class="text-[10px] text-on-surface-variant italic font-label-caps">Teks Kustom</span>`;
+
+    const typeHtml = p.type === 'sponsor' 
+      ? `<span class="px-2 py-0.5 rounded bg-primary/20 text-primary border border-primary/30 font-label-caps text-[10px] font-bold">SPONSOR UTAMA</span>`
+      : `<span class="px-2 py-0.5 rounded bg-surface-variant text-on-surface-variant border border-surface-variant font-label-caps text-[10px] font-bold">SUPPORTED BY</span>`;
+
+    tr.innerHTML = `
+      <td class="p-3 font-mono-data font-bold">${p.name}</td>
+      <td class="p-3">${typeHtml}</td>
+      <td class="p-3">${logoHtml}</td>
+      <td class="p-3 text-right">
+        <div class="flex items-center justify-end gap-1.5">
+          <button data-id="${p.id}" class="btn-edit-speelwijk-partner p-1.5 text-primary hover:bg-surface-container rounded transition-colors" title="Edit Partner">
+            <span class="material-symbols-outlined text-sm">edit</span>
+          </button>
+          <button data-id="${p.id}" class="btn-delete-speelwijk-partner p-1.5 text-red-400 hover:bg-red-950/40 rounded transition-colors" title="Hapus Partner">
+            <span class="material-symbols-outlined text-sm">delete</span>
+          </button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // Attach button listeners
+  tbody.querySelectorAll('.btn-edit-speelwijk-partner').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-id');
+      const partner = cachedSpeelwijkPartners.find(p => p.id === id);
+      if (partner) openSpeelwijkPartnerModal(partner);
+    });
+  });
+
+  tbody.querySelectorAll('.btn-delete-speelwijk-partner').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-id');
+      if (confirm('Apakah Anda yakin ingin menghapus partner/sponsor ini?')) {
+        deleteSpeelwijkPartner(id);
+        showToast('Partner/sponsor berhasil dihapus.', 'success');
+        loadSpeelwijkPartners();
+      }
+    });
+  });
+}
+
 /* -------------------------------------------------------------------------- */
 /* MODAL EDIT / CREATE HANDLERS                                               */
 /* -------------------------------------------------------------------------- */
@@ -901,8 +1001,10 @@ function initModalListeners() {
   document.getElementById('btn-add-article')?.addEventListener('click', () => openArticleModal());
   document.getElementById('btn-add-speelwijk-reg')?.addEventListener('click', () => openSpeelwijkRegModal());
   document.getElementById('btn-add-speelwijk-session')?.addEventListener('click', () => openSpeelwijkSessionModal());
+  document.getElementById('btn-add-speelwijk-partner')?.addEventListener('click', () => openSpeelwijkPartnerModal());
 
   initPilotPhotoUploadListeners();
+  initSpeelwijkPartnerLogoUploadListeners();
 }
 
 function openArticleModal(article = null) {
@@ -1296,6 +1398,86 @@ function openSpeelwijkSessionModal(sessionData = null) {
   modal.classList.add('active');
 }
 
+function openSpeelwijkPartnerModal(partner = null) {
+  const modal = document.getElementById('admin-speelwijk-partner-modal');
+  if (!modal) return;
+
+  document.getElementById('speelwijk-partner-form-id').value = partner?.id || '';
+  document.getElementById('speelwijk-partner-input-name').value = partner?.name || '';
+  document.getElementById('speelwijk-partner-input-type').value = partner?.type || 'sponsor';
+  
+  const logoBase64Input = document.getElementById('speelwijk-partner-logo-base64');
+  const logoPreview = document.getElementById('speelwijk-partner-logo-preview');
+  const logoText = document.getElementById('speelwijk-partner-logo-text');
+
+  if (logoBase64Input) logoBase64Input.value = partner?.logo_url || '';
+  if (logoPreview) logoPreview.src = partner?.logo_url || '/logo.png';
+  if (logoText) logoText.textContent = partner?.logo_url ? 'Logo Terpilih' : 'Drag & Drop Logo atau Klik untuk Pilih (Max 1MB)';
+
+  document.getElementById('speelwijk-partner-modal-heading').textContent = partner ? 'EDIT PARTNER / SPONSOR' : 'TAMBAH PARTNER / SPONSOR';
+  modal.classList.add('active');
+}
+
+function initSpeelwijkPartnerLogoUploadListeners() {
+  const fileInput = document.getElementById('speelwijk-partner-logo-file');
+  const dropzone = document.getElementById('speelwijk-partner-logo-dropzone');
+  const logoBase64 = document.getElementById('speelwijk-partner-logo-base64');
+  const logoPreview = document.getElementById('speelwijk-partner-logo-preview');
+  const logoText = document.getElementById('speelwijk-partner-logo-text');
+
+  if (!fileInput || !dropzone) return;
+
+  dropzone.addEventListener('click', () => fileInput.click());
+
+  async function handleFile(file) {
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      showToast('File harus berupa gambar (JPG, PNG, WEBP, dll).', 'error');
+      return;
+    }
+
+    if (file.size > 1 * 1024 * 1024) {
+      showToast('Ukuran logo maksimal 1 MB.', 'error');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (logoPreview) logoPreview.src = e.target.result;
+      if (logoBase64) logoBase64.value = e.target.result;
+      if (logoText) logoText.textContent = `Terpilih: ${file.name}`;
+      showToast('Logo berhasil dimuat.', 'success');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFile(e.target.files[0]);
+    }
+  });
+
+  dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.classList.add('border-primary-container', 'bg-surface-container-high/40');
+  });
+
+  ['dragleave', 'dragend'].forEach(type => {
+    dropzone.addEventListener(type, () => {
+      dropzone.classList.remove('border-primary-container', 'bg-surface-container-high/40');
+    });
+  });
+
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('border-primary-container', 'bg-surface-container-high/40');
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFile(e.dataTransfer.files[0]);
+    }
+  });
+}
+
 /* -------------------------------------------------------------------------- */
 /* FORM SUBMISSIONS (SAVE TO SUPABASE)                                        */
 /* -------------------------------------------------------------------------- */
@@ -1548,6 +1730,21 @@ function initFormSubmissions() {
 
     saveSpeelwijkSettings(payload);
     showToast(`Pengaturan berhasil disimpan! Slug aktif: /${slug}`, 'success');
+  });
+
+  // 8. Speelwijk Partner & Sponsor Form
+  document.getElementById('form-speelwijk-partner')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const id = document.getElementById('speelwijk-partner-form-id').value;
+    const name = document.getElementById('speelwijk-partner-input-name').value.trim();
+    const type = document.getElementById('speelwijk-partner-input-type').value;
+    const logo_url = document.getElementById('speelwijk-partner-logo-base64').value || '';
+
+    const payload = { id: id || undefined, name, type, logo_url };
+    saveSpeelwijkPartner(payload);
+    showToast(id ? 'Partner / sponsor diperbarui!' : 'Partner / sponsor baru berhasil ditambahkan!', 'success');
+    document.getElementById('admin-speelwijk-partner-modal')?.classList.remove('active');
+    loadSpeelwijkPartners();
   });
 }
 

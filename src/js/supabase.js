@@ -652,3 +652,49 @@ export function saveSpeelwijkSettings(settingsData) {
   localStorage.setItem('sms_speelwijk_settings', JSON.stringify(payload));
   return { success: true, data: payload };
 }
+
+// 4. Partners & Sponsors CRUD
+const DEFAULT_SPEELWIJK_PARTNERS = [
+  { id: 'p1', name: 'AERO_TECH_CORP', type: 'sponsor', logo_url: '' },
+  { id: 'p2', name: 'HORIZON_DYNAMICS', type: 'sponsor', logo_url: '' },
+  { id: 'p3', name: 'HERITAGE_TRUST', type: 'sponsor', logo_url: '' },
+  { id: 'p4', name: 'BANTEN_GOV', type: 'supporter', logo_url: '' },
+  { id: 'p5', name: 'DRONE_FED', type: 'supporter', logo_url: '' },
+  { id: 'p6', name: 'SKY_OPTICS', type: 'supporter', logo_url: '' },
+  { id: 'p7', name: 'LIPO_CELL', type: 'supporter', logo_url: '' },
+  { id: 'p8', name: 'PROP_MASTER', type: 'supporter', logo_url: '' },
+  { id: 'p9', name: 'RADIO_LINK', type: 'supporter', logo_url: '' }
+];
+
+export function getSpeelwijkPartners() {
+  const local = localStorage.getItem('sms_speelwijk_partners');
+  if (local) {
+    try {
+      return JSON.parse(local);
+    } catch (e) {}
+  }
+  localStorage.setItem('sms_speelwijk_partners', JSON.stringify(DEFAULT_SPEELWIJK_PARTNERS));
+  return DEFAULT_SPEELWIJK_PARTNERS;
+}
+
+export function saveSpeelwijkPartner(partnerData) {
+  const current = getSpeelwijkPartners();
+  if (partnerData.id) {
+    const idx = current.findIndex(p => p.id === partnerData.id);
+    if (idx !== -1) {
+      current[idx] = { ...current[idx], ...partnerData };
+    }
+  } else {
+    partnerData.id = 'p_' + Math.random().toString(36).substr(2, 9);
+    current.push(partnerData);
+  }
+  localStorage.setItem('sms_speelwijk_partners', JSON.stringify(current));
+  return { success: true, data: partnerData };
+}
+
+export function deleteSpeelwijkPartner(id) {
+  const current = getSpeelwijkPartners();
+  const filtered = current.filter(p => p.id !== id);
+  localStorage.setItem('sms_speelwijk_partners', JSON.stringify(filtered));
+  return { success: true };
+}
