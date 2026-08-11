@@ -411,7 +411,7 @@ function initEventCalendar() {
       categoryBadge: 'bg-primary-container text-on-primary',
       location: 'Benteng Speelwijk, Banten Lama',
       time: '08:00 - 17:00 WIB (2 Hari)',
-      description: 'Kompetisi balap FPV menembus reruntuhan cagar budaya Benteng Speelwijk abad ke-17. Kategori: Racing FPV, Cinematic Heritage & Long Range.',
+      description: 'Kompetisi balap FPV menembus reruntuhan cagar budaya Benteng Speelwijk abad ke-17. Kategori: Cinewhoop Race, Cinematic Heritage & Freestyle.',
       slots: 'Slot Pilot Terbuka',
       custom_link: '/sms-fly-through-history'
     },

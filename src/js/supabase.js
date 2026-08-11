@@ -525,7 +525,7 @@ export async function getSpeelwijkRegistrations() {
         callsign: 'RED_FOX',
         phone: '081234567890',
         email: 'juang@skymultirotor.com',
-        category: 'Racing FPV (5 Inch / 3.5 Inch)',
+        category: 'Cinewhoop Race',
         paymentMethod: 'Transfer Bank BCA',
         status: 'LUNAS',
         notes: 'Slot 02 - Verified',
