@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initEventCalendar();
   initContactForm();
   initDynamicPilots();
+  initDynamicSpots();
 });
 
 /* -------------------------------------------------------------------------- */
@@ -944,4 +945,74 @@ async function initDynamicPilots() {
   });
 
   renderPilots();
+}
+
+/* -------------------------------------------------------------------------- */
+/* Dynamic Spot Terbang (pages/spot-terbang.html)                              */
+/* -------------------------------------------------------------------------- */
+async function initDynamicSpots() {
+  const container = document.getElementById('spots-grid-container');
+  if (!container) return;
+
+  async function renderSpots() {
+    const spots = await getSupabaseSpots();
+    if (!spots || spots.length === 0) return;
+
+    container.innerHTML = '';
+    spots.forEach(spot => {
+      const card = document.createElement('article');
+      card.className = 'group bg-surface-container tech-border flex flex-col overflow-hidden relative rounded shadow-xl';
+
+      const playlistSection = spot.pilots_playlist ? `
+        <div class="border-t border-surface-variant pt-3 mb-4 text-xs font-label-caps text-on-surface-variant/80">
+          <span class="text-primary-container font-bold">PLAYLIST PILOT / DETAIL:</span> ${spot.pilots_playlist}
+        </div>
+      ` : '';
+
+      const mapsButton = spot.maps_url ? `
+        <a href="${spot.maps_url}" target="_blank" rel="noopener noreferrer" class="p-3 bg-surface-container-high border border-surface-variant hover:border-primary-container text-primary-container rounded flex items-center justify-center" title="Peta Lokasi">
+          <span class="material-symbols-outlined text-base">navigation</span>
+        </a>
+      ` : '';
+
+      card.innerHTML = `
+        <div class="relative h-60 overflow-hidden bg-surface-container-high">
+          <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-85 group-hover:opacity-100" alt="${spot.name}" src="${spot.photo_url || '/logo.png'}"/>
+          <div class="absolute top-4 left-4 bg-background/90 backdrop-blur-sm px-2.5 py-1 font-label-caps text-[10px] text-primary-container border border-primary-container slanted-edge z-10 font-bold">
+            ${spot.spot_number || 'SPOT'}
+          </div>
+          <div class="absolute bottom-3 right-3 bg-black/70 px-2 py-0.5 rounded font-label-caps text-[10px] text-white">
+            ${spot.category || 'TERBANG'}
+          </div>
+        </div>
+        <div class="p-6 flex flex-col flex-grow z-10 bg-surface-container">
+          <h3 class="font-headline-lg-mobile text-lg md:text-xl text-white mb-1 uppercase font-bold group-hover:text-primary-container transition-colors">${spot.name}</h3>
+          <p class="font-label-caps text-on-surface-variant mb-4 text-xs flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs text-primary-container">location_on</span>
+            [LOKASI: ${(spot.location_label || '').toUpperCase()}]
+          </p>
+          <p class="font-body-md text-sm text-on-surface-variant mb-6 leading-relaxed flex-grow">
+            ${spot.description || '-'}
+          </p>
+
+          ${playlistSection}
+
+          <div class="mt-auto flex gap-2">
+            <a href="/pages/galeri" class="flex-grow bg-primary-container text-on-primary font-label-caps text-xs py-3 slanted-btn font-bold flex items-center justify-center gap-2 glow-hover">
+              <span>Go to Gallery</span>
+              <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </a>
+            ${mapsButton}
+          </div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  subscribeToTable('flying_spots', () => {
+    renderSpots();
+  });
+
+  renderSpots();
 }
