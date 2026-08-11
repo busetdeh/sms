@@ -976,12 +976,17 @@ async function initDynamicSpots() {
       ` : '';
 
       card.innerHTML = `
-        <div class="relative h-60 overflow-hidden bg-surface-container-high">
-          <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-85 group-hover:opacity-100" alt="${spot.name}" src="${spot.photo_url || '/logo.png'}"/>
-          <div class="absolute top-4 left-4 bg-background/90 backdrop-blur-sm px-2.5 py-1 font-label-caps text-[10px] text-primary-container border border-primary-container slanted-edge z-10 font-bold">
+        <div class="relative h-60 overflow-hidden bg-surface-container-high border-b border-surface-variant">
+          <iframe 
+            src="https://maps.google.com/maps?q=${encodeURIComponent(spot.location_label || spot.name)}&t=&z=14&ie=UTF8&iwloc=&output=embed" 
+            class="w-full h-full border-0 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-500" 
+            allowfullscreen="" 
+            loading="lazy">
+          </iframe>
+          <div class="absolute top-4 left-4 bg-background/90 backdrop-blur-sm px-2.5 py-1 font-label-caps text-[10px] text-primary-container border border-primary-container slanted-edge z-10 font-bold pointer-events-none">
             ${spot.spot_number || 'SPOT'}
           </div>
-          <div class="absolute bottom-3 right-3 bg-black/70 px-2 py-0.5 rounded font-label-caps text-[10px] text-white">
+          <div class="absolute bottom-3 right-3 bg-black/70 px-2 py-0.5 rounded font-label-caps text-[10px] text-white pointer-events-none">
             ${spot.category || 'TERBANG'}
           </div>
         </div>
