@@ -619,6 +619,10 @@
               <div id="qris-image-container" class="hidden text-center p-2 bg-white rounded max-w-[180px] mx-auto">
                 <img id="qris-display-img" src="" alt="QRIS Code" class="w-full h-auto object-contain mx-auto"/>
               </div>
+              <a id="qris-download-link" href="" download="qris-sky-multirotor-squad.png" class="hidden w-fit mx-auto items-center justify-center gap-1.5 border border-primary-container text-primary-fixed-dim hover:bg-primary-container hover:text-black transition-colors rounded px-3 py-2 font-label-caps text-[10px] font-bold">
+                <span class="material-symbols-outlined text-sm">download</span>
+                Download QRIS untuk Mobile Banking
+              </a>
             </div>
 
             <!-- Bank Transfer View -->
@@ -813,6 +817,27 @@
     };
     document.getElementById('mobile-menu-btn')?.addEventListener('click', toggleMobileMenu);
 
+    document.getElementById('qris-download-link')?.addEventListener('click', async (event) => {
+      const link = event.currentTarget;
+      const source = link.href;
+      if (!source || source.startsWith('data:') || source.startsWith('blob:')) return;
+      event.preventDefault();
+      try {
+        const response = await fetch(source, { mode: 'cors' });
+        if (!response.ok) throw new Error('QRIS image download failed');
+        const blobUrl = URL.createObjectURL(await response.blob());
+        const temporaryLink = document.createElement('a');
+        temporaryLink.href = blobUrl;
+        temporaryLink.download = 'qris-sky-multirotor-squad.png';
+        document.body.appendChild(temporaryLink);
+        temporaryLink.click();
+        temporaryLink.remove();
+        URL.revokeObjectURL(blobUrl);
+      } catch (error) {
+        window.open(source, '_blank', 'noopener,noreferrer');
+      }
+    });
+
     // 2. Toast Notification Helper
     function showToast(message, type = 'info') {
       const container = document.getElementById('toast-container');
@@ -986,6 +1011,7 @@
           const qrisNmid = document.getElementById('qris-display-nmid');
           const qrisImg = document.getElementById('qris-display-img');
           const qrisImgBox = document.getElementById('qris-image-container');
+          const qrisDownload = document.getElementById('qris-download-link');
 
           if (qrisMerchant && settings.qrisMerchant) qrisMerchant.textContent = settings.qrisMerchant;
           if (qrisNmid && settings.qrisNmid) qrisNmid.textContent = settings.qrisNmid;
@@ -993,8 +1019,15 @@
             if (settings.qrisImageUrl) {
               qrisImg.src = settings.qrisImageUrl;
               qrisImgBox.classList.remove('hidden');
+              if (qrisDownload) {
+                qrisDownload.href = settings.qrisImageUrl;
+                qrisDownload.classList.remove('hidden');
+                qrisDownload.classList.add('inline-flex');
+              }
             } else {
               qrisImgBox.classList.add('hidden');
+              qrisDownload?.classList.add('hidden');
+              qrisDownload?.classList.remove('inline-flex');
             }
           }
 
