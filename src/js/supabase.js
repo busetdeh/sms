@@ -458,7 +458,7 @@ const DEFAULT_SPEELWIJK_SETTINGS = {
   waNumber: '6287772272928',
   location: 'Benteng Speelwijk, Banten Lama',
   coords: "6°01'59\"S 106°09'14\"E",
-  desc: 'Eksplorasi aerodinamika drone FPV berkecepatan tinggi menembus reruntuhan bersejarah Benteng Speelwijk, Banten Lama. Misi terbang sinematik dan kompetisi presisi pertama di kawasan cagar budaya Indonesia.',
+  desc: 'Drone FPV ngebut dan meliuk menembus reruntuhan bersejarah Benteng Speelwijk — pertama kalinya kompetisi presisi dan misi terbang sinematik digelar di kawasan cagar budaya Banten-Indonesia.',
   qrisMerchant: 'Sky Multirotor Squad',
   qrisNmid: 'ID1020038849502',
   qrisImageUrl: '',
