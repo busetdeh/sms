@@ -978,7 +978,7 @@
           if (sponsorsEl) {
             sponsorsEl.innerHTML = sponsors.map(p => {
               const display = p.logo_url 
-                ? `<div role="img" aria-label="${p.name}" class="absolute inset-0 bg-center bg-no-repeat bg-cover" style="background-image: url('${p.logo_url}');"></div>`
+                ? `<div role="img" aria-label="${p.name}" class="absolute inset-0 bg-center bg-no-repeat bg-contain md:bg-cover" style="background-image: url('${p.logo_url}');"></div>`
                 : `<div class="font-mono-data text-xs sm:text-sm font-bold text-on-surface-variant group-hover:text-primary transition-colors">${p.name}</div>`;
               return `
                 <div class="relative overflow-hidden bg-surface-container-low border border-surface-variant p-6 rounded-lg flex items-center justify-center hover:border-primary transition-colors group text-center h-24">
@@ -991,7 +991,7 @@
           if (supportersEl) {
             supportersEl.innerHTML = supporters.map(p => {
               const display = p.logo_url
-                ? `<div role="img" aria-label="${p.name}" class="absolute inset-0 bg-center bg-no-repeat bg-cover" style="background-image: url('${p.logo_url}');"></div>`
+                ? `<div role="img" aria-label="${p.name}" class="absolute inset-0 bg-center bg-no-repeat bg-contain md:bg-cover" style="background-image: url('${p.logo_url}');"></div>`
                 : `<div class="font-mono-data text-[11px] text-on-surface-variant group-hover:text-primary">${p.name}</div>`;
               return `
                 <div class="relative overflow-hidden bg-surface-container-low border border-surface-variant p-3.5 rounded flex items-center justify-center hover:border-primary transition-colors group text-center h-14">
