@@ -897,7 +897,7 @@
     // 4. Dynamic Rundown & Settings Sync
     async function syncLiveContent() {
       try {
-        const rundown = getSpeelwijkRundown();
+        const rundown = await getSpeelwijkRundown();
         const day1El = document.getElementById('speelwijk-live-rundown-day1');
         const day2El = document.getElementById('speelwijk-live-rundown-day2');
 
@@ -931,7 +931,7 @@
         }
 
         // Settings sync
-        const settings = getSpeelwijkSettings();
+        const settings = await getSpeelwijkSettings();
         if (settings) {
           const priceBadge = document.querySelector('#register .text-primary-fixed-dim.font-bold.font-mono-data');
           if (priceBadge && settings.fee) priceBadge.textContent = settings.fee;
@@ -1222,7 +1222,7 @@
         const category = checkedCategories.join(', ');
         const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'QRIS';
 
-        const settings = getSpeelwijkSettings();
+        const settings = await getSpeelwijkSettings();
         const fee = settings?.fee || 'Rp 200.000';
         const waTarget = (settings?.waNumber || '6287772272928').replace(/\D/g, '');
 

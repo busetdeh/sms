@@ -804,8 +804,8 @@ function renderSpeelwijkRegistrations() {
   });
 }
 
-function loadSpeelwijkRundown() {
-  cachedSpeelwijkRundown = getSpeelwijkRundown();
+async function loadSpeelwijkRundown() {
+  cachedSpeelwijkRundown = await getSpeelwijkRundown({ migrateLocal: true });
   const day1Container = document.getElementById('speelwijk-rundown-day1-container');
   const day2Container = document.getElementById('speelwijk-rundown-day2-container');
 
@@ -853,19 +853,19 @@ function loadSpeelwijkRundown() {
   });
 
   document.querySelectorAll('.btn-delete-speelwijk-session').forEach(b => {
-    b.addEventListener('click', () => {
+    b.addEventListener('click', async () => {
       const id = b.getAttribute('data-id');
       if (confirm('Hapus sesi rundown ini?')) {
-        deleteSpeelwijkRundownItem(id);
-        showToast('Sesi rundown dihapus.', 'success');
+        const result = await deleteSpeelwijkRundownItem(id);
+        showToast(result.remoteSynced === false ? 'Sesi dihapus lokal; sinkronisasi server gagal.' : 'Sesi rundown dihapus.', result.remoteSynced === false ? 'error' : 'success');
         loadSpeelwijkRundown();
       }
     });
   });
 }
 
-function loadSpeelwijkSettings() {
-  cachedSpeelwijkSettings = getSpeelwijkSettings();
+async function loadSpeelwijkSettings() {
+  cachedSpeelwijkSettings = await getSpeelwijkSettings({ migrateLocal: true });
   const setVal = (id, val) => {
     const el = document.getElementById(id);
     if (el && val !== undefined) el.value = val;
@@ -1794,7 +1794,7 @@ function initFormSubmissions() {
   });
 
   // 6. Speelwijk Rundown Session Form
-  document.getElementById('form-speelwijk-session')?.addEventListener('submit', (e) => {
+  document.getElementById('form-speelwijk-session')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const id = document.getElementById('speelwijk-session-form-id').value;
     const day = document.getElementById('speelwijk-session-input-day').value;
@@ -1803,14 +1803,14 @@ function initFormSubmissions() {
     const desc = document.getElementById('speelwijk-session-input-desc').value.trim();
 
     const payload = { id: id || undefined, day, time, title, desc };
-    saveSpeelwijkRundownItem(payload);
-    showToast(id ? 'Sesi rundown diperbarui!' : 'Sesi baru ditambahkan ke rundown!', 'success');
+    const result = await saveSpeelwijkRundownItem(payload);
+    showToast(result.remoteSynced === false ? 'Tersimpan lokal; sinkronisasi server gagal.' : (id ? 'Sesi rundown diperbarui!' : 'Sesi baru ditambahkan ke rundown!'), result.remoteSynced === false ? 'error' : 'success');
     document.getElementById('admin-speelwijk-session-modal')?.classList.remove('active');
     loadSpeelwijkRundown();
   });
 
   // 7. Speelwijk Settings Form
-  document.getElementById('form-speelwijk-settings')?.addEventListener('submit', (e) => {
+  document.getElementById('form-speelwijk-settings')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const title = document.getElementById('setting-speelwijk-title').value.trim();
     const subtitle = document.getElementById('setting-speelwijk-subtitle').value.trim();
@@ -1857,8 +1857,8 @@ function initFormSubmissions() {
       paymentInstructions
     };
 
-    saveSpeelwijkSettings(payload);
-    showToast(`Pengaturan berhasil disimpan! Slug aktif: /${slug}`, 'success');
+    const result = await saveSpeelwijkSettings(payload);
+    showToast(result.remoteSynced === false ? 'Tersimpan lokal; sinkronisasi server gagal.' : `Pengaturan berhasil disimpan! Slug aktif: /${slug}`, result.remoteSynced === false ? 'error' : 'success');
   });
 
   // 8. Speelwijk Partner & Sponsor Form

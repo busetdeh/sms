@@ -606,20 +606,69 @@ export async function deleteSpeelwijkRegistration(id) {
 }
 
 // 2. Rundown CRUD
-export function getSpeelwijkRundown() {
-  const local = localStorage.getItem('sms_speelwijk_rundown');
-  if (local) {
-    try { return JSON.parse(local); } catch (e) { }
-  }
-  localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(DEFAULT_SPEELWIJK_RUNDOWN));
-  return DEFAULT_SPEELWIJK_RUNDOWN;
+async function getSpeelwijkConfigRemote(name) {
+  const { data, error } = await supabase
+    .from('contacts')
+    .select('message')
+    .eq('name', name)
+    .limit(1);
+  if (error) throw error;
+  if (!data?.[0]?.message) return null;
+  return JSON.parse(data[0].message);
 }
 
-export function saveSpeelwijkRundownItem(sessionData) {
+async function saveSpeelwijkConfigRemote(name, value) {
+  const { data: existing, error: selectError } = await supabase
+    .from('contacts')
+    .select('id')
+    .eq('name', name)
+    .limit(1);
+  if (selectError) throw selectError;
+
+  const payload = {
+    name,
+    message: JSON.stringify(value),
+    email: 'system@sms.local',
+    phone_wa: ''
+  };
+  const result = existing?.[0]
+    ? await supabase.from('contacts').update(payload).eq('id', existing[0].id)
+    : await supabase.from('contacts').insert([payload]);
+  if (result.error) throw result.error;
+}
+
+export async function getSpeelwijkRundown({ migrateLocal = false } = {}) {
+  try {
+    const remote = await getSpeelwijkConfigRemote('SPEELWIJK_RUNDOWN_CONFIG');
+    if (Array.isArray(remote)) {
+      localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(remote));
+      return remote;
+    }
+  } catch (error) {
+    console.warn('Remote rundown config fetch error:', error.message);
+  }
+
+  const local = localStorage.getItem('sms_speelwijk_rundown');
+  let rundown = DEFAULT_SPEELWIJK_RUNDOWN;
+  if (local) {
+    try { rundown = JSON.parse(local); } catch (e) { /* use defaults */ }
+  } else {
+    localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(rundown));
+  }
+
+  if (migrateLocal) {
+    try { await saveSpeelwijkConfigRemote('SPEELWIJK_RUNDOWN_CONFIG', rundown); } catch (error) {
+      console.warn('Rundown config migration error:', error.message);
+    }
+  }
+  return rundown;
+}
+
+export async function saveSpeelwijkRundownItem(sessionData) {
   const isEdit = Boolean(sessionData.id);
   const id = sessionData.id || `session_${Date.now()}`;
   const payload = { ...sessionData, id };
-  const current = getSpeelwijkRundown();
+  const current = await getSpeelwijkRundown();
   let updated;
   if (isEdit) {
     updated = current.map(item => item.id === id ? payload : item);
@@ -627,30 +676,67 @@ export function saveSpeelwijkRundownItem(sessionData) {
     updated = [...current, payload];
   }
   localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(updated));
-  return { success: true, data: payload };
+  try {
+    await saveSpeelwijkConfigRemote('SPEELWIJK_RUNDOWN_CONFIG', updated);
+    return { success: true, data: payload, remoteSynced: true };
+  } catch (error) {
+    console.warn('Rundown config remote save error:', error.message);
+    return { success: true, data: payload, remoteSynced: false, error: error.message };
+  }
 }
 
-export function deleteSpeelwijkRundownItem(id) {
-  const current = getSpeelwijkRundown();
+export async function deleteSpeelwijkRundownItem(id) {
+  const current = await getSpeelwijkRundown();
   const filtered = current.filter(item => item.id !== id);
   localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(filtered));
-  return { success: true };
+  try {
+    await saveSpeelwijkConfigRemote('SPEELWIJK_RUNDOWN_CONFIG', filtered);
+    return { success: true, remoteSynced: true };
+  } catch (error) {
+    console.warn('Rundown config remote delete error:', error.message);
+    return { success: true, remoteSynced: false, error: error.message };
+  }
 }
 
 // 3. Settings CRUD
-export function getSpeelwijkSettings() {
-  const local = localStorage.getItem('sms_speelwijk_settings');
-  if (local) {
-    try { return JSON.parse(local); } catch (e) { }
+export async function getSpeelwijkSettings({ migrateLocal = false } = {}) {
+  try {
+    const remote = await getSpeelwijkConfigRemote('SPEELWIJK_SETTINGS_CONFIG');
+    if (remote && typeof remote === 'object' && !Array.isArray(remote)) {
+      const settings = { ...DEFAULT_SPEELWIJK_SETTINGS, ...remote };
+      localStorage.setItem('sms_speelwijk_settings', JSON.stringify(settings));
+      return settings;
+    }
+  } catch (error) {
+    console.warn('Remote event settings fetch error:', error.message);
   }
-  localStorage.setItem('sms_speelwijk_settings', JSON.stringify(DEFAULT_SPEELWIJK_SETTINGS));
-  return DEFAULT_SPEELWIJK_SETTINGS;
+
+  const local = localStorage.getItem('sms_speelwijk_settings');
+  let settings = DEFAULT_SPEELWIJK_SETTINGS;
+  if (local) {
+    try { settings = { ...DEFAULT_SPEELWIJK_SETTINGS, ...JSON.parse(local) }; } catch (e) { /* use defaults */ }
+  } else {
+    localStorage.setItem('sms_speelwijk_settings', JSON.stringify(settings));
+  }
+
+  if (migrateLocal) {
+    try { await saveSpeelwijkConfigRemote('SPEELWIJK_SETTINGS_CONFIG', settings); } catch (error) {
+      console.warn('Event settings migration error:', error.message);
+    }
+  }
+  return settings;
 }
 
-export function saveSpeelwijkSettings(settingsData) {
+export async function saveSpeelwijkSettings(settingsData) {
   const payload = { ...DEFAULT_SPEELWIJK_SETTINGS, ...settingsData };
   localStorage.setItem('sms_speelwijk_settings', JSON.stringify(payload));
-  return { success: true, data: payload };
+  try {
+    await saveSpeelwijkConfigRemote('SPEELWIJK_SETTINGS_CONFIG', payload);
+    return { success: true, data: payload, remoteSynced: true };
+  } catch (error) {
+    console.warn('Event settings remote save error:', error.message);
+    return { success: true, data: payload, remoteSynced: false, error: error.message };
+  }
 }
 
 // 4. Partners & Sponsors CRUD
