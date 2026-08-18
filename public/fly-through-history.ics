@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Sky Multirotor Squad//Fly Through History//ID
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:fly-through-history-speelwijk-2026@skymultirotor.web.id
+DTSTAMP:20260818T000000Z
+DTSTART;VALUE=DATE:20261017
+DTEND;VALUE=DATE:20261019
+SUMMARY:Fly Through History – Benteng Speelwijk FPV Drone Fest
+DESCRIPTION:FPV racing dan misi terbang sinematik di Benteng Speelwijk. Pengingat otomatis 1 minggu sebelum acara.
+LOCATION:Benteng Speelwijk\, Banten Lama
+BEGIN:VALARM
+TRIGGER:-P7D
+ACTION:DISPLAY
+DESCRIPTION:Fly Through History – Benteng Speelwijk FPV Drone Fest dimulai 1 minggu lagi.
+END:VALARM
+END:VEVENT
+END:VCALENDAR
