@@ -514,6 +514,12 @@
           </div>
         </div>
 
+        <div class="flex border-b border-surface-variant mb-6" role="tablist" aria-label="Registrasi event">
+          <button type="button" data-registration-tab="participants" class="registration-tab-btn flex-1 px-4 py-3 text-xs font-label-caps font-bold text-on-surface-variant hover:text-primary-fixed-dim border-b-2 border-transparent transition-colors" role="tab" aria-selected="false">LIST PESERTA ONLINE</button>
+          <button type="button" data-registration-tab="form" class="registration-tab-btn flex-1 px-4 py-3 text-xs font-label-caps font-bold text-primary-fixed-dim border-b-2 border-primary-container transition-colors" role="tab" aria-selected="true">FORM REGISTRASI</button>
+        </div>
+
+        <div id="registration-tab-form">
         <form id="speelwijk-registration-form" class="space-y-4 text-xs font-body">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="flex flex-col gap-1">
@@ -683,6 +689,20 @@
             </button>
           </div>
         </form>
+        </div>
+
+        <div id="registration-tab-participants" class="hidden" role="tabpanel">
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <div>
+              <h3 class="text-lg sm:text-xl font-bold text-white uppercase">Peserta yang Sudah Mendaftar</h3>
+              <p class="text-[11px] text-on-surface-variant mt-1">Daftar peserta online yang tercatat di sistem pendaftaran.</p>
+            </div>
+            <span id="online-participants-count" class="shrink-0 px-2.5 py-1 rounded border border-primary-container/40 bg-primary-container/10 text-primary-fixed-dim font-label-caps text-[10px] font-bold">0 PESERTA</span>
+          </div>
+          <div id="online-participants-list" class="space-y-2">
+            <div class="p-6 text-center border border-surface-variant rounded bg-surface text-on-surface-variant font-label-caps text-xs">Memuat daftar peserta...</div>
+          </div>
+        </div>
       </div>
 
       <!-- Technical Decor -->
@@ -768,6 +788,7 @@
       submitSupabaseContact, 
       getSpeelwijkRundown, 
       getSpeelwijkSettings, 
+      getSpeelwijkRegistrations,
       saveSpeelwijkRegistration,
       getSpeelwijkPartners,
       getSpeelwijkPrizes
@@ -813,7 +834,64 @@
       }, 5000);
     }
 
-    // 3. Dynamic Rundown & Settings Sync
+    // 3. Registration Tabs & Public Participant List
+    const registrationTabButtons = document.querySelectorAll('[data-registration-tab]');
+    const registrationFormTab = document.getElementById('registration-tab-form');
+    const registrationParticipantsTab = document.getElementById('registration-tab-participants');
+
+    function escapeParticipantText(value) {
+      return String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
+    }
+
+    async function loadOnlineParticipants() {
+      const list = document.getElementById('online-participants-list');
+      const count = document.getElementById('online-participants-count');
+      if (!list) return;
+
+      try {
+        const participants = await getSpeelwijkRegistrations();
+        const visibleParticipants = (participants || []).filter(participant => participant.status !== 'BATAL');
+        if (count) count.textContent = `${visibleParticipants.length} PESERTA`;
+        if (visibleParticipants.length === 0) {
+          list.innerHTML = '<div class="p-6 text-center border border-surface-variant rounded bg-surface text-on-surface-variant font-label-caps text-xs">Belum ada peserta yang terdaftar.</div>';
+          return;
+        }
+
+        list.innerHTML = visibleParticipants.map((participant, index) => {
+          const categories = Array.isArray(participant.category) ? participant.category.join(', ') : (participant.category || 'Kategori belum dipilih');
+          const date = participant.created_at ? new Date(participant.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
+          return `<div class="flex items-center gap-3 p-3 sm:p-4 bg-surface border border-surface-variant rounded hover:border-primary-container/50 transition-colors">
+            <span class="w-8 h-8 shrink-0 rounded-full bg-primary-container/15 text-primary-fixed-dim flex items-center justify-center font-bold font-mono-data text-xs">${index + 1}</span>
+            <div class="min-w-0 flex-grow">
+              <div class="font-bold text-white text-sm truncate">${escapeParticipantText(participant.name || 'Peserta')}</div>
+              <div class="text-[11px] text-on-surface-variant truncate">${escapeParticipantText(participant.community || 'Independen')} &bull; ${escapeParticipantText(categories)}</div>
+            </div>
+            <div class="hidden sm:block text-right shrink-0"><div class="text-[10px] text-primary-fixed-dim font-label-caps">TERDAFTAR</div><div class="text-[10px] text-on-surface-variant font-mono-data">${escapeParticipantText(date)}</div></div>
+          </div>`;
+        }).join('');
+      } catch (error) {
+        list.innerHTML = '<div class="p-6 text-center border border-red-500/30 rounded bg-red-950/20 text-red-200 font-label-caps text-xs">Daftar peserta belum dapat dimuat.</div>';
+      }
+    }
+
+    function switchRegistrationTab(tab) {
+      const showParticipants = tab === 'participants';
+      registrationFormTab?.classList.toggle('hidden', showParticipants);
+      registrationParticipantsTab?.classList.toggle('hidden', !showParticipants);
+      registrationTabButtons.forEach(button => {
+        const isActive = button.dataset.registrationTab === tab;
+        button.classList.toggle('text-primary-fixed-dim', isActive);
+        button.classList.toggle('border-primary-container', isActive);
+        button.classList.toggle('text-on-surface-variant', !isActive);
+        button.classList.toggle('border-transparent', !isActive);
+        button.setAttribute('aria-selected', String(isActive));
+      });
+      if (showParticipants) loadOnlineParticipants();
+    }
+
+    registrationTabButtons.forEach(button => button.addEventListener('click', () => switchRegistrationTab(button.dataset.registrationTab)));
+
+    // 4. Dynamic Rundown & Settings Sync
     function syncLiveContent() {
       try {
         const rundown = getSpeelwijkRundown();
