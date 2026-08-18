@@ -1552,6 +1552,7 @@ function openSpeelwijkPartnerModal(partner = null) {
   document.getElementById('speelwijk-partner-form-id').value = partner?.id || '';
   document.getElementById('speelwijk-partner-input-name').value = partner?.name || '';
   document.getElementById('speelwijk-partner-input-type').value = partner?.type || 'sponsor';
+  document.getElementById('speelwijk-partner-input-link').value = partner?.link_url || '';
   
   const logoBase64Input = document.getElementById('speelwijk-partner-logo-base64');
   const logoPreview = document.getElementById('speelwijk-partner-logo-preview');
@@ -1904,9 +1905,10 @@ function initFormSubmissions() {
     const id = document.getElementById('speelwijk-partner-form-id').value;
     const name = document.getElementById('speelwijk-partner-input-name').value.trim();
     const type = document.getElementById('speelwijk-partner-input-type').value;
+    const link_url = document.getElementById('speelwijk-partner-input-link').value.trim();
     const logo_url = document.getElementById('speelwijk-partner-logo-base64').value || '';
 
-    const payload = { id: id || undefined, name, type, logo_url };
+    const payload = { id: id || undefined, name, type, logo_url, link_url };
     const result = await saveSpeelwijkPartner(payload);
     showToast(result.remoteSynced === false ? 'Tersimpan lokal; sinkronisasi server gagal.' : (id ? 'Partner / sponsor diperbarui!' : 'Partner / sponsor baru berhasil ditambahkan!'), result.remoteSynced === false ? 'error' : 'success');
     document.getElementById('admin-speelwijk-partner-modal')?.classList.remove('active');

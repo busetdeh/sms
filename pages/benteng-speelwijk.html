@@ -1065,26 +1065,32 @@
 
           if (sponsorsEl) {
             sponsorsEl.innerHTML = sponsors.map(p => {
+              const linkUrl = /^https?:\/\//i.test(String(p.link_url || '')) ? String(p.link_url).trim() : '';
+              const linkAttrs = linkUrl ? `href="${escapeParticipantText(linkUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Buka ${escapeParticipantText(p.name)}"` : '';
+              const cardTag = linkUrl ? 'a' : 'div';
               const display = p.logo_url 
-                ? `<div role="img" aria-label="${p.name}" class="absolute inset-0 bg-center bg-no-repeat bg-contain md:bg-cover" style="background-image: url('${p.logo_url}');"></div>`
-                : `<div class="font-mono-data text-xs sm:text-sm font-bold text-on-surface-variant group-hover:text-primary transition-colors">${p.name}</div>`;
+                ? `<div role="img" aria-label="${escapeParticipantText(p.name)}" class="absolute inset-0 bg-center bg-no-repeat bg-contain md:bg-cover" style="background-image: url('${p.logo_url}');"></div>`
+                : `<div class="font-mono-data text-xs sm:text-sm font-bold text-on-surface-variant group-hover:text-primary transition-colors">${escapeParticipantText(p.name)}</div>`;
               return `
-                <div class="relative overflow-hidden bg-surface-container-low border border-surface-variant p-6 rounded-lg flex items-center justify-center hover:border-primary transition-colors group text-center h-24">
+                <${cardTag} ${linkAttrs} class="relative overflow-hidden bg-surface-container-low border border-surface-variant p-6 rounded-lg flex items-center justify-center hover:border-primary transition-colors group text-center h-24 ${linkUrl ? 'cursor-pointer' : ''}">
                   ${display}
-                </div>
+                </${cardTag}>
               `;
             }).join('');
           }
 
           if (supportersEl) {
             supportersEl.innerHTML = supporters.map(p => {
+              const linkUrl = /^https?:\/\//i.test(String(p.link_url || '')) ? String(p.link_url).trim() : '';
+              const linkAttrs = linkUrl ? `href="${escapeParticipantText(linkUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Buka ${escapeParticipantText(p.name)}"` : '';
+              const cardTag = linkUrl ? 'a' : 'div';
               const display = p.logo_url
-                ? `<div role="img" aria-label="${p.name}" class="absolute inset-0 bg-center bg-no-repeat bg-contain md:bg-cover" style="background-image: url('${p.logo_url}');"></div>`
-                : `<div class="font-mono-data text-[11px] text-on-surface-variant group-hover:text-primary">${p.name}</div>`;
+                ? `<div role="img" aria-label="${escapeParticipantText(p.name)}" class="absolute inset-0 bg-center bg-no-repeat bg-contain md:bg-cover" style="background-image: url('${p.logo_url}');"></div>`
+                : `<div class="font-mono-data text-[11px] text-on-surface-variant group-hover:text-primary">${escapeParticipantText(p.name)}</div>`;
               return `
-                <div class="relative overflow-hidden bg-surface-container-low border border-surface-variant p-3.5 rounded flex items-center justify-center hover:border-primary transition-colors group text-center h-14">
+                <${cardTag} ${linkAttrs} class="relative overflow-hidden bg-surface-container-low border border-surface-variant p-3.5 rounded flex items-center justify-center hover:border-primary transition-colors group text-center h-14 ${linkUrl ? 'cursor-pointer' : ''}">
                   ${display}
-                </div>
+                </${cardTag}>
               `;
             }).join('');
           }
