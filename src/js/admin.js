@@ -1049,7 +1049,7 @@ function renderSpeelwijkPrizes() {
   }
 
   // Sort by category first, then by rank rankOrder
-  const categoryOrder = { 'Race Whoop Pro': 1, 'Race Whoop Beginner': 2, 'Freestyle Pro': 3, 'Freestyle Beginner': 4, 'Cinematic FPV': 5 };
+  const categoryOrder = { 'Race Whoop 2-2.5” max 4s Pro (DJI)': 1, 'Race Whoop 2-2.5” max 4s Beginner (DJI)': 2, 'Freestyle max 5” max 6s Pro (DJI)': 3, 'Freestyle max 5” max 6s Beginner (DJI)': 4, 'Cinematic FPV': 5 };
   const rankOrder = { 'Kategori': 1, 'Juara 1': 2, 'Juara 2': 3, 'Juara 3': 4 };
 
   filtered.sort((a, b) => {

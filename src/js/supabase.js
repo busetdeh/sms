@@ -860,12 +860,12 @@ export async function deleteSpeelwijkPartner(id) {
 }
 
 // 5. Prizes CRUD
-const SPEELWIJK_PRIZES_CONFIG_VERSION = '2026-08-categories-v2';
+const SPEELWIJK_PRIZES_CONFIG_VERSION = '2026-08-categories-v3';
 const DEFAULT_SPEELWIJK_PRIZES = [
-  { id: 'pr1', category: 'Race Whoop Pro', rank: 'Kategori', amount: 'Bagian dari total hadiah Rp. 15.000.000' },
-  { id: 'pr2', category: 'Race Whoop Beginner', rank: 'Kategori', amount: 'Bagian dari total hadiah Rp. 15.000.000' },
-  { id: 'pr3', category: 'Freestyle Pro', rank: 'Kategori', amount: 'Bagian dari total hadiah Rp. 15.000.000' },
-  { id: 'pr4', category: 'Freestyle Beginner', rank: 'Kategori', amount: 'Bagian dari total hadiah Rp. 15.000.000' },
+  { id: 'pr1', category: 'Race Whoop 2-2.5” max 4s Pro (DJI)', rank: 'Kategori', amount: 'Bagian dari total hadiah Rp. 15.000.000' },
+  { id: 'pr2', category: 'Race Whoop 2-2.5” max 4s Beginner (DJI)', rank: 'Kategori', amount: 'Bagian dari total hadiah Rp. 15.000.000' },
+  { id: 'pr3', category: 'Freestyle max 5” max 6s Pro (DJI)', rank: 'Kategori', amount: 'Bagian dari total hadiah Rp. 15.000.000' },
+  { id: 'pr4', category: 'Freestyle max 5” max 6s Beginner (DJI)', rank: 'Kategori', amount: 'Bagian dari total hadiah Rp. 15.000.000' },
   { id: 'pr5', category: 'Cinematic FPV', rank: 'Kategori', amount: 'Bagian dari total hadiah Rp. 15.000.000' }
 ];
 
