@@ -346,7 +346,7 @@ export async function getSupabaseContacts() {
       .select('*')
       .order('created_at', { ascending: false });
     if (error) throw error;
-    return data;
+    return data.filter(item => item.name !== 'SPEELWIJK_PARTNERS_CONFIG');
   } catch (err) {
     console.warn('Contacts fetch error:', err.message);
     return null;
@@ -666,26 +666,36 @@ const DEFAULT_SPEELWIJK_PARTNERS = [
   { id: 'p9', name: 'RADIO_LINK', type: 'supporter', logo_url: '' }
 ];
 
-const SPEELWIJK_PARTNERS_STORAGE_PATH = 'speelwijk/partners.json';
-
-function getSpeelwijkPartnersPublicUrl() {
-  return `${SUPABASE_URL}/storage/v1/object/public/pilots/${SPEELWIJK_PARTNERS_STORAGE_PATH}`;
-}
-
 async function saveSpeelwijkPartnersRemote(partners) {
-  const { error } = await supabase.storage.from('pilots').upload(
-    SPEELWIJK_PARTNERS_STORAGE_PATH,
-    new Blob([JSON.stringify(partners)], { type: 'application/json' }),
-    { cacheControl: '0', contentType: 'application/json', upsert: true }
-  );
+  const { data: existing, error: selectError } = await supabase
+    .from('contacts')
+    .select('id')
+    .eq('name', 'SPEELWIJK_PARTNERS_CONFIG')
+    .limit(1);
+  if (selectError) throw selectError;
+
+  const payload = {
+    name: 'SPEELWIJK_PARTNERS_CONFIG',
+    message: JSON.stringify(partners),
+    email: 'system@sms.local',
+    phone: ''
+  };
+  const { error } = existing?.[0]
+    ? await supabase.from('contacts').update(payload).eq('id', existing[0].id)
+    : await supabase.from('contacts').insert([payload]);
   if (error) throw error;
 }
 
 export async function getSpeelwijkPartners({ migrateLocal = false } = {}) {
   try {
-    const response = await fetch(`${getSpeelwijkPartnersPublicUrl()}?v=${Date.now()}`, { cache: 'no-store' });
-    if (response.ok) {
-      const remotePartners = await response.json();
+    const { data: remoteRows, error } = await supabase
+      .from('contacts')
+      .select('message')
+      .eq('name', 'SPEELWIJK_PARTNERS_CONFIG')
+      .limit(1);
+    if (error) throw error;
+    if (remoteRows?.[0]?.message) {
+      const remotePartners = JSON.parse(remoteRows[0].message);
       if (Array.isArray(remotePartners)) {
         localStorage.setItem('sms_speelwijk_partners', JSON.stringify(remotePartners));
         return remotePartners;
