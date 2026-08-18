@@ -439,13 +439,14 @@ export function subscribeToTable(tableName, onUpdateCallback) {
 
 // Default Seed Rundown
 const DEFAULT_SPEELWIJK_RUNDOWN = [
-  { id: 'session_1', day: '1', time: '08:00 WIB', title: 'Registrasi & Safety Briefing', desc: 'Pemeriksaan failsafe, frekuensi VTX VTX-table lock, dan safety check baterai LiPo.' },
-  { id: 'session_2', day: '1', time: '10:00 WIB', title: 'Historical Touring', desc: 'Terbang santai keliling benteng dan pelabuhan lama, sambil ngerekam momen sinematiknya.' },
-  { id: 'session_3', day: '1', time: '13:30 WIB', title: 'Kualifikasi Time Attack (Heat 1-4)', desc: 'Pencatatan lap time resmi 3 lap berturut-turut untuk seeding bracket turnamen.' },
+  { id: 'session_1', day: '1', time: '08:00 WIB', title: 'Registrasi & Safety Briefing', desc: 'Pemeriksaan failsafe, VTX channel lock, dan safety check baterai LiPo.' },
+  { id: 'session_2', day: '1', time: '09:00 WIB', title: 'Open Practice & Track Preview', desc: 'Pengenalan layout lintasan reruntuhan Speelwijk, gate tunnel bastion, dan line shooting.' },
+  { id: 'session_3', day: '1', time: '11:30 WIB', title: 'Kualifikasi Time Attack (Heat 1-4)', desc: 'Pencatatan lap time resmi 3 lap berturut-turut untuk seeding bracket turnamen.' },
   { id: 'session_4', day: '1', time: '16:00 WIB', title: 'Cinematic Sunset Golden Hour', desc: 'Sesi terbang sinematik bebas mengabadikan siluet menara dan dinding benteng saat senja.' },
   { id: 'session_5', day: '2', time: '08:30 WIB', title: 'Warm-up & Eliminasi Ganda', desc: 'Babak gugur 16 besar kelas 5-Inch Open dan 3.5-Inch Freestyle precision.' },
   { id: 'session_6', day: '2', time: '13:00 WIB', title: 'Semifinal & Final Battle', desc: 'Pertarungan puncak memperebutkan Trophy Juara Benteng Speelwijk Drone Fest 2026.' },
-  { id: 'session_7', day: '2', time: '15:30 WIB', title: 'Podium & Closing Ceremony', desc: 'Penyerahan piala, sertifikat kehormatan skuad, dan foto bersama seluruh pilot & komunitas.' }
+  { id: 'session_8', day: '2', time: '14:30 WIB', title: 'Historical Touring', desc: 'Tour sejarah & budaya untuk seluruh peserta menuju reruntuhan Istana Kaibon, Istana Surosowan, dan Pantai Karangantu & Pantai Gope' },
+  { id: 'session_7', day: '2', time: '17:00 WIB', title: 'Podium & Closing Ceremony', desc: 'Penyerahan piala, sertifikat kehormatan skuad, dan foto bersama seluruh pilot & komunitas.' }
 ];
 
 // Default Settings
