@@ -210,7 +210,7 @@ function initTabNavigation() {
   const tabSections = document.querySelectorAll('.admin-tab-section');
 
   tabButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const tabTarget = btn.getAttribute('data-tab');
       currentTab = tabTarget;
 
@@ -902,8 +902,8 @@ function loadSpeelwijkSettings() {
   setVal('setting-speelwijk-payment-instructions', cachedSpeelwijkSettings.paymentInstructions || 'Setelah menekan tombol "KIRIM PENDAFTARAN & RSVP", data pendaftaran Anda akan otomatis tercatat di sistem dan admin panitia SMS akan segera mengirimkan konfirmasi slot via WhatsApp resmi.');
 }
 
-function loadSpeelwijkPartners() {
-  cachedSpeelwijkPartners = getSpeelwijkPartners();
+async function loadSpeelwijkPartners() {
+  cachedSpeelwijkPartners = await getSpeelwijkPartners({ migrateLocal: true });
   renderSpeelwijkPartners();
 
   // Search and filter listeners
@@ -985,11 +985,11 @@ function renderSpeelwijkPartners() {
   });
 
   tbody.querySelectorAll('.btn-delete-speelwijk-partner').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const id = btn.getAttribute('data-id');
       if (confirm('Apakah Anda yakin ingin menghapus partner/sponsor ini?')) {
-        deleteSpeelwijkPartner(id);
-        showToast('Partner/sponsor berhasil dihapus.', 'success');
+        const result = await deleteSpeelwijkPartner(id);
+        showToast(result.remoteSynced === false ? 'Partner dihapus lokal; sinkronisasi server gagal.' : 'Partner/sponsor berhasil dihapus.', result.remoteSynced === false ? 'error' : 'success');
         loadSpeelwijkPartners();
       }
     });
@@ -1853,7 +1853,7 @@ function initFormSubmissions() {
   });
 
   // 8. Speelwijk Partner & Sponsor Form
-  document.getElementById('form-speelwijk-partner')?.addEventListener('submit', (e) => {
+  document.getElementById('form-speelwijk-partner')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const id = document.getElementById('speelwijk-partner-form-id').value;
     const name = document.getElementById('speelwijk-partner-input-name').value.trim();
@@ -1861,8 +1861,8 @@ function initFormSubmissions() {
     const logo_url = document.getElementById('speelwijk-partner-logo-base64').value || '';
 
     const payload = { id: id || undefined, name, type, logo_url };
-    saveSpeelwijkPartner(payload);
-    showToast(id ? 'Partner / sponsor diperbarui!' : 'Partner / sponsor baru berhasil ditambahkan!', 'success');
+    const result = await saveSpeelwijkPartner(payload);
+    showToast(result.remoteSynced === false ? 'Tersimpan lokal; sinkronisasi server gagal.' : (id ? 'Partner / sponsor diperbarui!' : 'Partner / sponsor baru berhasil ditambahkan!'), result.remoteSynced === false ? 'error' : 'success');
     document.getElementById('admin-speelwijk-partner-modal')?.classList.remove('active');
     loadSpeelwijkPartners();
   });

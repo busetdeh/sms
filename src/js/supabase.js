@@ -666,37 +666,78 @@ const DEFAULT_SPEELWIJK_PARTNERS = [
   { id: 'p9', name: 'RADIO_LINK', type: 'supporter', logo_url: '' }
 ];
 
-export function getSpeelwijkPartners() {
-  const local = localStorage.getItem('sms_speelwijk_partners');
-  if (local) {
-    try {
-      return JSON.parse(local);
-    } catch (e) {}
-  }
-  localStorage.setItem('sms_speelwijk_partners', JSON.stringify(DEFAULT_SPEELWIJK_PARTNERS));
-  return DEFAULT_SPEELWIJK_PARTNERS;
+const SPEELWIJK_PARTNERS_STORAGE_PATH = 'speelwijk/partners.json';
+
+function getSpeelwijkPartnersPublicUrl() {
+  return `${SUPABASE_URL}/storage/v1/object/public/pilots/${SPEELWIJK_PARTNERS_STORAGE_PATH}`;
 }
 
-export function saveSpeelwijkPartner(partnerData) {
-  const current = getSpeelwijkPartners();
-  if (partnerData.id) {
-    const idx = current.findIndex(p => p.id === partnerData.id);
-    if (idx !== -1) {
-      current[idx] = { ...current[idx], ...partnerData };
+async function saveSpeelwijkPartnersRemote(partners) {
+  const { error } = await supabase.storage.from('pilots').upload(
+    SPEELWIJK_PARTNERS_STORAGE_PATH,
+    new Blob([JSON.stringify(partners)], { type: 'application/json' }),
+    { cacheControl: '0', contentType: 'application/json', upsert: true }
+  );
+  if (error) throw error;
+}
+
+export async function getSpeelwijkPartners({ migrateLocal = false } = {}) {
+  try {
+    const response = await fetch(`${getSpeelwijkPartnersPublicUrl()}?v=${Date.now()}`, { cache: 'no-store' });
+    if (response.ok) {
+      const remotePartners = await response.json();
+      if (Array.isArray(remotePartners)) {
+        localStorage.setItem('sms_speelwijk_partners', JSON.stringify(remotePartners));
+        return remotePartners;
+      }
     }
-  } else {
-    partnerData.id = 'p_' + Math.random().toString(36).substr(2, 9);
-    current.push(partnerData);
+  } catch (error) {
+    console.warn('Remote sponsor config fetch error:', error.message);
   }
-  localStorage.setItem('sms_speelwijk_partners', JSON.stringify(current));
-  return { success: true, data: partnerData };
+
+  const local = localStorage.getItem('sms_speelwijk_partners');
+  let partners = DEFAULT_SPEELWIJK_PARTNERS;
+  if (local) {
+    try { partners = JSON.parse(local); } catch (e) { /* use defaults */ }
+  } else {
+    localStorage.setItem('sms_speelwijk_partners', JSON.stringify(partners));
+  }
+
+  if (migrateLocal) {
+    try { await saveSpeelwijkPartnersRemote(partners); } catch (error) {
+      console.warn('Sponsor config migration error:', error.message);
+    }
+  }
+  return partners;
 }
 
-export function deleteSpeelwijkPartner(id) {
-  const current = getSpeelwijkPartners();
+export async function saveSpeelwijkPartner(partnerData) {
+  const current = await getSpeelwijkPartners({ migrateLocal: true });
+  const payload = { ...partnerData, id: partnerData.id || `p_${Math.random().toString(36).substr(2, 9)}` };
+  const idx = current.findIndex(p => p.id === payload.id);
+  if (idx !== -1) current[idx] = { ...current[idx], ...payload };
+  else current.push(payload);
+  localStorage.setItem('sms_speelwijk_partners', JSON.stringify(current));
+  try {
+    await saveSpeelwijkPartnersRemote(current);
+    return { success: true, data: payload, remoteSynced: true };
+  } catch (error) {
+    console.warn('Sponsor config remote save error:', error.message);
+    return { success: true, data: payload, remoteSynced: false, error: error.message };
+  }
+}
+
+export async function deleteSpeelwijkPartner(id) {
+  const current = await getSpeelwijkPartners({ migrateLocal: true });
   const filtered = current.filter(p => p.id !== id);
   localStorage.setItem('sms_speelwijk_partners', JSON.stringify(filtered));
-  return { success: true };
+  try {
+    await saveSpeelwijkPartnersRemote(filtered);
+    return { success: true, remoteSynced: true };
+  } catch (error) {
+    console.warn('Sponsor config remote delete error:', error.message);
+    return { success: true, remoteSynced: false, error: error.message };
+  }
 }
 
 // 5. Prizes CRUD

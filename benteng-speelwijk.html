@@ -892,7 +892,7 @@
     registrationTabButtons.forEach(button => button.addEventListener('click', () => switchRegistrationTab(button.dataset.registrationTab)));
 
     // 4. Dynamic Rundown & Settings Sync
-    function syncLiveContent() {
+    async function syncLiveContent() {
       try {
         const rundown = getSpeelwijkRundown();
         const day1El = document.getElementById('speelwijk-live-rundown-day1');
@@ -967,7 +967,7 @@
         }
 
         // Partners & Sponsors sync
-        const partners = getSpeelwijkPartners();
+        const partners = await getSpeelwijkPartners();
         if (partners && partners.length > 0) {
           const sponsorsEl = document.getElementById('speelwijk-sponsors-container');
           const supportersEl = document.getElementById('speelwijk-supporters-container');
