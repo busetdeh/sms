@@ -678,7 +678,7 @@ async function saveSpeelwijkPartnersRemote(partners) {
     name: 'SPEELWIJK_PARTNERS_CONFIG',
     message: JSON.stringify(partners),
     email: 'system@sms.local',
-    phone: ''
+    phone_wa: ''
   };
   const { error } = existing?.[0]
     ? await supabase.from('contacts').update(payload).eq('id', existing[0].id)
