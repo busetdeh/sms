@@ -788,7 +788,6 @@
   <!-- Script for Mobile Menu, Live Rundown & Form Submission -->
   <script type="module">
     import { 
-      submitSupabaseContact, 
       getSpeelwijkRundown, 
       getSpeelwijkSettings, 
       getSpeelwijkRegistrations,
@@ -1229,24 +1228,8 @@
         const messageContent = `[PENDAFTARAN BENTENG SPEELWIJK DRONE FEST 2026]\nNama: ${name}\nKomunitas/Callsign: ${community}\nWhatsApp: ${whatsapp}\nEmail: ${email}\nKategori: ${category}\nMetode Pembayaran: ${paymentMethod}\nBiaya: ${fee}`;
 
         try {
-          // 1. Send to Supabase contacts table
-          await submitSupabaseContact({
-            full_name: name,
-            email: email,
-            phone: whatsapp,
-            topic: 'EVENT_SPEELWIJK_2026',
-            message: JSON.stringify({
-              callsign: community,
-              category: category,
-              paymentMethod: paymentMethod,
-              status: 'PENDING',
-              notes: `Mendaftar dari form microsite (${paymentMethod})`,
-              paymentProof: paymentProof
-            })
-          });
-
-          // 2. Save locally for instant dashboard display
-          await saveSpeelwijkRegistration({
+          // Save once to Supabase, with local fallback for recovery.
+          const registrationResult = await saveSpeelwijkRegistration({
             name,
             callsign: community,
             phone: whatsapp,
@@ -1258,7 +1241,9 @@
             paymentProof: paymentProof
           });
 
-          showToast('Pendaftaran & bukti transfer berhasil tercatat! Membuka WhatsApp konfirmasi...', 'success');
+          showToast(registrationResult.remoteSynced === false
+            ? 'Data tersimpan lokal; sinkronisasi server gagal. Membuka WhatsApp konfirmasi...'
+            : 'Pendaftaran & bukti transfer berhasil tercatat! Membuka WhatsApp konfirmasi...', registrationResult.remoteSynced === false ? 'error' : 'success');
 
           // Open WhatsApp with pre-filled message
           const waMessage = encodeURIComponent(`Halo Panitia Sky Multirotor Squad, saya sudah mendaftar untuk acara "Benteng Speelwijk Drone Fest 2026":\n\n*Nama Operator:* ${name}\n*Komunitas/Callsign:* ${community}\n*WhatsApp:* ${whatsapp}\n*Kategori Drone:* ${category}\n*Metode Pembayaran:* ${paymentMethod}\n*Estimasi Biaya:* ${fee}\n\n*Bukti transfer sudah saya unggah di form pendaftaran.* Mohon konfirmasi slot nomor registrasi saya. Terima kasih!`);

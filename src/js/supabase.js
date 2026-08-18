@@ -543,15 +543,15 @@ export async function getSpeelwijkRegistrations() {
 }
 
 export async function saveSpeelwijkRegistration(regData) {
-  try {
-    const isEdit = Boolean(regData.id);
-    const id = regData.id || `speel_reg_${Date.now()}`;
-    const payload = {
-      ...regData,
-      id,
-      created_at: regData.created_at || new Date().toISOString()
-    };
+  const isEdit = Boolean(regData.id);
+  const localId = regData.id || `speel_reg_${Date.now()}`;
+  const payload = {
+    ...regData,
+    id: localId,
+    created_at: regData.created_at || new Date().toISOString()
+  };
 
+  try {
     // Save to contacts in Supabase for persistence
     const contactPayload = {
       name: regData.name,
@@ -568,26 +568,49 @@ export async function saveSpeelwijkRegistration(regData) {
       })
     };
 
+    let remoteRow = null;
     if (isEdit && typeof regData.id === 'string' && regData.id.includes('-')) {
-      await supabase.from('contacts').update(contactPayload).eq('id', regData.id);
+      const { data, error } = await supabase
+        .from('contacts')
+        .update(contactPayload)
+        .eq('id', regData.id)
+        .select()
+        .single();
+      if (error) throw error;
+      remoteRow = data;
     } else if (!isEdit) {
-      await supabase.from('contacts').insert([contactPayload]);
+      const { data, error } = await supabase
+        .from('contacts')
+        .insert([contactPayload])
+        .select()
+        .single();
+      if (error) throw error;
+      remoteRow = data;
     }
+
+    if (remoteRow?.id) payload.id = remoteRow.id;
 
     // Sync to local storage
     const current = await getSpeelwijkRegistrations();
     let updated;
     if (isEdit) {
-      updated = current.map(item => item.id === id ? payload : item);
+      updated = current.map(item => item.id === localId ? payload : item);
+      if (!updated.some(item => item.id === payload.id)) updated.unshift(payload);
     } else {
-      updated = [payload, ...current];
+      updated = current.some(item => item.id === payload.id) ? current : [payload, ...current];
     }
     localStorage.setItem('sms_speelwijk_registrations', JSON.stringify(updated));
 
-    return { success: true, data: payload };
+    return { success: true, data: payload, remoteSynced: true };
   } catch (err) {
     console.warn('Save Speelwijk registration error:', err.message);
-    return { success: false, error: err.message };
+    // Keep a local copy for recovery, but make the failed server sync explicit.
+    const current = JSON.parse(localStorage.getItem('sms_speelwijk_registrations') || '[]');
+    const updated = isEdit
+      ? current.map(item => item.id === localId ? payload : item)
+      : [payload, ...current];
+    localStorage.setItem('sms_speelwijk_registrations', JSON.stringify(updated));
+    return { success: true, data: payload, remoteSynced: false, error: err.message };
   }
 }
 
