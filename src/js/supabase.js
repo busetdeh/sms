@@ -473,11 +473,11 @@ const DEFAULT_SPEELWIJK_SETTINGS = {
 // 1. Registrations CRUD
 export async function getSpeelwijkRegistrations() {
   try {
-    // Check contacts table first where topic is EVENT_SPEELWIJK_2026
+    // Check contacts table first where interest_type marks event registrations
     const { data: contactData, error: contactError } = await supabase
       .from('contacts')
       .select('*')
-      .eq('topic', 'EVENT_SPEELWIJK_2026')
+      .eq('interest_type', 'EVENT_SPEELWIJK_2026')
       .order('created_at', { ascending: false });
 
     if (!contactError && contactData && contactData.length > 0) {
@@ -488,7 +488,7 @@ export async function getSpeelwijkRegistrations() {
           id: c.id,
           name: c.name || details.name || 'Pilot Speelwijk',
           callsign: details.callsign || '-',
-          phone: c.phone || details.phone || '-',
+          phone: c.phone_wa || details.phone || '-',
           email: c.email || details.email || '-',
           category: details.category || 'Cinematic FPV',
           paymentMethod: details.paymentMethod || 'QRIS',
@@ -557,9 +557,9 @@ export async function saveSpeelwijkRegistration(regData) {
     // Save to contacts in Supabase for persistence
     const contactPayload = {
       name: regData.name,
-      phone: regData.phone,
+      phone_wa: regData.phone,
       email: regData.email,
-      topic: 'EVENT_SPEELWIJK_2026',
+      interest_type: 'EVENT_SPEELWIJK_2026',
       message: JSON.stringify({
         callsign: regData.callsign,
         category: regData.category,
