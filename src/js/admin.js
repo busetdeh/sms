@@ -44,6 +44,7 @@ import {
   saveSpeelwijkPartner,
   deleteSpeelwijkPartner,
   getSpeelwijkPrizes,
+  getSpeelwijkPrizesShared,
   saveSpeelwijkPrize,
   deleteSpeelwijkPrize
 } from './supabase.js';
@@ -996,8 +997,8 @@ function renderSpeelwijkPartners() {
   });
 }
 
-function loadSpeelwijkPrizes() {
-  cachedSpeelwijkPrizes = getSpeelwijkPrizes();
+async function loadSpeelwijkPrizes() {
+  cachedSpeelwijkPrizes = await getSpeelwijkPrizesShared({ migrateLocal: true });
   renderSpeelwijkPrizes();
 
   // Search and filter listeners
@@ -1093,11 +1094,11 @@ function renderSpeelwijkPrizes() {
   });
 
   tbody.querySelectorAll('.btn-delete-speelwijk-prize').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const id = btn.getAttribute('data-id');
       if (confirm('Apakah Anda yakin ingin menghapus data hadiah ini?')) {
-        deleteSpeelwijkPrize(id);
-        showToast('Data hadiah berhasil dihapus.', 'success');
+        const result = await deleteSpeelwijkPrize(id);
+        showToast(result.remoteSynced === false ? 'Hadiah dihapus lokal; sinkronisasi server gagal.' : 'Data hadiah berhasil dihapus.', result.remoteSynced === false ? 'error' : 'success');
         loadSpeelwijkPrizes();
       }
     });
@@ -1876,7 +1877,7 @@ function initFormSubmissions() {
   });
 
   // 9. Speelwijk Prize Form
-  document.getElementById('form-speelwijk-prize')?.addEventListener('submit', (e) => {
+  document.getElementById('form-speelwijk-prize')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const id = document.getElementById('speelwijk-prize-form-id').value;
     const category = document.getElementById('speelwijk-prize-input-category').value;
@@ -1884,8 +1885,8 @@ function initFormSubmissions() {
     const amount = document.getElementById('speelwijk-prize-input-amount').value.trim();
 
     const payload = { id: id || undefined, category, rank, amount };
-    saveSpeelwijkPrize(payload);
-    showToast(id ? 'Data hadiah diperbarui!' : 'Data hadiah baru berhasil ditambahkan!', 'success');
+    const result = await saveSpeelwijkPrize(payload);
+    showToast(result.remoteSynced === false ? 'Hadiah tersimpan lokal; sinkronisasi server gagal.' : (id ? 'Data hadiah diperbarui!' : 'Data hadiah baru berhasil ditambahkan!'), result.remoteSynced === false ? 'error' : 'success');
     document.getElementById('admin-speelwijk-prize-modal')?.classList.remove('active');
     loadSpeelwijkPrizes();
   });

@@ -486,7 +486,7 @@
       </div>
       <div class="max-w-3xl mx-auto mt-2 border border-surface-variant rounded-lg bg-surface-container-low p-5 sm:p-7">
         <p class="text-center text-primary-fixed-dim font-label-caps text-sm sm:text-base font-bold mb-4">Memperebutkan total hadiah Rp. 15.000.000 untuk 5 kategori</p>
-        <ol class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-on-surface font-body-md text-sm sm:text-base">
+        <ol id="speelwijk-category-summary-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-on-surface font-body-md text-sm sm:text-base">
           <li class="flex items-center gap-3 border border-surface-variant rounded px-4 py-3"><span class="text-primary-fixed-dim font-bold">1.</span> Race Whoop Pro</li>
           <li class="flex items-center gap-3 border border-surface-variant rounded px-4 py-3"><span class="text-primary-fixed-dim font-bold">2.</span> Race Whoop Beginner</li>
           <li class="flex items-center gap-3 border border-surface-variant rounded px-4 py-3"><span class="text-primary-fixed-dim font-bold">3.</span> Freestyle Pro</li>
@@ -791,7 +791,7 @@
       getSpeelwijkRegistrations,
       saveSpeelwijkRegistration,
       getSpeelwijkPartners,
-      getSpeelwijkPrizes
+      getSpeelwijkPrizesShared
     } from '/src/js/supabase.js';
 
     // 1. Mobile Menu Toggle
@@ -1003,7 +1003,12 @@
         }
 
         // Prizes sync
-        const prizes = getSpeelwijkPrizes();
+        const prizes = await getSpeelwijkPrizesShared();
+        const summaryList = document.getElementById('speelwijk-category-summary-list');
+        if (summaryList && prizes?.length) {
+          const categories = [...new Set(prizes.map(prize => prize.category).filter(Boolean))];
+          summaryList.innerHTML = categories.map((category, index) => `<li class="flex items-center gap-3 border border-surface-variant rounded px-4 py-3"><span class="text-primary-fixed-dim font-bold">${index + 1}.</span> ${category}</li>`).join('');
+        }
         const prizesEl = document.getElementById('speelwijk-prizes-container');
         if (prizesEl && prizes && prizes.length > 0) {
           // Group by category

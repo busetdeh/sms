@@ -773,8 +773,59 @@ export function getSpeelwijkPrizes() {
   return DEFAULT_SPEELWIJK_PRIZES;
 }
 
-export function saveSpeelwijkPrize(prizeData) {
-  const current = getSpeelwijkPrizes();
+async function getSpeelwijkPrizesRemote() {
+  const { data, error } = await supabase
+    .from('contacts')
+    .select('message')
+    .eq('name', 'SPEELWIJK_PRIZES_CONFIG')
+    .limit(1);
+  if (error) throw error;
+  if (!data?.[0]?.message) return null;
+  const prizes = JSON.parse(data[0].message);
+  return Array.isArray(prizes) ? prizes : null;
+}
+
+async function saveSpeelwijkPrizesRemote(prizes) {
+  const { data: existing, error: selectError } = await supabase
+    .from('contacts')
+    .select('id')
+    .eq('name', 'SPEELWIJK_PRIZES_CONFIG')
+    .limit(1);
+  if (selectError) throw selectError;
+  const payload = {
+    name: 'SPEELWIJK_PRIZES_CONFIG',
+    message: JSON.stringify(prizes),
+    email: 'system@sms.local',
+    phone_wa: ''
+  };
+  const { error } = existing?.[0]
+    ? await supabase.from('contacts').update(payload).eq('id', existing[0].id)
+    : await supabase.from('contacts').insert([payload]);
+  if (error) throw error;
+}
+
+export async function getSpeelwijkPrizesShared({ migrateLocal = false } = {}) {
+  try {
+    const remote = await getSpeelwijkPrizesRemote();
+    if (remote) {
+      localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(remote));
+      localStorage.setItem('sms_speelwijk_prizes_version', SPEELWIJK_PRIZES_CONFIG_VERSION);
+      return remote;
+    }
+  } catch (error) {
+    console.warn('Remote prize config fetch error:', error.message);
+  }
+  const local = getSpeelwijkPrizes();
+  if (migrateLocal) {
+    try { await saveSpeelwijkPrizesRemote(local); } catch (error) {
+      console.warn('Prize config migration error:', error.message);
+    }
+  }
+  return local;
+}
+
+export async function saveSpeelwijkPrize(prizeData) {
+  const current = await getSpeelwijkPrizesShared({ migrateLocal: true });
   if (prizeData.id) {
     const idx = current.findIndex(p => p.id === prizeData.id);
     if (idx !== -1) {
@@ -785,12 +836,24 @@ export function saveSpeelwijkPrize(prizeData) {
     current.push(prizeData);
   }
   localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(current));
-  return { success: true, data: prizeData };
+  try {
+    await saveSpeelwijkPrizesRemote(current);
+    return { success: true, data: prizeData, remoteSynced: true };
+  } catch (error) {
+    console.warn('Prize config remote save error:', error.message);
+    return { success: true, data: prizeData, remoteSynced: false, error: error.message };
+  }
 }
 
-export function deleteSpeelwijkPrize(id) {
-  const current = getSpeelwijkPrizes();
+export async function deleteSpeelwijkPrize(id) {
+  const current = await getSpeelwijkPrizesShared({ migrateLocal: true });
   const filtered = current.filter(p => p.id !== id);
   localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(filtered));
-  return { success: true };
+  try {
+    await saveSpeelwijkPrizesRemote(filtered);
+    return { success: true, remoteSynced: true };
+  } catch (error) {
+    console.warn('Prize config remote delete error:', error.message);
+    return { success: true, remoteSynced: false, error: error.message };
+  }
 }
