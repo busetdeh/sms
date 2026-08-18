@@ -893,7 +893,10 @@
 
       try {
         const participants = await getSpeelwijkRegistrations();
-        const visibleParticipants = (participants || []).filter(participant => participant.status !== 'BATAL');
+        // Dashboard currently uses LUNAS / TERKONFIRMASI for approved pilots;
+        // keep APPROVED supported for records using the explicit status name.
+        const approvedStatuses = new Set(['APPROVED', 'LUNAS']);
+        const visibleParticipants = (participants || []).filter(participant => approvedStatuses.has(String(participant.status || '').trim().toUpperCase()));
         if (count) count.textContent = `${visibleParticipants.length} PESERTA`;
         if (visibleParticipants.length === 0) {
           list.innerHTML = '<div class="p-6 text-center border border-surface-variant rounded bg-surface text-on-surface-variant font-label-caps text-xs">Belum ada peserta yang terdaftar.</div>';
