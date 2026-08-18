@@ -1018,8 +1018,16 @@ function renderSpeelwijkPrizes() {
   const tbody = document.getElementById('admin-speelwijk-prizes-tbody');
   if (!tbody) return;
 
+  const categoryFilter = document.getElementById('speelwijk-prizes-filter-category');
+  const selectedCategory = categoryFilter?.value || 'ALL';
+  if (categoryFilter) {
+    const categories = [...new Set(cachedSpeelwijkPrizes.map(prize => prize.category).filter(Boolean))];
+    categoryFilter.innerHTML = '<option value="ALL">SEMUA KATEGORI</option>' + categories.map(category => `<option value="${category}">${category.toUpperCase()}</option>`).join('');
+    categoryFilter.value = categories.includes(selectedCategory) ? selectedCategory : 'ALL';
+  }
+
   const searchQuery = (document.getElementById('speelwijk-prizes-search')?.value || '').toLowerCase().trim();
-  const filterCat = document.getElementById('speelwijk-prizes-filter-category')?.value || 'ALL';
+  const filterCat = categoryFilter?.value || 'ALL';
 
   const filtered = cachedSpeelwijkPrizes.filter(p => {
     const matchesSearch = p.category.toLowerCase().includes(searchQuery) || p.rank.toLowerCase().includes(searchQuery) || p.amount.toLowerCase().includes(searchQuery);
