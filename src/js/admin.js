@@ -1426,7 +1426,36 @@ function openGalleryModal(galleryData = null) {
 }
 
 // Speelwijk Registrant Modal
-function openSpeelwijkRegModal(regData = null) {
+function getSpeelwijkRegistrationCategories(value) {
+  if (Array.isArray(value)) return value.map(item => String(item).trim()).filter(Boolean);
+  return String(value || '').split(',').map(item => item.trim()).filter(Boolean);
+}
+
+async function populateSpeelwijkRegistrationCategories(regData = null) {
+  const select = document.getElementById('speelwijk-reg-input-category');
+  if (!select) return;
+
+  const selectedCategories = getSpeelwijkRegistrationCategories(regData?.category);
+  const configuredCategories = (cachedSpeelwijkPrizes || []).map(prize => prize.category).filter(Boolean);
+  const fallbackCategories = ['Cinewhoop Race', 'Cinematic FPV', 'Freestyle FPV'];
+  const categories = [...new Set([...configuredCategories, ...selectedCategories, ...fallbackCategories])];
+
+  select.innerHTML = '';
+  categories.forEach(category => {
+    const option = document.createElement('option');
+    option.value = category;
+    option.textContent = category;
+    option.selected = selectedCategories.includes(category);
+    select.appendChild(option);
+  });
+
+  if (!regData && !selectedCategories.length) {
+    const cinematic = [...select.options].find(option => option.value === 'Cinematic FPV');
+    if (cinematic) cinematic.selected = true;
+  }
+}
+
+async function openSpeelwijkRegModal(regData = null) {
   const modal = document.getElementById('admin-speelwijk-reg-modal');
   const form = document.getElementById('form-speelwijk-reg');
   if (!modal || !form) return;
@@ -1436,7 +1465,7 @@ function openSpeelwijkRegModal(regData = null) {
   document.getElementById('speelwijk-reg-input-community').value = regData ? (regData.callsign || '') : '';
   document.getElementById('speelwijk-reg-input-phone').value = regData ? (regData.phone || '') : '';
   document.getElementById('speelwijk-reg-input-email').value = regData ? (regData.email || '') : '';
-  document.getElementById('speelwijk-reg-input-category').value = regData ? regData.category : 'Cinematic FPV';
+  await populateSpeelwijkRegistrationCategories(regData);
   document.getElementById('speelwijk-reg-input-payment').value = regData ? (regData.paymentMethod || 'QRIS') : 'QRIS';
   document.getElementById('speelwijk-reg-input-status').value = regData ? (regData.status || 'PENDING') : 'PENDING';
   document.getElementById('speelwijk-reg-input-notes').value = regData ? (regData.notes || '') : '';
@@ -1775,7 +1804,9 @@ function initFormSubmissions() {
     const callsign = document.getElementById('speelwijk-reg-input-community').value.trim();
     const phone = document.getElementById('speelwijk-reg-input-phone').value.trim();
     const email = document.getElementById('speelwijk-reg-input-email').value.trim();
-    const category = document.getElementById('speelwijk-reg-input-category').value;
+    const category = Array.from(document.getElementById('speelwijk-reg-input-category').selectedOptions)
+      .map(option => option.value)
+      .join(', ');
     const paymentMethod = document.getElementById('speelwijk-reg-input-payment').value;
     const status = document.getElementById('speelwijk-reg-input-status').value;
     const notes = document.getElementById('speelwijk-reg-input-notes').value.trim();
