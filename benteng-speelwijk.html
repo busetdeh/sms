@@ -217,27 +217,27 @@
       <!-- Parallax Layer 2: Main Hero Content -->
       <div id="speelwijk-parallax-content" class="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-start gap-6 sm:gap-8 will-change-transform">
         <div class="flex flex-col gap-3">
-          <span class="font-label-caps text-xs text-primary tracking-[0.2em] uppercase border border-primary/40 px-3.5 py-1.5 rounded inline-block w-fit bg-primary/15 backdrop-blur-md shadow-[0_0_15px_rgba(255,199,0,0.2)]">
+          <span id="speelwijk-hero-subtitle" class="font-label-caps text-xs text-primary tracking-[0.2em] uppercase border border-primary/40 px-3.5 py-1.5 rounded inline-block w-fit bg-primary/15 backdrop-blur-md shadow-[0_0_15px_rgba(255,199,0,0.2)]">
             ⚡ Benteng Speelwijk Drone Fest 2026
           </span>
-          <h1 class="text-4xl sm:text-6xl md:text-7xl font-bold text-white uppercase max-w-4xl tracking-tight leading-tight">
-            Fly Through <br><span class="text-primary-fixed-dim drop-shadow-[0_0_30px_rgba(255,199,0,0.6)]">History</span>
+          <h1 id="speelwijk-hero-title" class="text-4xl sm:text-6xl md:text-7xl font-bold text-white uppercase max-w-4xl tracking-tight leading-tight">
+            Fly Through History
           </h1>
         </div>
 
-        <p class="text-on-surface-variant max-w-2xl text-sm sm:text-base leading-relaxed">
+        <p id="speelwijk-hero-description" class="text-on-surface-variant max-w-2xl text-sm sm:text-base leading-relaxed">
           Drone FPV ngebut dan meliuk menembus reruntuhan bersejarah Benteng Speelwijk — pertama kalinya kompetisi presisi dan misi terbang sinematik digelar di kawasan cagar budaya Banten-Indonesia.
         </p>
 
         <div class="flex flex-wrap gap-4 sm:gap-6 font-mono-data text-xs sm:text-sm text-on-surface-variant bg-surface-container-low/80 border border-surface-variant p-3.5 rounded-lg backdrop-blur-md shadow-xl">
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-primary-fixed-dim text-lg">calendar_today</span>
-            <span class="text-white font-bold">17 - 18 Oktober 2026</span>
+            <span id="speelwijk-hero-date" class="text-white font-bold">17 - 18 Oktober 2026</span>
           </div>
           <div class="w-px h-4 bg-surface-variant my-auto hidden sm:block"></div>
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-primary-fixed-dim text-lg">location_on</span>
-            <span>Benteng Speelwijk, Banten Lama</span>
+            <span id="speelwijk-hero-location">Benteng Speelwijk, Banten Lama</span>
           </div>
           <div class="w-px h-4 bg-surface-variant my-auto hidden sm:block"></div>
           <div class="flex items-center gap-2">
@@ -267,11 +267,11 @@
             <h2 class="text-2xl sm:text-4xl font-bold text-white uppercase tracking-tight">The Mission</h2>
           </div>
 
-          <p class="text-on-surface-variant text-sm sm:text-base leading-relaxed">
+          <p id="speelwijk-mission-intro" class="text-on-surface-variant text-sm sm:text-base leading-relaxed">
             Acara ini mempertemukan dua dunia: pelestarian warisan Kesultanan Banten dan teknologi drone modern. Lewat FPV racing dan sinematografi udara resolusi tinggi.
           </p>
 
-          <p class="text-on-surface-variant text-sm sm:text-base leading-relaxed">
+          <p id="speelwijk-mission-pilot" class="text-on-surface-variant text-sm sm:text-base leading-relaxed">
             Buat para pilot, ini pengalaman terbang yang beda dari biasanya — meliuk di antara gapura batu berusia 4 abad, dengan jalur manuver ketat dan pengaturan frekuensi radio (analog maupun digital HD) yang diawasi ketat demi keamanan bersama.
           </p>
 
@@ -297,7 +297,7 @@
             <span>SYS_OP: SCAN_ACTIVE [BENTENG_SPEELWIJK]</span>
           </div>
           <div class="absolute bottom-6 right-6 bg-black/85 backdrop-blur-sm border border-surface-variant px-3 py-1.5 rounded font-mono-data text-[11px] text-on-surface-variant">
-            COORDINATES: 6°01'59"S 106°09'14"E
+            COORDINATES: <span id="speelwijk-coordinates">6°01'59"S 106°09'14"E</span>
           </div>
         </div>
       </div>
@@ -387,7 +387,7 @@
           </div>
         </div>
         <div class="mt-8 flex flex-col items-center gap-3 text-center">
-          <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Fly%20Through%20History%20%E2%80%93%20Benteng%20Speelwijk%20FPV%20Drone%20Fest&amp;dates=20261017%2F20261019&amp;details=FPV%20racing%20dan%20misi%20terbang%20sinematik%20di%20Benteng%20Speelwijk.%20Pengingat%3A%201%20minggu%20sebelum%20acara.&amp;location=Benteng%20Speelwijk%2C%20Banten%20Lama&amp;ctz=Asia%2FJakarta" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-primary-container text-black font-bold font-label-caps text-xs sm:text-sm px-5 py-3 rounded slant-btn hover:bg-primary transition-colors">
+          <a id="speelwijk-calendar-link" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Fly%20Through%20History%20%E2%80%93%20Benteng%20Speelwijk%20FPV%20Drone%20Fest&amp;dates=20261017%2F20261019&amp;details=FPV%20racing%20dan%20misi%20terbang%20sinematik%20di%20Benteng%20Speelwijk.%20Pengingat%3A%201%20minggu%20sebelum%20acara.&amp;location=Benteng%20Speelwijk%2C%20Banten%20Lama&amp;ctz=Asia%2FJakarta" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 bg-primary-container text-black font-bold font-label-caps text-xs sm:text-sm px-5 py-3 rounded slant-btn hover:bg-primary transition-colors">
             <span class="material-symbols-outlined text-lg">event_available</span>
             Simpan Event ke Google Calendar
           </a>
@@ -940,6 +940,39 @@
         // Settings sync
         const settings = await getSpeelwijkSettings();
         if (settings) {
+          const setText = (id, value) => {
+            const element = document.getElementById(id);
+            if (element && value) element.textContent = value;
+          };
+          setText('speelwijk-hero-title', settings.title);
+          setText('speelwijk-hero-subtitle', settings.subtitle ? `⚡ ${settings.subtitle}` : '⚡ Benteng Speelwijk Drone Fest 2026');
+          setText('speelwijk-hero-description', settings.desc);
+          setText('speelwijk-hero-date', settings.date);
+          setText('speelwijk-hero-location', settings.location);
+          setText('speelwijk-coordinates', settings.coords);
+          setText('speelwijk-mission-intro', settings.missionIntro);
+          setText('speelwijk-mission-pilot', settings.missionPilot);
+
+          const calendarLink = document.getElementById('speelwijk-calendar-link');
+          const calendarDateParts = String(settings.date || '').match(/(\d{1,2})\s*-\s*(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);
+          if (calendarLink && calendarDateParts) {
+            const monthMap = { januari: '01', februari: '02', maret: '03', april: '04', mei: '05', juni: '06', juli: '07', agustus: '08', september: '09', oktober: '10', november: '11', desember: '12' };
+            const month = monthMap[calendarDateParts[3].toLowerCase()];
+            if (month) {
+              const year = calendarDateParts[4];
+              const start = `${year}${month}${calendarDateParts[1].padStart(2, '0')}`;
+              const end = `${year}${month}${String(Number(calendarDateParts[2]) + 1).padStart(2, '0')}`;
+              const params = new URLSearchParams({ action: 'TEMPLATE', text: settings.title || 'Fly Through History', dates: `${start}/${end}`, details: `${settings.desc || ''} Pengingat: 1 minggu sebelum acara.`, location: settings.location || '', ctz: 'Asia/Jakarta' });
+              calendarLink.href = `https://calendar.google.com/calendar/render?${params.toString()}`;
+            }
+          }
+
+          const dateParts = String(settings.date || '').match(/(\d{1,2})\s*-\s*(\d{1,2})\s+(.+)/);
+          if (dateParts) {
+            setText('speelwijk-day1-date', `${dateParts[1]} ${dateParts[3]}`.toUpperCase());
+            setText('speelwijk-day2-date', `${dateParts[2]} ${dateParts[3]}`.toUpperCase());
+          }
+
           const priceBadge = document.querySelector('#register .text-primary-fixed-dim.font-bold.font-mono-data');
           if (priceBadge && settings.fee) priceBadge.textContent = settings.fee;
 
@@ -1018,6 +1051,11 @@
         if (summaryList && prizes?.length) {
           const categories = [...new Set(prizes.map(prize => prize.category).filter(Boolean))];
           summaryList.innerHTML = categories.map((category, index) => `<li class="flex items-center gap-3 border border-surface-variant rounded px-4 py-3"><span class="text-primary-fixed-dim font-bold">${index + 1}.</span> ${category}</li>`).join('');
+
+          const categoryGroup = document.getElementById('speelwijk-category-group');
+          if (categoryGroup) {
+            categoryGroup.innerHTML = categories.map((category, index) => `<label class="flex items-center gap-2.5 p-2.5 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface has-[:checked]:border-primary-container has-[:checked]:bg-primary/10"><input class="text-primary-container rounded focus:ring-0 bg-background border-outline-variant w-4 h-4" name="category" type="checkbox" value="${escapeParticipantText(category)}" ${index === 0 ? 'checked' : ''}/><span class="font-mono-data text-white text-xs">${escapeParticipantText(category)}</span></label>`).join('');
+          }
         }
         const prizesEl = document.getElementById('speelwijk-prizes-container');
         if (prizesEl && prizes && prizes.length > 0) {

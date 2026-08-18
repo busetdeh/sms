@@ -459,6 +459,8 @@ const DEFAULT_SPEELWIJK_SETTINGS = {
   location: 'Benteng Speelwijk, Banten Lama',
   coords: "6°01'59\"S 106°09'14\"E",
   desc: 'Drone FPV ngebut dan meliuk menembus reruntuhan bersejarah Benteng Speelwijk — pertama kalinya kompetisi presisi dan misi terbang sinematik digelar di kawasan cagar budaya Banten-Indonesia.',
+  missionIntro: 'Acara ini mempertemukan dua dunia: pelestarian warisan Kesultanan Banten dan teknologi drone modern. Lewat FPV racing dan sinematografi udara resolusi tinggi.',
+  missionPilot: 'Buat para pilot, ini pengalaman terbang yang beda dari biasanya — meliuk di antara gapura batu berusia 4 abad, dengan jalur manuver ketat dan pengaturan frekuensi radio (analog maupun digital HD) yang diawasi ketat demi keamanan bersama.',
   qrisMerchant: 'Sky Multirotor Squad',
   qrisNmid: 'ID1020038849502',
   qrisImageUrl: '',

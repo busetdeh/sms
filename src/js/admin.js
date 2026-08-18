@@ -884,6 +884,8 @@ async function loadSpeelwijkSettings() {
   setVal('setting-speelwijk-loc', cachedSpeelwijkSettings.location);
   setVal('setting-speelwijk-coords', cachedSpeelwijkSettings.coords);
   setVal('setting-speelwijk-desc', cachedSpeelwijkSettings.desc);
+  setVal('setting-speelwijk-mission-intro', cachedSpeelwijkSettings.missionIntro);
+  setVal('setting-speelwijk-mission-pilot', cachedSpeelwijkSettings.missionPilot);
 
   // QRIS & Bank transfer fields
   setVal('setting-speelwijk-qris-merchant', cachedSpeelwijkSettings.qrisMerchant || 'Sky Multirotor Squad');
@@ -1829,6 +1831,8 @@ function initFormSubmissions() {
     const location = document.getElementById('setting-speelwijk-loc').value.trim();
     const coords = document.getElementById('setting-speelwijk-coords').value.trim();
     const desc = document.getElementById('setting-speelwijk-desc').value.trim();
+    const missionIntro = document.getElementById('setting-speelwijk-mission-intro')?.value.trim() || '';
+    const missionPilot = document.getElementById('setting-speelwijk-mission-pilot')?.value.trim() || '';
 
     const qrisMerchant = document.getElementById('setting-speelwijk-qris-merchant')?.value.trim() || 'Sky Multirotor Squad';
     const qrisNmid = document.getElementById('setting-speelwijk-qris-nmid')?.value.trim() || 'ID1020038849502';
@@ -1848,6 +1852,8 @@ function initFormSubmissions() {
       location, 
       coords, 
       desc,
+      missionIntro,
+      missionPilot,
       qrisMerchant,
       qrisNmid,
       qrisImageUrl,
