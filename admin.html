@@ -792,6 +792,7 @@
 
           <!-- SUB-VIEW 5: PRIZES & TROPHIES -->
           <div id="speelwijk-subview-prizes" class="speelwijk-subview hidden space-y-4">
+            <div class="border border-primary-container/40 bg-primary-container/10 rounded-lg px-4 py-3 text-primary-fixed-dim font-label-caps text-xs font-bold">TOTAL HADIAH: RP. 15.000.000 &bull; 5 KATEGORI</div>
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
               <div class="relative w-full sm:w-72">
                 <span class="material-symbols-outlined absolute left-3 top-2 text-on-surface-variant text-base">search</span>
@@ -801,10 +802,11 @@
               <div class="flex items-center gap-2 w-full sm:w-auto ml-auto">
                 <select id="speelwijk-prizes-filter-category" class="bg-surface-container border border-surface-variant rounded px-3 py-1.5 text-xs text-white focus:border-primary-container focus:outline-none font-label-caps font-bold">
                   <option value="ALL">SEMUA KATEGORI</option>
-                  <option value="RACE PRO">RACE PRO</option>
-                  <option value="RACE BEGINNER">RACE BEGINNER</option>
-                  <option value="FREESTYLE PRO">FREESTYLE PRO</option>
-                  <option value="FREESTYLE BEGINNER">FREESTYLE BEGINNER</option>
+                  <option value="Race Whoop Pro">RACE WHOOP PRO</option>
+                  <option value="Race Whoop Beginner">RACE WHOOP BEGINNER</option>
+                  <option value="Freestyle Pro">FREESTYLE PRO</option>
+                  <option value="Freestyle Beginner">FREESTYLE BEGINNER</option>
+                  <option value="Cinematic FPV">CINEMATIC FPV</option>
                 </select>
                 <button id="btn-add-speelwijk-prize" class="bg-primary-container text-black font-bold font-label-caps text-xs px-4 py-2 rounded slant-btn hover:bg-yellow-400 flex items-center gap-1 shadow">
                   <span class="material-symbols-outlined text-sm">add_circle</span>
@@ -1384,17 +1386,18 @@
         <div>
           <label class="block font-label-caps text-primary-container mb-1">KATEGORI PERLOMBAAN *</label>
           <select id="speelwijk-prize-input-category" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none font-bold">
-            <option value="RACE PRO">RACE PRO</option>
-            <option value="RACE BEGINNER">RACE BEGINNER</option>
-            <option value="FREESTYLE PRO">FREESTYLE PRO</option>
-            <option value="FREESTYLE BEGINNER">FREESTYLE BEGINNER</option>
+            <option value="Race Whoop Pro">RACE WHOOP PRO</option>
+            <option value="Race Whoop Beginner">RACE WHOOP BEGINNER</option>
+            <option value="Freestyle Pro">FREESTYLE PRO</option>
+            <option value="Freestyle Beginner">FREESTYLE BEGINNER</option>
+            <option value="Cinematic FPV">CINEMATIC FPV</option>
           </select>
         </div>
 
         <div>
           <label class="block font-label-caps text-primary-container mb-1">PERINGKAT / JUARA *</label>
           <select id="speelwijk-prize-input-rank" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white focus:border-primary-container focus:outline-none font-bold">
-            <option value="Juara 1">Juara 1</option>
+            <option value="Kategori">Kategori</option>
             <option value="Juara 2">Juara 2</option>
             <option value="Juara 3">Juara 3</option>
           </select>

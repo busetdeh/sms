@@ -700,29 +700,25 @@ export function deleteSpeelwijkPartner(id) {
 }
 
 // 5. Prizes CRUD
+const SPEELWIJK_PRIZES_CONFIG_VERSION = '2026-08-categories-v2';
 const DEFAULT_SPEELWIJK_PRIZES = [
-  { id: 'pr1', category: 'RACE PRO', rank: 'Juara 1', amount: 'Rp 3.000.000' },
-  { id: 'pr2', category: 'RACE PRO', rank: 'Juara 2', amount: 'Rp 2.000.000' },
-  { id: 'pr3', category: 'RACE PRO', rank: 'Juara 3', amount: 'Rp 1.000.000' },
-  { id: 'pr4', category: 'RACE BEGINNER', rank: 'Juara 1', amount: 'Rp 2.000.000' },
-  { id: 'pr5', category: 'RACE BEGINNER', rank: 'Juara 2', amount: 'Rp 1.000.000' },
-  { id: 'pr6', category: 'RACE BEGINNER', rank: 'Juara 3', amount: 'Rp 500.000' },
-  { id: 'pr7', category: 'FREESTYLE PRO', rank: 'Juara 1', amount: 'Rp 3.000.000' },
-  { id: 'pr8', category: 'FREESTYLE PRO', rank: 'Juara 2', amount: 'Rp 2.000.000' },
-  { id: 'pr9', category: 'FREESTYLE PRO', rank: 'Juara 3', amount: 'Rp 1.000.000' },
-  { id: 'pr10', category: 'FREESTYLE BEGINNER', rank: 'Juara 1', amount: 'Rp 2.000.000' },
-  { id: 'pr11', category: 'FREESTYLE BEGINNER', rank: 'Juara 2', amount: 'Rp 1.000.000' },
-  { id: 'pr12', category: 'FREESTYLE BEGINNER', rank: 'Juara 3', amount: 'Rp 500.000' }
+  { id: 'pr1', category: 'Race Whoop Pro', rank: 'Kategori', amount: 'Bagian dari total hadiah Rp. 15.000.000' },
+  { id: 'pr2', category: 'Race Whoop Beginner', rank: 'Kategori', amount: 'Bagian dari total hadiah Rp. 15.000.000' },
+  { id: 'pr3', category: 'Freestyle Pro', rank: 'Kategori', amount: 'Bagian dari total hadiah Rp. 15.000.000' },
+  { id: 'pr4', category: 'Freestyle Beginner', rank: 'Kategori', amount: 'Bagian dari total hadiah Rp. 15.000.000' },
+  { id: 'pr5', category: 'Cinematic FPV', rank: 'Kategori', amount: 'Bagian dari total hadiah Rp. 15.000.000' }
 ];
 
 export function getSpeelwijkPrizes() {
   const local = localStorage.getItem('sms_speelwijk_prizes');
-  if (local) {
+  const version = localStorage.getItem('sms_speelwijk_prizes_version');
+  if (local && version === SPEELWIJK_PRIZES_CONFIG_VERSION) {
     try {
       return JSON.parse(local);
     } catch (e) {}
   }
   localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(DEFAULT_SPEELWIJK_PRIZES));
+  localStorage.setItem('sms_speelwijk_prizes_version', SPEELWIJK_PRIZES_CONFIG_VERSION);
   return DEFAULT_SPEELWIJK_PRIZES;
 }
 

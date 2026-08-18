@@ -1040,8 +1040,8 @@ function renderSpeelwijkPrizes() {
   }
 
   // Sort by category first, then by rank rankOrder
-  const categoryOrder = { 'RACE PRO': 1, 'RACE BEGINNER': 2, 'FREESTYLE PRO': 3, 'FREESTYLE BEGINNER': 4 };
-  const rankOrder = { 'Juara 1': 1, 'Juara 2': 2, 'Juara 3': 3 };
+  const categoryOrder = { 'Race Whoop Pro': 1, 'Race Whoop Beginner': 2, 'Freestyle Pro': 3, 'Freestyle Beginner': 4, 'Cinematic FPV': 5 };
+  const rankOrder = { 'Kategori': 1, 'Juara 1': 2, 'Juara 2': 3, 'Juara 3': 4 };
 
   filtered.sort((a, b) => {
     const catA = categoryOrder[a.category] || 99;
@@ -1530,8 +1530,8 @@ function openSpeelwijkPrizeModal(prize = null) {
   if (!modal) return;
 
   document.getElementById('speelwijk-prize-form-id').value = prize?.id || '';
-  document.getElementById('speelwijk-prize-input-category').value = prize?.category || 'RACE PRO';
-  document.getElementById('speelwijk-prize-input-rank').value = prize?.rank || 'Juara 1';
+  document.getElementById('speelwijk-prize-input-category').value = prize?.category || 'Race Whoop Pro';
+  document.getElementById('speelwijk-prize-input-rank').value = prize?.rank || 'Kategori';
   document.getElementById('speelwijk-prize-input-amount').value = prize?.amount || '';
 
   document.getElementById('speelwijk-prize-modal-heading').textContent = prize ? 'EDIT DATA HADIAH' : 'TAMBAH DATA HADIAH';
