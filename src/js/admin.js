@@ -54,6 +54,7 @@ import {
   saveSpeelwijkExpense,
   deleteSpeelwijkExpense
 } from './supabase.js';
+import { exportReportingCsv, printReportingPdf } from './reporting-export.js';
 
 let currentUser = null;
 let currentTab = 'overview';
@@ -1321,6 +1322,18 @@ function initSpeelwijkReportingForms() {
   resetReportingSponsorshipForm();
   resetReportingExpenseForm();
   document.getElementById('reporting-sponsorship-filter')?.addEventListener('change', renderSpeelwijkReporting);
+  document.getElementById('reporting-export-csv')?.addEventListener('click', () => exportReportingCsv({
+    reporting: cachedSpeelwijkReporting,
+    registrations: cachedSpeelwijkRegs,
+    settings: cachedSpeelwijkSettings,
+    sponsorshipFilter: document.getElementById('reporting-sponsorship-filter')?.value || 'all'
+  }));
+  document.getElementById('reporting-export-pdf')?.addEventListener('click', () => printReportingPdf({
+    reporting: cachedSpeelwijkReporting,
+    registrations: cachedSpeelwijkRegs,
+    settings: cachedSpeelwijkSettings,
+    sponsorshipFilter: document.getElementById('reporting-sponsorship-filter')?.value || 'all'
+  }));
 }
 
 /* -------------------------------------------------------------------------- */

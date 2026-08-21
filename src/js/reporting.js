@@ -3,6 +3,7 @@ import {
   getSpeelwijkRegistrations,
   getSpeelwijkSettings
 } from './supabase.js';
+import { exportReportingCsv, printReportingPdf } from './reporting-export.js';
 
 const ACCESS_KEY = 'sms_reporting_access';
 const CREDENTIAL_HASH = '637c47c83829d2a6b8d270dd1e2a6c80df0f55e4f32e868c6e8b07c2408b33f0';
@@ -175,6 +176,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   $('reporting-refresh-btn').addEventListener('click', loadReport);
   $('reporting-sponsorship-filter').addEventListener('change', renderReport);
+  $('reporting-export-csv').addEventListener('click', () => exportReportingCsv({
+    reporting: state.reporting,
+    registrations: state.registrations,
+    settings: state.settings,
+    sponsorshipFilter: $('reporting-sponsorship-filter').value
+  }));
+  $('reporting-export-pdf').addEventListener('click', () => printReportingPdf({
+    reporting: state.reporting,
+    registrations: state.registrations,
+    settings: state.settings,
+    sponsorshipFilter: $('reporting-sponsorship-filter').value
+  }));
   $('reporting-logout-btn').addEventListener('click', () => {
     sessionStorage.removeItem(ACCESS_KEY);
     $('reporting-login-form').reset();
