@@ -981,7 +981,11 @@ function normalizeSpeelwijkReporting(value) {
   const source = value && typeof value === 'object' ? value : {};
   return {
     budget: Number(source.budget) || DEFAULT_SPEELWIJK_REPORTING.budget,
-    sponsorshipIncome: Array.isArray(source.sponsorshipIncome) ? source.sponsorshipIncome : [],
+    sponsorshipIncome: Array.isArray(source.sponsorshipIncome) ? source.sponsorshipIncome.map(item => ({
+      ...item,
+      type: item.type === 'in-kind' ? 'in-kind' : 'cash',
+      amount: Number(item.amount) || 0
+    })) : [],
     expenses: Array.isArray(source.expenses) ? source.expenses : []
   };
 }
@@ -1031,6 +1035,7 @@ export async function saveSpeelwijkSponsorshipIncome(itemData) {
   const item = {
     id: itemData.id || `sponsor_income_${Date.now()}`,
     sponsor: String(itemData.sponsor || '').trim(),
+    type: itemData.type === 'in-kind' ? 'in-kind' : 'cash',
     amount: Number(itemData.amount) || 0,
     date: itemData.date || new Date().toISOString().slice(0, 10),
     notes: String(itemData.notes || '').trim()

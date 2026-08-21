@@ -1139,7 +1139,10 @@ function renderSpeelwijkReporting() {
   const reporting = cachedSpeelwijkReporting || { budget: 40000000, sponsorshipIncome: [], expenses: [] };
   const sponsorshipIncome = Array.isArray(reporting.sponsorshipIncome) ? reporting.sponsorshipIncome : [];
   const expenses = Array.isArray(reporting.expenses) ? reporting.expenses : [];
-  const sponsorshipTotal = sponsorshipIncome.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const cashSponsorshipIncome = sponsorshipIncome.filter(item => item.type !== 'in-kind');
+  const nonCashSponsorshipIncome = sponsorshipIncome.filter(item => item.type === 'in-kind');
+  const sponsorshipTotal = cashSponsorshipIncome.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const nonCashSponsorshipTotal = nonCashSponsorshipIncome.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
   const expenseTotal = expenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
   const approvedRegistrations = getApprovedSpeelwijkRegistrations();
   const feeAmount = parseReportingAmount(cachedSpeelwijkSettings.fee || 0);
@@ -1155,7 +1158,8 @@ function renderSpeelwijkReporting() {
   setText('reporting-budget-display', formatReportingCurrency(budget));
   setText('reporting-sponsorship-total', formatReportingCurrency(sponsorshipTotal));
   setText('reporting-sponsorship-table-total', formatReportingCurrency(sponsorshipTotal));
-  setText('reporting-sponsorship-count', `${sponsorshipIncome.length} transaksi`);
+  setText('reporting-sponsorship-count', `${sponsorshipIncome.length} transaksi · ${nonCashSponsorshipIncome.length} non-tunai`);
+  setText('reporting-sponsorship-noncash-total', formatReportingCurrency(nonCashSponsorshipTotal));
   setText('reporting-registration-total', formatReportingCurrency(registrationTotal));
   setText('reporting-registration-count', `${approvedRegistrations.length} pilot approved × ${formatReportingCurrency(feeAmount)}`);
   setText('reporting-total-income', formatReportingCurrency(totalIncome));
@@ -1180,10 +1184,11 @@ function renderSpeelwijkReporting() {
     sponsorTbody.innerHTML = sponsorshipIncome.length ? sponsorshipIncome.map(item => `
       <tr class="border-b border-surface-variant text-xs text-white">
         <td class="p-3"><div class="font-bold">${escapeReportingText(item.sponsor)}</div>${item.notes ? `<div class="text-[10px] text-on-surface-variant">${escapeReportingText(item.notes)}</div>` : ''}</td>
+        <td class="p-3"><span class="rounded px-1.5 py-1 text-[9px] font-bold ${item.type === 'in-kind' ? 'bg-blue-950/60 text-blue-200' : 'bg-primary-container/15 text-primary-container'}">${item.type === 'in-kind' ? 'NON-TUNAI' : 'TUNAI'}</span></td>
         <td class="p-3 text-on-surface-variant font-mono-data">${escapeReportingText(item.date || '-')}</td>
-        <td class="p-3 font-mono-data font-bold text-primary-container">${formatReportingCurrency(item.amount)}</td>
+        <td class="p-3 font-mono-data font-bold ${item.type === 'in-kind' ? 'text-blue-200' : 'text-primary-container'}">${formatReportingCurrency(item.amount)}${item.type === 'in-kind' ? '<div class="text-[9px] font-normal text-on-surface-variant">nilai estimasi</div>' : ''}</td>
         <td class="p-3 text-right whitespace-nowrap"><button data-reporting-sponsor-edit="${escapeReportingText(item.id)}" class="text-primary-container hover:text-white mr-2" title="Edit"><span class="material-symbols-outlined text-sm">edit</span></button><button data-reporting-sponsor-delete="${escapeReportingText(item.id)}" class="text-red-400 hover:text-red-200" title="Hapus"><span class="material-symbols-outlined text-sm">delete</span></button></td>
-      </tr>`).join('') : '<tr><td colspan="4" class="p-5 text-center text-on-surface-variant text-xs">Belum ada pemasukan sponsorship.</td></tr>';
+      </tr>`).join('') : '<tr><td colspan="5" class="p-5 text-center text-on-surface-variant text-xs">Belum ada pemasukan sponsorship.</td></tr>';
   }
 
   const expenseTbody = document.getElementById('reporting-expenses-tbody');
@@ -1227,6 +1232,7 @@ function renderSpeelwijkReporting() {
         if (!item) return;
         document.getElementById('reporting-sponsorship-id').value = item.id;
         document.getElementById('reporting-sponsorship-name').value = item.sponsor || '';
+        document.getElementById('reporting-sponsorship-type').value = item.type === 'in-kind' ? 'in-kind' : 'cash';
         document.getElementById('reporting-sponsorship-amount').value = item.amount || 0;
         document.getElementById('reporting-sponsorship-date').value = item.date || '';
         document.getElementById('reporting-sponsorship-notes').value = item.notes || '';
@@ -1281,6 +1287,7 @@ function initSpeelwijkReportingForms() {
     const result = await saveSpeelwijkSponsorshipIncome({
       id: document.getElementById('reporting-sponsorship-id').value || undefined,
       sponsor: document.getElementById('reporting-sponsorship-name').value,
+      type: document.getElementById('reporting-sponsorship-type').value,
       amount: parseReportingAmount(document.getElementById('reporting-sponsorship-amount').value),
       date: document.getElementById('reporting-sponsorship-date').value,
       notes: document.getElementById('reporting-sponsorship-notes').value

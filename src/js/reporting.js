@@ -73,11 +73,13 @@ function renderList(containerId, items, type) {
   container.innerHTML = items.map((item) => {
     const title = type === 'sponsorship' ? item.sponsor : item.category;
     const description = type === 'sponsorship' ? item.notes : item.description;
+    const nonCash = type === 'sponsorship' && item.type === 'in-kind';
+    const badge = type === 'sponsorship' ? `<span class="ml-1 rounded px-1.5 py-0.5 text-[9px] font-bold ${nonCash ? 'bg-blue-950/60 text-blue-200' : 'bg-primary-container/15 text-primary-container'}">${nonCash ? 'NON-TUNAI' : 'TUNAI'}</span>` : '';
     return `<div class="flex items-start justify-between gap-4 rounded-lg border border-surface-variant bg-surface-container-high px-4 py-3">
-      <div class="min-w-0"><div class="truncate font-bold text-white">${escapeHtml(title || 'Tanpa nama')}</div>
+      <div class="min-w-0"><div class="truncate font-bold text-white">${escapeHtml(title || 'Tanpa nama')} ${badge}</div>
       <div class="mt-1 text-xs text-on-surface-variant">${escapeHtml(item.date || '-')}</div>
       ${description ? `<div class="mt-1 text-xs text-on-surface-variant">${escapeHtml(description)}</div>` : ''}</div>
-      <div class="shrink-0 text-right font-bold ${type === 'sponsorship' ? 'text-primary-container' : 'text-red-300'}">${formatCurrency(item.amount)}</div>
+      <div class="shrink-0 text-right font-bold ${type === 'sponsorship' ? (nonCash ? 'text-blue-200' : 'text-primary-container') : 'text-red-300'}">${formatCurrency(item.amount)}${nonCash ? '<div class="text-[9px] font-normal text-on-surface-variant">nilai estimasi</div>' : ''}</div>
     </div>`;
   }).join('');
 }
@@ -87,7 +89,10 @@ function renderReport() {
   const expenses = Array.isArray(state.reporting.expenses) ? state.reporting.expenses : [];
   const approved = approvedRegistrations();
   const registrationFee = parseAmount(state.settings.fee);
-  const sponsorshipTotal = sponsorship.reduce((sum, item) => sum + parseAmount(item.amount), 0);
+  const cashSponsorship = sponsorship.filter((item) => item.type !== 'in-kind');
+  const nonCashSponsorship = sponsorship.filter((item) => item.type === 'in-kind');
+  const sponsorshipTotal = cashSponsorship.reduce((sum, item) => sum + parseAmount(item.amount), 0);
+  const nonCashSponsorshipTotal = nonCashSponsorship.reduce((sum, item) => sum + parseAmount(item.amount), 0);
   const registrationTotal = approved.length * registrationFee;
   const totalIncome = sponsorshipTotal + registrationTotal;
   const totalExpenses = expenses.reduce((sum, item) => sum + parseAmount(item.amount), 0);
@@ -97,7 +102,8 @@ function renderReport() {
 
   setText('reporting-budget', formatCurrency(budget));
   setText('reporting-sponsorship', formatCurrency(sponsorshipTotal));
-  setText('reporting-sponsorship-count', `${sponsorship.length} transaksi`);
+  setText('reporting-sponsorship-count', `${sponsorship.length} transaksi · ${nonCashSponsorship.length} non-tunai`);
+  setText('reporting-sponsorship-noncash', formatCurrency(nonCashSponsorshipTotal));
   setText('reporting-registration', formatCurrency(registrationTotal));
   setText('reporting-registration-count', `${approved.length} pilot approved · ${formatCurrency(registrationFee)}/slot`);
   setText('reporting-balance', formatCurrency(balance));
