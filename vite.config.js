@@ -10,6 +10,7 @@ function cleanUrlsPlugin() {
     if (!pathname.includes('.') && !pathname.endsWith('/')) {
       const pageMap = {
         '/admin': '/admin.html',
+        '/reporting': '/reporting.html',
         '/pages/admin': '/pages/admin.html',
         '/tentang-kami': '/pages/tentang-kami.html',
         '/galeri': '/pages/galeri.html',
@@ -81,6 +82,7 @@ export default {
       input: {
         main: resolve(process.cwd(), 'index.html'),
         admin: resolve(process.cwd(), 'admin.html'),
+        reporting: resolve(process.cwd(), 'reporting.html'),
         adminPage: resolve(process.cwd(), 'pages/admin.html'),
         about: resolve(process.cwd(), 'pages/tentang-kami.html'),
         articles: resolve(process.cwd(), 'pages/artikel.html'),

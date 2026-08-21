@@ -4,6 +4,10 @@
   "trailingSlash": false,
   "headers": [
     {
+      "source": "/reporting",
+      "headers": [{ "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, proxy-revalidate" }]
+    },
+    {
       "source": "/benteng-speelwijk",
       "headers": [{ "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, proxy-revalidate" }]
     },
@@ -14,6 +18,7 @@
   ],
   "rewrites": [
     { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/reporting", "destination": "/reporting.html" },
     { "source": "/pages/admin", "destination": "/pages/admin.html" },
     { "source": "/tentang-kami", "destination": "/pages/tentang-kami.html" },
     { "source": "/galeri", "destination": "/pages/galeri.html" },

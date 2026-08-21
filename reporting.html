@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Event Reporting | Fly Through History</title>
+  <meta name="description" content="Laporan keuangan Fly Through History – Benteng Speelwijk FPV Drone Fest 2026."/>
+  <link rel="icon" type="image/png" href="/logo.png"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@0..1&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: {
+        colors: {
+          primary: '#ffc700',
+          'primary-container': '#ffc700',
+          surface: '#121313',
+          'surface-container': '#1d1e1e',
+          'surface-container-high': '#282829',
+          'surface-variant': '#353535',
+          'on-surface': '#e5e2e1',
+          'on-surface-variant': '#c4c7c5'
+        },
+        fontFamily: { headline: ['Space Grotesk', 'sans-serif'], body: ['Space Grotesk', 'sans-serif'] }
+      }}
+    };
+  </script>
+  <style>
+    body { background: #0c0d0d; color: #e5e2e1; font-family: 'Space Grotesk', sans-serif; }
+    .hud-grid { background-size: 30px 30px; background-image: linear-gradient(to right, rgba(255,199,0,.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,199,0,.04) 1px, transparent 1px); }
+    .slant-btn { clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%); }
+    .hidden-view { display: none !important; }
+    .progress-fill { transition: width .6s ease; }
+  </style>
+</head>
+<body class="min-h-screen antialiased selection:bg-primary selection:text-black">
+  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden max-w-sm rounded border border-red-500 bg-red-950/95 px-4 py-3 text-sm text-red-100 shadow-xl"></div>
+
+  <main id="login-view" class="min-h-screen hud-grid relative flex items-center justify-center px-4 py-10">
+    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black pointer-events-none"></div>
+    <section class="relative z-10 w-full max-w-md rounded-2xl border border-surface-variant bg-surface-container p-7 shadow-2xl sm:p-9">
+      <div class="mb-7 text-center">
+        <img src="/logo-sms-speelwijk.png" alt="Fly Through History" class="mx-auto mb-5 h-28 w-28 object-contain"/>
+        <div class="mb-1 text-[11px] font-bold uppercase tracking-[.28em] text-primary-container">PARTNER ACCESS</div>
+        <h1 class="text-2xl font-bold tracking-wide text-white">EVENT REPORTING</h1>
+        <p class="mt-2 text-sm leading-relaxed text-on-surface-variant">Fly Through History – Benteng Speelwijk FPV Drone Fest 2026</p>
+      </div>
+      <form id="reporting-login-form" class="space-y-4">
+        <div>
+          <label for="reporting-username" class="mb-1 block text-xs font-bold uppercase tracking-wider text-primary-container">USERNAME</label>
+          <input id="reporting-username" type="text" autocomplete="username" required class="w-full rounded border border-surface-variant bg-surface-container-high px-3 py-3 text-white outline-none focus:border-primary-container" placeholder="Masukkan username"/>
+        </div>
+        <div>
+          <label for="reporting-password" class="mb-1 block text-xs font-bold uppercase tracking-wider text-primary-container">PASSWORD</label>
+          <input id="reporting-password" type="password" autocomplete="current-password" required class="w-full rounded border border-surface-variant bg-surface-container-high px-3 py-3 text-white outline-none focus:border-primary-container" placeholder="Masukkan password"/>
+        </div>
+        <p id="reporting-login-error" class="hidden text-sm text-red-300">Username atau password tidak sesuai.</p>
+        <button type="submit" class="slant-btn flex w-full items-center justify-center gap-2 bg-primary-container px-4 py-3 text-sm font-bold text-black shadow-lg transition hover:bg-yellow-400">
+          <span class="material-symbols-outlined text-base">lock_open</span> MASUK KE REPORTING
+        </button>
+      </form>
+      <div class="mt-7 border-t border-surface-variant pt-4 text-center text-xs text-on-surface-variant">Akses khusus partner event</div>
+    </section>
+  </main>
+
+  <main id="reporting-view" class="hidden-view min-h-screen">
+    <header class="sticky top-0 z-30 border-b border-surface-variant bg-surface/95 px-4 py-4 backdrop-blur-md sm:px-8">
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-4">
+        <div class="flex min-w-0 items-center gap-3">
+          <img src="/logo-sms-speelwijk.png" alt="SMS Speelwijk" class="h-11 w-11 shrink-0 object-contain"/>
+          <div class="min-w-0">
+            <div class="truncate text-xs font-bold uppercase tracking-[.2em] text-primary-container">SKY MULTIROTOR SQUAD</div>
+            <h1 class="truncate text-base font-bold text-white sm:text-lg">EVENT REPORTING</h1>
+          </div>
+        </div>
+        <div class="flex shrink-0 items-center gap-2">
+          <button id="reporting-refresh-btn" class="flex items-center gap-1 rounded border border-surface-variant px-3 py-2 text-xs text-on-surface-variant transition hover:border-primary-container hover:text-primary-container"><span class="material-symbols-outlined text-base">refresh</span><span class="hidden sm:inline">REFRESH</span></button>
+          <button id="reporting-logout-btn" class="flex items-center gap-1 rounded border border-red-500/40 px-3 py-2 text-xs text-red-300 transition hover:bg-red-950/40"><span class="material-symbols-outlined text-base">logout</span><span class="hidden sm:inline">KELUAR</span></button>
+        </div>
+      </div>
+    </header>
+
+    <section class="hud-grid px-4 py-8 sm:px-8 sm:py-12">
+      <div class="mx-auto max-w-7xl">
+        <div class="mb-8 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+          <div>
+            <div class="mb-2 text-xs font-bold uppercase tracking-[.25em] text-primary-container">CONFIDENTIAL PARTNER VIEW</div>
+            <h2 class="text-3xl font-bold text-white sm:text-5xl">Financial Snapshot</h2>
+            <p class="mt-2 text-sm text-on-surface-variant">Fly Through History – Benteng Speelwijk FPV Drone Fest · 17–18 Oktober 2026</p>
+          </div>
+          <span id="reporting-last-updated" class="text-xs text-on-surface-variant">Memuat data...</span>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <article class="rounded-xl border border-primary-container/40 bg-surface-container p-5">
+            <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-primary-container"><span>Budget Awal</span><span class="material-symbols-outlined">account_balance_wallet</span></div>
+            <div id="reporting-budget" class="mt-4 text-2xl font-bold text-white sm:text-3xl">Rp 0</div>
+            <div class="mt-4 h-2 overflow-hidden rounded-full bg-surface-container-high"><div id="reporting-progress" class="progress-fill h-full w-0 bg-primary-container"></div></div>
+            <div id="reporting-progress-label" class="mt-2 text-xs text-on-surface-variant">0% terealisasi</div>
+          </article>
+          <article class="rounded-xl border border-surface-variant bg-surface-container p-5">
+            <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-on-surface-variant"><span>Sponsorship</span><span class="material-symbols-outlined text-primary-container">handshake</span></div>
+            <div id="reporting-sponsorship" class="mt-4 text-2xl font-bold text-white sm:text-3xl">Rp 0</div>
+            <div id="reporting-sponsorship-count" class="mt-2 text-xs text-on-surface-variant">0 transaksi</div>
+          </article>
+          <article class="rounded-xl border border-surface-variant bg-surface-container p-5">
+            <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-on-surface-variant"><span>Pendaftaran Approved</span><span class="material-symbols-outlined text-primary-container">how_to_reg</span></div>
+            <div id="reporting-registration" class="mt-4 text-2xl font-bold text-white sm:text-3xl">Rp 0</div>
+            <div id="reporting-registration-count" class="mt-2 text-xs text-on-surface-variant">0 pilot</div>
+          </article>
+          <article class="rounded-xl border border-primary-container/40 bg-primary-container/10 p-5">
+            <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-primary-container"><span>Saldo Akhir</span><span class="material-symbols-outlined">account_balance</span></div>
+            <div id="reporting-balance" class="mt-4 text-2xl font-bold text-primary-container sm:text-3xl">Rp 0</div>
+            <div class="mt-2 text-xs text-on-surface-variant">Pendapatan dikurangi pengeluaran</div>
+          </article>
+        </div>
+
+        <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <section class="rounded-xl border border-surface-variant bg-surface-container p-5 sm:p-6">
+            <div class="mb-5 flex items-center justify-between border-b border-surface-variant pb-4"><div><div class="text-[11px] font-bold uppercase tracking-[.2em] text-primary-container">INCOME STREAM</div><h3 class="mt-1 text-xl font-bold text-white">Pemasukan Sponsorship</h3></div><span class="material-symbols-outlined text-primary-container">trending_up</span></div>
+            <div id="reporting-sponsorship-list" class="space-y-3"><div class="text-sm text-on-surface-variant">Memuat data...</div></div>
+          </section>
+          <section class="rounded-xl border border-surface-variant bg-surface-container p-5 sm:p-6">
+            <div class="mb-5 flex items-center justify-between border-b border-surface-variant pb-4"><div><div class="text-[11px] font-bold uppercase tracking-[.2em] text-red-300">OUTGOING</div><h3 class="mt-1 text-xl font-bold text-white">Pengeluaran Event</h3></div><span class="material-symbols-outlined text-red-300">trending_down</span></div>
+            <div id="reporting-expense-list" class="space-y-3"><div class="text-sm text-on-surface-variant">Memuat data...</div></div>
+          </section>
+        </div>
+
+        <section class="mt-6 rounded-xl border border-surface-variant bg-surface-container p-5 sm:p-6">
+          <div class="mb-5 flex items-center justify-between border-b border-surface-variant pb-4"><div><div class="text-[11px] font-bold uppercase tracking-[.2em] text-primary-container">SUMMARY</div><h3 class="mt-1 text-xl font-bold text-white">Ringkasan Keuangan</h3></div><span class="material-symbols-outlined text-primary-container">summarize</span></div>
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div class="rounded-lg bg-surface-container-high p-4"><div class="text-xs uppercase tracking-wider text-on-surface-variant">Total Pendapatan</div><div id="reporting-total-income" class="mt-2 text-xl font-bold text-primary-container">Rp 0</div></div>
+            <div class="rounded-lg bg-surface-container-high p-4"><div class="text-xs uppercase tracking-wider text-on-surface-variant">Total Pengeluaran</div><div id="reporting-total-expenses" class="mt-2 text-xl font-bold text-red-300">Rp 0</div></div>
+            <div class="rounded-lg bg-surface-container-high p-4"><div class="text-xs uppercase tracking-wider text-on-surface-variant">Saldo Akhir</div><div id="reporting-total-balance" class="mt-2 text-xl font-bold text-white">Rp 0</div></div>
+          </div>
+        </section>
+      </div>
+    </section>
+    <footer class="border-t border-surface-variant px-4 py-6 text-center text-xs text-on-surface-variant sm:px-8">Sky Multirotor Squad · Partner Reporting Access</footer>
+  </main>
+
+  <script type="module" src="/src/js/reporting.js"></script>
+</body>
+</html>
