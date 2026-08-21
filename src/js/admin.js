@@ -46,7 +46,13 @@ import {
   getSpeelwijkPrizes,
   getSpeelwijkPrizesShared,
   saveSpeelwijkPrize,
-  deleteSpeelwijkPrize
+  deleteSpeelwijkPrize,
+  getSpeelwijkReporting,
+  saveSpeelwijkReporting,
+  saveSpeelwijkSponsorshipIncome,
+  deleteSpeelwijkSponsorshipIncome,
+  saveSpeelwijkExpense,
+  deleteSpeelwijkExpense
 } from './supabase.js';
 
 let currentUser = null;
@@ -82,6 +88,7 @@ let cachedSpeelwijkRundown = [];
 let cachedSpeelwijkSettings = {};
 let cachedSpeelwijkPartners = [];
 let cachedSpeelwijkPrizes = [];
+let cachedSpeelwijkReporting = { budget: 40000000, sponsorshipIncome: [], expenses: [] };
 
 document.addEventListener('DOMContentLoaded', () => {
   initAdminAuth();
@@ -89,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initSpeelwijkSubtabs();
   initModalListeners();
   initFormSubmissions();
+  initSpeelwijkReportingForms();
   initPilotSync();
   initSpeelwijkQrisUpload();
   setupRealtimeListeners();
@@ -260,7 +268,8 @@ function initSpeelwijkSubtabs() {
     { btn: document.getElementById('subtab-btn-speelwijk-rundown'), view: document.getElementById('speelwijk-subview-rundown') },
     { btn: document.getElementById('subtab-btn-speelwijk-settings'), view: document.getElementById('speelwijk-subview-settings') },
     { btn: document.getElementById('subtab-btn-speelwijk-partners'), view: document.getElementById('speelwijk-subview-partners') },
-    { btn: document.getElementById('subtab-btn-speelwijk-prizes'), view: document.getElementById('speelwijk-subview-prizes') }
+    { btn: document.getElementById('subtab-btn-speelwijk-prizes'), view: document.getElementById('speelwijk-subview-prizes') },
+    { btn: document.getElementById('subtab-btn-speelwijk-reporting'), view: document.getElementById('speelwijk-subview-reporting') }
   ];
 
   subtabBtns.forEach(({ btn, view }) => {
@@ -670,6 +679,7 @@ async function loadSpeelwijkData() {
     loadSpeelwijkPartners(),
     loadSpeelwijkPrizes()
   ]);
+  await loadSpeelwijkReporting();
 }
 
 async function loadSpeelwijkRegistrations() {
@@ -1105,6 +1115,200 @@ function renderSpeelwijkPrizes() {
       }
     });
   });
+}
+
+function formatReportingCurrency(value) {
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(Number(value) || 0);
+}
+
+function parseReportingAmount(value) {
+  const parsed = Number(String(value ?? '').replace(/[^0-9-]/g, ''));
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function escapeReportingText(value) {
+  return String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
+}
+
+function getApprovedSpeelwijkRegistrations() {
+  const approvedStatuses = new Set(['APPROVED', 'LUNAS']);
+  return cachedSpeelwijkRegs.filter(reg => approvedStatuses.has(String(reg.status || '').trim().toUpperCase()));
+}
+
+function renderSpeelwijkReporting() {
+  const reporting = cachedSpeelwijkReporting || { budget: 40000000, sponsorshipIncome: [], expenses: [] };
+  const sponsorshipIncome = Array.isArray(reporting.sponsorshipIncome) ? reporting.sponsorshipIncome : [];
+  const expenses = Array.isArray(reporting.expenses) ? reporting.expenses : [];
+  const sponsorshipTotal = sponsorshipIncome.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const expenseTotal = expenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  const approvedRegistrations = getApprovedSpeelwijkRegistrations();
+  const feeAmount = parseReportingAmount(cachedSpeelwijkSettings.fee || 0);
+  const registrationTotal = approvedRegistrations.length * feeAmount;
+  const totalIncome = sponsorshipTotal + registrationTotal;
+  const budget = Number(reporting.budget) || 0;
+  const progress = budget > 0 ? Math.round((totalIncome / budget) * 100) : 0;
+
+  const setText = (id, value) => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value;
+  };
+  setText('reporting-budget-display', formatReportingCurrency(budget));
+  setText('reporting-sponsorship-total', formatReportingCurrency(sponsorshipTotal));
+  setText('reporting-sponsorship-table-total', formatReportingCurrency(sponsorshipTotal));
+  setText('reporting-sponsorship-count', `${sponsorshipIncome.length} transaksi`);
+  setText('reporting-registration-total', formatReportingCurrency(registrationTotal));
+  setText('reporting-registration-count', `${approvedRegistrations.length} pilot approved × ${formatReportingCurrency(feeAmount)}`);
+  setText('reporting-total-income', formatReportingCurrency(totalIncome));
+  setText('reporting-expenses-total', formatReportingCurrency(expenseTotal));
+  setText('reporting-balance', formatReportingCurrency(totalIncome - expenseTotal));
+  setText('reporting-bottom-total-income', formatReportingCurrency(totalIncome));
+  setText('reporting-bottom-total-expenses', formatReportingCurrency(expenseTotal));
+  setText('reporting-bottom-balance', formatReportingCurrency(totalIncome - expenseTotal));
+  setText('reporting-income-progress-label', `${progress}%`);
+
+  const progressBar = document.getElementById('reporting-income-progress');
+  if (progressBar) {
+    const visibleProgress = Math.min(Math.max(progress, 0), 100);
+    progressBar.style.width = `${visibleProgress}%`;
+    progressBar.setAttribute('aria-valuenow', String(visibleProgress));
+  }
+  const budgetInput = document.getElementById('reporting-budget-input');
+  if (budgetInput && document.activeElement !== budgetInput) budgetInput.value = budget || '';
+
+  const sponsorTbody = document.getElementById('reporting-sponsorship-tbody');
+  if (sponsorTbody) {
+    sponsorTbody.innerHTML = sponsorshipIncome.length ? sponsorshipIncome.map(item => `
+      <tr class="border-b border-surface-variant text-xs text-white">
+        <td class="p-3"><div class="font-bold">${escapeReportingText(item.sponsor)}</div>${item.notes ? `<div class="text-[10px] text-on-surface-variant">${escapeReportingText(item.notes)}</div>` : ''}</td>
+        <td class="p-3 text-on-surface-variant font-mono-data">${escapeReportingText(item.date || '-')}</td>
+        <td class="p-3 font-mono-data font-bold text-primary-container">${formatReportingCurrency(item.amount)}</td>
+        <td class="p-3 text-right whitespace-nowrap"><button data-reporting-sponsor-edit="${escapeReportingText(item.id)}" class="text-primary-container hover:text-white mr-2" title="Edit"><span class="material-symbols-outlined text-sm">edit</span></button><button data-reporting-sponsor-delete="${escapeReportingText(item.id)}" class="text-red-400 hover:text-red-200" title="Hapus"><span class="material-symbols-outlined text-sm">delete</span></button></td>
+      </tr>`).join('') : '<tr><td colspan="4" class="p-5 text-center text-on-surface-variant text-xs">Belum ada pemasukan sponsorship.</td></tr>';
+  }
+
+  const expenseTbody = document.getElementById('reporting-expenses-tbody');
+  if (expenseTbody) {
+    expenseTbody.innerHTML = expenses.length ? expenses.map(item => `
+      <tr class="border-b border-surface-variant text-xs text-white">
+        <td class="p-3"><div class="font-bold">${escapeReportingText(item.category)}</div><div class="text-[10px] text-on-surface-variant">${escapeReportingText(item.description)}</div>${item.notes ? `<div class="text-[10px] text-on-surface-variant italic">${escapeReportingText(item.notes)}</div>` : ''}</td>
+        <td class="p-3 text-on-surface-variant font-mono-data">${escapeReportingText(item.date || '-')}</td>
+        <td class="p-3 font-mono-data font-bold text-red-300">${formatReportingCurrency(item.amount)}</td>
+        <td class="p-3 text-right whitespace-nowrap"><button data-reporting-expense-edit="${escapeReportingText(item.id)}" class="text-primary-container hover:text-white mr-2" title="Edit"><span class="material-symbols-outlined text-sm">edit</span></button><button data-reporting-expense-delete="${escapeReportingText(item.id)}" class="text-red-400 hover:text-red-200" title="Hapus"><span class="material-symbols-outlined text-sm">delete</span></button></td>
+      </tr>`).join('') : '<tr><td colspan="4" class="p-5 text-center text-on-surface-variant text-xs">Belum ada pengeluaran.</td></tr>';
+
+    expenseTbody.querySelectorAll('[data-reporting-expense-edit]').forEach(button => {
+      button.addEventListener('click', () => {
+        const item = expenses.find(entry => entry.id === button.dataset.reportingExpenseEdit);
+        if (!item) return;
+        document.getElementById('reporting-expense-id').value = item.id;
+        document.getElementById('reporting-expense-category').value = item.category || '';
+        document.getElementById('reporting-expense-description').value = item.description || '';
+        document.getElementById('reporting-expense-amount').value = item.amount || 0;
+        document.getElementById('reporting-expense-date').value = item.date || '';
+        document.getElementById('reporting-expense-notes').value = item.notes || '';
+        document.getElementById('btn-save-reporting-expense').textContent = 'UPDATE PENGELUARAN';
+        document.getElementById('btn-cancel-reporting-expense').classList.remove('hidden');
+      });
+    });
+    expenseTbody.querySelectorAll('[data-reporting-expense-delete]').forEach(button => {
+      button.addEventListener('click', async () => {
+        if (!confirm('Hapus data pengeluaran ini?')) return;
+        const result = await deleteSpeelwijkExpense(button.dataset.reportingExpenseDelete);
+        showToast(result.remoteSynced === false ? 'Pengeluaran dihapus lokal; sinkronisasi server gagal.' : 'Pengeluaran berhasil dihapus.', result.remoteSynced === false ? 'error' : 'success');
+        await loadSpeelwijkReporting();
+      });
+    });
+  }
+
+  if (sponsorTbody) {
+    sponsorTbody.querySelectorAll('[data-reporting-sponsor-edit]').forEach(button => {
+      button.addEventListener('click', () => {
+        const item = sponsorshipIncome.find(entry => entry.id === button.dataset.reportingSponsorEdit);
+        if (!item) return;
+        document.getElementById('reporting-sponsorship-id').value = item.id;
+        document.getElementById('reporting-sponsorship-name').value = item.sponsor || '';
+        document.getElementById('reporting-sponsorship-amount').value = item.amount || 0;
+        document.getElementById('reporting-sponsorship-date').value = item.date || '';
+        document.getElementById('reporting-sponsorship-notes').value = item.notes || '';
+        document.getElementById('btn-save-reporting-sponsorship').textContent = 'UPDATE PEMASUKAN';
+        document.getElementById('btn-cancel-reporting-sponsorship').classList.remove('hidden');
+      });
+    });
+    sponsorTbody.querySelectorAll('[data-reporting-sponsor-delete]').forEach(button => {
+      button.addEventListener('click', async () => {
+        if (!confirm('Hapus data pemasukan sponsorship ini?')) return;
+        const result = await deleteSpeelwijkSponsorshipIncome(button.dataset.reportingSponsorDelete);
+        showToast(result.remoteSynced === false ? 'Pemasukan dihapus lokal; sinkronisasi server gagal.' : 'Pemasukan sponsorship berhasil dihapus.', result.remoteSynced === false ? 'error' : 'success');
+        await loadSpeelwijkReporting();
+      });
+    });
+  }
+}
+
+async function loadSpeelwijkReporting() {
+  cachedSpeelwijkReporting = await getSpeelwijkReporting({ migrateLocal: true });
+  renderSpeelwijkReporting();
+}
+
+function resetReportingSponsorshipForm() {
+  document.getElementById('form-speelwijk-sponsorship')?.reset();
+  document.getElementById('reporting-sponsorship-id').value = '';
+  document.getElementById('reporting-sponsorship-date').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('btn-save-reporting-sponsorship').textContent = 'TAMBAH PEMASUKAN';
+  document.getElementById('btn-cancel-reporting-sponsorship').classList.add('hidden');
+}
+
+function resetReportingExpenseForm() {
+  document.getElementById('form-speelwijk-expense')?.reset();
+  document.getElementById('reporting-expense-id').value = '';
+  document.getElementById('reporting-expense-date').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('btn-save-reporting-expense').textContent = 'TAMBAH PENGELUARAN';
+  document.getElementById('btn-cancel-reporting-expense').classList.add('hidden');
+}
+
+function initSpeelwijkReportingForms() {
+  const budgetButton = document.getElementById('btn-save-reporting-budget');
+  budgetButton?.addEventListener('click', async () => {
+    const budget = parseReportingAmount(document.getElementById('reporting-budget-input').value);
+    if (budget < 0) return;
+    const result = await saveSpeelwijkReporting({ ...cachedSpeelwijkReporting, budget });
+    showToast(result.remoteSynced === false ? 'Budget tersimpan lokal; sinkronisasi server gagal.' : 'Budget awal berhasil disimpan.', result.remoteSynced === false ? 'error' : 'success');
+    await loadSpeelwijkReporting();
+  });
+
+  document.getElementById('form-speelwijk-sponsorship')?.addEventListener('submit', async event => {
+    event.preventDefault();
+    const result = await saveSpeelwijkSponsorshipIncome({
+      id: document.getElementById('reporting-sponsorship-id').value || undefined,
+      sponsor: document.getElementById('reporting-sponsorship-name').value,
+      amount: parseReportingAmount(document.getElementById('reporting-sponsorship-amount').value),
+      date: document.getElementById('reporting-sponsorship-date').value,
+      notes: document.getElementById('reporting-sponsorship-notes').value
+    });
+    showToast(result.remoteSynced === false ? 'Pemasukan tersimpan lokal; sinkronisasi server gagal.' : 'Pemasukan sponsorship berhasil disimpan.', result.remoteSynced === false ? 'error' : 'success');
+    resetReportingSponsorshipForm();
+    await loadSpeelwijkReporting();
+  });
+  document.getElementById('btn-cancel-reporting-sponsorship')?.addEventListener('click', resetReportingSponsorshipForm);
+
+  document.getElementById('form-speelwijk-expense')?.addEventListener('submit', async event => {
+    event.preventDefault();
+    const result = await saveSpeelwijkExpense({
+      id: document.getElementById('reporting-expense-id').value || undefined,
+      category: document.getElementById('reporting-expense-category').value,
+      description: document.getElementById('reporting-expense-description').value,
+      amount: parseReportingAmount(document.getElementById('reporting-expense-amount').value),
+      date: document.getElementById('reporting-expense-date').value,
+      notes: document.getElementById('reporting-expense-notes').value
+    });
+    showToast(result.remoteSynced === false ? 'Pengeluaran tersimpan lokal; sinkronisasi server gagal.' : 'Pengeluaran berhasil disimpan.', result.remoteSynced === false ? 'error' : 'success');
+    resetReportingExpenseForm();
+    await loadSpeelwijkReporting();
+  });
+  document.getElementById('btn-cancel-reporting-expense')?.addEventListener('click', resetReportingExpenseForm);
+
+  resetReportingSponsorshipForm();
+  resetReportingExpenseForm();
 }
 
 /* -------------------------------------------------------------------------- */

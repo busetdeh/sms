@@ -969,3 +969,104 @@ export async function deleteSpeelwijkPrize(id) {
     return { success: true, remoteSynced: false, error: error.message };
   }
 }
+
+/* 6. Event reporting CRUD */
+const DEFAULT_SPEELWIJK_REPORTING = {
+  budget: 40000000,
+  sponsorshipIncome: [],
+  expenses: []
+};
+
+function normalizeSpeelwijkReporting(value) {
+  const source = value && typeof value === 'object' ? value : {};
+  return {
+    budget: Number(source.budget) || DEFAULT_SPEELWIJK_REPORTING.budget,
+    sponsorshipIncome: Array.isArray(source.sponsorshipIncome) ? source.sponsorshipIncome : [],
+    expenses: Array.isArray(source.expenses) ? source.expenses : []
+  };
+}
+
+export async function getSpeelwijkReporting({ migrateLocal = false } = {}) {
+  try {
+    const remote = await getSpeelwijkConfigRemote('SPEELWIJK_REPORTING_CONFIG');
+    if (remote && typeof remote === 'object' && !Array.isArray(remote)) {
+      const reporting = normalizeSpeelwijkReporting(remote);
+      localStorage.setItem('sms_speelwijk_reporting', JSON.stringify(reporting));
+      return reporting;
+    }
+  } catch (error) {
+    console.warn('Remote event reporting fetch error:', error.message);
+  }
+
+  const local = localStorage.getItem('sms_speelwijk_reporting');
+  let reporting = DEFAULT_SPEELWIJK_REPORTING;
+  if (local) {
+    try { reporting = normalizeSpeelwijkReporting(JSON.parse(local)); } catch (error) { /* use defaults */ }
+  } else {
+    localStorage.setItem('sms_speelwijk_reporting', JSON.stringify(reporting));
+  }
+
+  if (migrateLocal) {
+    try { await saveSpeelwijkConfigRemote('SPEELWIJK_REPORTING_CONFIG', reporting); } catch (error) {
+      console.warn('Event reporting config migration error:', error.message);
+    }
+  }
+  return reporting;
+}
+
+export async function saveSpeelwijkReporting(reportingData) {
+  const reporting = normalizeSpeelwijkReporting(reportingData);
+  localStorage.setItem('sms_speelwijk_reporting', JSON.stringify(reporting));
+  try {
+    await saveSpeelwijkConfigRemote('SPEELWIJK_REPORTING_CONFIG', reporting);
+    return { success: true, data: reporting, remoteSynced: true };
+  } catch (error) {
+    console.warn('Event reporting remote save error:', error.message);
+    return { success: true, data: reporting, remoteSynced: false, error: error.message };
+  }
+}
+
+export async function saveSpeelwijkSponsorshipIncome(itemData) {
+  const reporting = await getSpeelwijkReporting({ migrateLocal: true });
+  const item = {
+    id: itemData.id || `sponsor_income_${Date.now()}`,
+    sponsor: String(itemData.sponsor || '').trim(),
+    amount: Number(itemData.amount) || 0,
+    date: itemData.date || new Date().toISOString().slice(0, 10),
+    notes: String(itemData.notes || '').trim()
+  };
+  const index = reporting.sponsorshipIncome.findIndex(entry => entry.id === item.id);
+  if (index >= 0) reporting.sponsorshipIncome[index] = item;
+  else reporting.sponsorshipIncome.unshift(item);
+  const result = await saveSpeelwijkReporting(reporting);
+  return { ...result, data: item };
+}
+
+export async function deleteSpeelwijkSponsorshipIncome(id) {
+  const reporting = await getSpeelwijkReporting({ migrateLocal: true });
+  reporting.sponsorshipIncome = reporting.sponsorshipIncome.filter(item => item.id !== id);
+  return saveSpeelwijkReporting(reporting);
+}
+
+export async function saveSpeelwijkExpense(itemData) {
+  const reporting = await getSpeelwijkReporting({ migrateLocal: true });
+  const item = {
+    id: itemData.id || `expense_${Date.now()}`,
+    category: String(itemData.category || 'Operasional').trim(),
+    description: String(itemData.description || '').trim(),
+    amount: Number(itemData.amount) || 0,
+    date: itemData.date || new Date().toISOString().slice(0, 10),
+    notes: String(itemData.notes || '').trim()
+  };
+  const index = reporting.expenses.findIndex(entry => entry.id === item.id);
+  if (index >= 0) reporting.expenses[index] = item;
+  else reporting.expenses.unshift(item);
+  const result = await saveSpeelwijkReporting(reporting);
+  return { ...result, data: item };
+}
+
+export async function deleteSpeelwijkExpense(id) {
+  const reporting = await getSpeelwijkReporting({ migrateLocal: true });
+  reporting.expenses = reporting.expenses.filter(item => item.id !== id);
+  return saveSpeelwijkReporting(reporting);
+}
