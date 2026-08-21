@@ -91,6 +91,10 @@ function renderReport() {
   const registrationFee = parseAmount(state.settings.fee);
   const cashSponsorship = sponsorship.filter((item) => item.type !== 'in-kind');
   const nonCashSponsorship = sponsorship.filter((item) => item.type === 'in-kind');
+  const sponsorshipFilter = $('reporting-sponsorship-filter')?.value || 'all';
+  const visibleSponsorship = sponsorshipFilter === 'all'
+    ? sponsorship
+    : sponsorship.filter((item) => (item.type === 'in-kind' ? 'in-kind' : 'cash') === sponsorshipFilter);
   const sponsorshipTotal = cashSponsorship.reduce((sum, item) => sum + parseAmount(item.amount), 0);
   const nonCashSponsorshipTotal = nonCashSponsorship.reduce((sum, item) => sum + parseAmount(item.amount), 0);
   const registrationTotal = approved.length * registrationFee;
@@ -113,7 +117,7 @@ function renderReport() {
   setText('reporting-progress-label', `${progress.toFixed(1)}% dari budget terealisasi`);
   $('reporting-progress').style.width = `${progress}%`;
   $('reporting-last-updated').textContent = `Diperbarui ${new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date())}`;
-  renderList('reporting-sponsorship-list', sponsorship, 'sponsorship');
+  renderList('reporting-sponsorship-list', visibleSponsorship, 'sponsorship');
   renderList('reporting-expense-list', expenses, 'expense');
 }
 
@@ -170,6 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   $('reporting-refresh-btn').addEventListener('click', loadReport);
+  $('reporting-sponsorship-filter').addEventListener('change', renderReport);
   $('reporting-logout-btn').addEventListener('click', () => {
     sessionStorage.removeItem(ACCESS_KEY);
     $('reporting-login-form').reset();

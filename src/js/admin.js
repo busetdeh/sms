@@ -1141,6 +1141,10 @@ function renderSpeelwijkReporting() {
   const expenses = Array.isArray(reporting.expenses) ? reporting.expenses : [];
   const cashSponsorshipIncome = sponsorshipIncome.filter(item => item.type !== 'in-kind');
   const nonCashSponsorshipIncome = sponsorshipIncome.filter(item => item.type === 'in-kind');
+  const sponsorshipFilter = document.getElementById('reporting-sponsorship-filter')?.value || 'all';
+  const visibleSponsorshipIncome = sponsorshipFilter === 'all'
+    ? sponsorshipIncome
+    : sponsorshipIncome.filter(item => (item.type === 'in-kind' ? 'in-kind' : 'cash') === sponsorshipFilter);
   const sponsorshipTotal = cashSponsorshipIncome.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
   const nonCashSponsorshipTotal = nonCashSponsorshipIncome.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
   const expenseTotal = expenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
@@ -1181,7 +1185,7 @@ function renderSpeelwijkReporting() {
 
   const sponsorTbody = document.getElementById('reporting-sponsorship-tbody');
   if (sponsorTbody) {
-    sponsorTbody.innerHTML = sponsorshipIncome.length ? sponsorshipIncome.map(item => `
+    sponsorTbody.innerHTML = visibleSponsorshipIncome.length ? visibleSponsorshipIncome.map(item => `
       <tr class="border-b border-surface-variant text-xs text-white">
         <td class="p-3"><div class="font-bold">${escapeReportingText(item.sponsor)}</div>${item.notes ? `<div class="text-[10px] text-on-surface-variant">${escapeReportingText(item.notes)}</div>` : ''}</td>
         <td class="p-3"><span class="rounded px-1.5 py-1 text-[9px] font-bold ${item.type === 'in-kind' ? 'bg-blue-950/60 text-blue-200' : 'bg-primary-container/15 text-primary-container'}">${item.type === 'in-kind' ? 'NON-TUNAI' : 'TUNAI'}</span></td>
@@ -1228,7 +1232,7 @@ function renderSpeelwijkReporting() {
   if (sponsorTbody) {
     sponsorTbody.querySelectorAll('[data-reporting-sponsor-edit]').forEach(button => {
       button.addEventListener('click', () => {
-        const item = sponsorshipIncome.find(entry => entry.id === button.dataset.reportingSponsorEdit);
+        const item = visibleSponsorshipIncome.find(entry => entry.id === button.dataset.reportingSponsorEdit);
         if (!item) return;
         document.getElementById('reporting-sponsorship-id').value = item.id;
         document.getElementById('reporting-sponsorship-name').value = item.sponsor || '';
@@ -1316,6 +1320,7 @@ function initSpeelwijkReportingForms() {
 
   resetReportingSponsorshipForm();
   resetReportingExpenseForm();
+  document.getElementById('reporting-sponsorship-filter')?.addEventListener('change', renderSpeelwijkReporting);
 }
 
 /* -------------------------------------------------------------------------- */
