@@ -153,6 +153,7 @@
         <a class="text-primary-fixed-dim hover:text-white font-bold transition-colors uppercase" href="#hero">Beranda</a>
         <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#history">Misi Sejarah</a>
         <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#schedule">Jadwal Terbang</a>
+        <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#booths">Booth &amp; Fasilitas</a>
         <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#prizes">Hadiah &amp; Trofi</a>
         <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#register">Registrasi Pilot</a>
         <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#partners">Sponsor</a>
@@ -177,6 +178,7 @@
       <a class="block py-2 text-primary-fixed-dim font-bold" href="#hero" onclick="toggleMobileMenu()">BERANDA</a>
       <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#history" onclick="toggleMobileMenu()">MISI SEJARAH</a>
       <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#schedule" onclick="toggleMobileMenu()">JADWAL TERBANG</a>
+      <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#booths" onclick="toggleMobileMenu()">BOOTH &amp; FASILITAS</a>
       <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#prizes" onclick="toggleMobileMenu()">HADIAH &amp; TROFI</a>
       <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#register" onclick="toggleMobileMenu()">REGISTRASI PILOT</a>
       <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#partners" onclick="toggleMobileMenu()">SPONSOR &amp; PARTNERS</a>
@@ -409,6 +411,17 @@
             Simpan Event ke Google Calendar
           </a>
           <p class="text-on-surface-variant text-[11px] sm:text-xs max-w-xl">Untuk pengingat otomatis 1 minggu sebelumnya, gunakan opsi <a href="/fly-through-history.ics" download class="text-primary-fixed-dim underline hover:text-white">Unduh kalender (.ics)</a> atau aktifkan notifikasi “1 minggu sebelum” setelah event tersimpan di Google Calendar.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Booths & Facilities Section -->
+    <section class="py-16 md:py-24 px-4 sm:px-8 bg-surface-dim border-t border-surface-variant" id="booths">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-12"><div class="text-primary-fixed-dim font-label-caps text-xs uppercase tracking-widest mb-1">AREA EVENT</div><h2 class="text-2xl sm:text-3xl font-bold text-white uppercase tracking-tight">Booth Merchant &amp; Fasilitas</h2><div class="h-0.5 w-20 bg-primary-container mx-auto mt-2"></div><p class="mt-3 text-sm text-on-surface-variant">Informasi merchant dan fasilitas yang tersedia selama Fly Through History – Benteng Speelwijk FPV Drone Fest.</p></div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div><div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-primary-container">storefront</span><h3 class="font-label-caps text-primary-container text-xs uppercase tracking-[.2em] font-bold">Merchant Booth</h3></div><div id="speelwijk-booths-merchants" class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div class="p-5 rounded-lg border border-surface-variant text-sm text-on-surface-variant">Memuat informasi booth...</div></div></div>
+          <div><div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-primary-container">room_service</span><h3 class="font-label-caps text-primary-container text-xs uppercase tracking-[.2em] font-bold">Fasilitas Event</h3></div><div id="speelwijk-booths-facilities" class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div class="p-5 rounded-lg border border-surface-variant text-sm text-on-surface-variant">Memuat informasi fasilitas...</div></div></div>
         </div>
       </div>
     </section>
@@ -822,6 +835,7 @@
       getSpeelwijkRegistrations,
       saveSpeelwijkRegistration,
       getSpeelwijkPartners,
+      getSpeelwijkBooths,
       getSpeelwijkPrizesShared
     } from '/src/js/supabase.js';
 
@@ -1062,6 +1076,20 @@
           const payInst = document.getElementById('payment-display-instructions');
           if (payInst && settings.paymentInstructions) payInst.textContent = settings.paymentInstructions;
         }
+
+        // Booths & facilities sync
+        const booths = await getSpeelwijkBooths();
+        const merchantBoothsEl = document.getElementById('speelwijk-booths-merchants');
+        const facilitiesEl = document.getElementById('speelwijk-booths-facilities');
+        const renderBooths = (items, emptyText) => items.length ? items.map(item => {
+          const linkUrl = /^https?:\/\//i.test(String(item.link_url || '')) ? String(item.link_url).trim() : '';
+          const cardTag = linkUrl ? 'a' : 'div';
+          const linkAttrs = linkUrl ? `href="${escapeParticipantText(linkUrl)}" target="_blank" rel="noopener noreferrer"` : '';
+          const icon = item.type === 'facility' ? 'room_service' : 'storefront';
+          return `<${cardTag} ${linkAttrs} class="block rounded-lg border border-surface-variant bg-surface-container-low p-5 transition-colors hover:border-primary-container ${linkUrl ? 'cursor-pointer' : ''}"><div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary-container">${icon}</span><div class="min-w-0"><div class="font-bold text-white">${escapeParticipantText(item.name)}</div><div class="mt-1 text-xs leading-relaxed text-on-surface-variant">${escapeParticipantText(item.description || '')}</div>${item.location ? `<div class="mt-3 flex items-center gap-1 text-[10px] text-primary-fixed-dim"><span class="material-symbols-outlined text-xs">location_on</span>${escapeParticipantText(item.location)}</div>` : ''}${item.contact ? `<div class="mt-1 text-[10px] text-on-surface-variant">PIC: ${escapeParticipantText(item.contact)}</div>` : ''}</div></div></${cardTag}>`;
+        }).join('') : `<div class="col-span-full rounded-lg border border-dashed border-surface-variant p-5 text-center text-sm text-on-surface-variant">${emptyText}</div>`;
+        if (merchantBoothsEl) merchantBoothsEl.innerHTML = renderBooths((booths || []).filter(item => item.type === 'merchant' && item.status !== 'inactive'), 'Belum ada merchant booth yang diumumkan.');
+        if (facilitiesEl) facilitiesEl.innerHTML = renderBooths((booths || []).filter(item => item.type === 'facility' && item.status !== 'inactive'), 'Informasi fasilitas akan segera diumumkan.');
 
         // Partners & Sponsors sync
         const partners = await getSpeelwijkPartners();

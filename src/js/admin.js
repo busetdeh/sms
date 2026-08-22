@@ -43,6 +43,9 @@ import {
   getSpeelwijkPartners,
   saveSpeelwijkPartner,
   deleteSpeelwijkPartner,
+  getSpeelwijkBooths,
+  saveSpeelwijkBooth,
+  deleteSpeelwijkBooth,
   getSpeelwijkPrizes,
   getSpeelwijkPrizesShared,
   saveSpeelwijkPrize,
@@ -88,6 +91,7 @@ let cachedSpeelwijkRegs = [];
 let cachedSpeelwijkRundown = [];
 let cachedSpeelwijkSettings = {};
 let cachedSpeelwijkPartners = [];
+let cachedSpeelwijkBooths = [];
 let cachedSpeelwijkPrizes = [];
 let cachedSpeelwijkReporting = { budget: 40000000, sponsorshipIncome: [], expenses: [] };
 
@@ -98,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initModalListeners();
   initFormSubmissions();
   initSpeelwijkReportingForms();
+  initSpeelwijkBoothForms();
   initPilotSync();
   initSpeelwijkQrisUpload();
   setupRealtimeListeners();
@@ -270,6 +275,7 @@ function initSpeelwijkSubtabs() {
     { btn: document.getElementById('subtab-btn-speelwijk-settings'), view: document.getElementById('speelwijk-subview-settings') },
     { btn: document.getElementById('subtab-btn-speelwijk-partners'), view: document.getElementById('speelwijk-subview-partners') },
     { btn: document.getElementById('subtab-btn-speelwijk-prizes'), view: document.getElementById('speelwijk-subview-prizes') },
+    { btn: document.getElementById('subtab-btn-speelwijk-booths'), view: document.getElementById('speelwijk-subview-booths') },
     { btn: document.getElementById('subtab-btn-speelwijk-reporting'), view: document.getElementById('speelwijk-subview-reporting') }
   ];
 
@@ -678,6 +684,7 @@ async function loadSpeelwijkData() {
     loadSpeelwijkRundown(),
     loadSpeelwijkSettings(),
     loadSpeelwijkPartners(),
+    loadSpeelwijkBooths(),
     loadSpeelwijkPrizes()
   ]);
   await loadSpeelwijkReporting();
@@ -1008,6 +1015,93 @@ function renderSpeelwijkPartners() {
       }
     });
   });
+}
+
+async function loadSpeelwijkBooths() {
+  cachedSpeelwijkBooths = await getSpeelwijkBooths({ migrateLocal: true });
+  renderSpeelwijkBooths();
+}
+
+function resetSpeelwijkBoothForm() {
+  document.getElementById('form-speelwijk-booth')?.reset();
+  const id = document.getElementById('speelwijk-booth-form-id');
+  const order = document.getElementById('speelwijk-booth-input-order');
+  if (id) id.value = '';
+  if (order) order.value = String((cachedSpeelwijkBooths?.length || 0) + 1);
+  const button = document.getElementById('btn-save-speelwijk-booth');
+  if (button) button.textContent = 'SIMPAN BOOTH';
+  document.getElementById('btn-cancel-speelwijk-booth')?.classList.add('hidden');
+}
+
+function renderSpeelwijkBooths() {
+  const tbody = document.getElementById('admin-speelwijk-booths-tbody');
+  if (!tbody) return;
+  const query = (document.getElementById('speelwijk-booths-search')?.value || '').toLowerCase().trim();
+  const filter = document.getElementById('speelwijk-booths-filter-type')?.value || 'ALL';
+  const filtered = cachedSpeelwijkBooths.filter(item => {
+    const matchesQuery = !query || [item.name, item.description, item.location, item.contact].some(value => String(value || '').toLowerCase().includes(query));
+    const matchesType = filter === 'ALL' || item.type === filter;
+    return matchesQuery && matchesType;
+  });
+  tbody.innerHTML = filtered.length ? filtered.map(item => `
+    <tr class="border-b border-surface-variant text-xs text-white">
+      <td class="p-3"><div class="font-bold">${escapeReportingText(item.name)}</div><div class="text-[10px] text-on-surface-variant">${escapeReportingText(item.description || '-')}</div></td>
+      <td class="p-3"><span class="rounded px-2 py-1 text-[9px] font-bold ${item.type === 'facility' ? 'bg-blue-950/60 text-blue-200' : 'bg-primary-container/15 text-primary-container'}">${item.type === 'facility' ? 'FASILITAS' : 'MERCHANT'}</span></td>
+      <td class="p-3 text-on-surface-variant">${escapeReportingText(item.location || '-')}</td>
+      <td class="p-3"><span class="rounded px-2 py-1 text-[9px] font-bold ${item.status === 'inactive' ? 'bg-red-950/60 text-red-200' : 'bg-green-950/60 text-green-200'}">${item.status === 'inactive' ? 'NONAKTIF' : 'AKTIF'}</span></td>
+      <td class="p-3 text-right whitespace-nowrap"><button data-speelwijk-booth-edit="${escapeReportingText(item.id)}" class="text-primary-container hover:text-white mr-2" title="Edit"><span class="material-symbols-outlined text-sm">edit</span></button><button data-speelwijk-booth-delete="${escapeReportingText(item.id)}" class="text-red-400 hover:text-red-200" title="Hapus"><span class="material-symbols-outlined text-sm">delete</span></button></td>
+    </tr>`).join('') : '<tr><td colspan="5" class="p-6 text-center text-on-surface-variant text-xs">Belum ada booth atau fasilitas.</td></tr>';
+
+  tbody.querySelectorAll('[data-speelwijk-booth-edit]').forEach(button => {
+    button.addEventListener('click', () => {
+      const item = cachedSpeelwijkBooths.find(entry => entry.id === button.dataset.speelwijkBoothEdit);
+      if (!item) return;
+      document.getElementById('speelwijk-booth-form-id').value = item.id;
+      document.getElementById('speelwijk-booth-input-name').value = item.name || '';
+      document.getElementById('speelwijk-booth-input-type').value = item.type || 'merchant';
+      document.getElementById('speelwijk-booth-input-description').value = item.description || '';
+      document.getElementById('speelwijk-booth-input-location').value = item.location || '';
+      document.getElementById('speelwijk-booth-input-status').value = item.status || 'active';
+      document.getElementById('speelwijk-booth-input-contact').value = item.contact || '';
+      document.getElementById('speelwijk-booth-input-link').value = item.link_url || '';
+      document.getElementById('speelwijk-booth-input-order').value = item.display_order || 1;
+      document.getElementById('btn-save-speelwijk-booth').textContent = 'UPDATE BOOTH';
+      document.getElementById('btn-cancel-speelwijk-booth').classList.remove('hidden');
+      document.getElementById('speelwijk-booth-input-name').focus();
+    });
+  });
+  tbody.querySelectorAll('[data-speelwijk-booth-delete]').forEach(button => {
+    button.addEventListener('click', async () => {
+      if (!confirm('Hapus booth/fasilitas ini?')) return;
+      const result = await deleteSpeelwijkBooth(button.dataset.speelwijkBoothDelete);
+      showToast(result.remoteSynced === false ? 'Data dihapus lokal; sinkronisasi server gagal.' : 'Booth/fasilitas berhasil dihapus.', result.remoteSynced === false ? 'error' : 'success');
+      await loadSpeelwijkBooths();
+    });
+  });
+}
+
+function initSpeelwijkBoothForms() {
+  document.getElementById('speelwijk-booths-search')?.addEventListener('input', renderSpeelwijkBooths);
+  document.getElementById('speelwijk-booths-filter-type')?.addEventListener('change', renderSpeelwijkBooths);
+  document.getElementById('btn-cancel-speelwijk-booth')?.addEventListener('click', resetSpeelwijkBoothForm);
+  document.getElementById('form-speelwijk-booth')?.addEventListener('submit', async event => {
+    event.preventDefault();
+    const result = await saveSpeelwijkBooth({
+      id: document.getElementById('speelwijk-booth-form-id').value || undefined,
+      name: document.getElementById('speelwijk-booth-input-name').value,
+      type: document.getElementById('speelwijk-booth-input-type').value,
+      description: document.getElementById('speelwijk-booth-input-description').value,
+      location: document.getElementById('speelwijk-booth-input-location').value,
+      status: document.getElementById('speelwijk-booth-input-status').value,
+      contact: document.getElementById('speelwijk-booth-input-contact').value,
+      link_url: document.getElementById('speelwijk-booth-input-link').value,
+      display_order: document.getElementById('speelwijk-booth-input-order').value
+    });
+    showToast(result.remoteSynced === false ? 'Booth tersimpan lokal; sinkronisasi server gagal.' : 'Booth/fasilitas berhasil disimpan.', result.remoteSynced === false ? 'error' : 'success');
+    resetSpeelwijkBoothForm();
+    await loadSpeelwijkBooths();
+  });
+  resetSpeelwijkBoothForm();
 }
 
 async function loadSpeelwijkPrizes() {

@@ -862,6 +862,91 @@ export async function deleteSpeelwijkPartner(id) {
   }
 }
 
+/* 5. Booths & Facilities CRUD */
+const DEFAULT_SPEELWIJK_BOOTHS = [];
+
+function normalizeSpeelwijkBooths(value) {
+  if (!Array.isArray(value)) return DEFAULT_SPEELWIJK_BOOTHS;
+  return value.map((item, index) => ({
+    id: item.id || `booth_${index + 1}`,
+    name: String(item.name || '').trim(),
+    type: item.type === 'facility' ? 'facility' : 'merchant',
+    description: String(item.description || '').trim(),
+    location: String(item.location || '').trim(),
+    status: item.status === 'inactive' ? 'inactive' : 'active',
+    contact: String(item.contact || '').trim(),
+    link_url: String(item.link_url || '').trim(),
+    display_order: Number(item.display_order) || index + 1
+  })).sort((a, b) => a.display_order - b.display_order);
+}
+
+export async function getSpeelwijkBooths({ migrateLocal = false } = {}) {
+  try {
+    const remote = await getSpeelwijkConfigRemote('SPEELWIJK_BOOTHS_CONFIG');
+    if (Array.isArray(remote)) {
+      const booths = normalizeSpeelwijkBooths(remote);
+      localStorage.setItem('sms_speelwijk_booths', JSON.stringify(booths));
+      return booths;
+    }
+  } catch (error) {
+    console.warn('Remote booth config fetch error:', error.message);
+  }
+
+  const local = localStorage.getItem('sms_speelwijk_booths');
+  let booths = DEFAULT_SPEELWIJK_BOOTHS;
+  if (local) {
+    try { booths = normalizeSpeelwijkBooths(JSON.parse(local)); } catch (error) { /* use defaults */ }
+  } else {
+    localStorage.setItem('sms_speelwijk_booths', JSON.stringify(booths));
+  }
+
+  if (migrateLocal) {
+    try { await saveSpeelwijkConfigRemote('SPEELWIJK_BOOTHS_CONFIG', booths); } catch (error) {
+      console.warn('Booth config migration error:', error.message);
+    }
+  }
+  return booths;
+}
+
+export async function saveSpeelwijkBooth(boothData) {
+  const current = await getSpeelwijkBooths({ migrateLocal: true });
+  const booth = {
+    id: boothData.id || `booth_${Date.now()}`,
+    name: String(boothData.name || '').trim(),
+    type: boothData.type === 'facility' ? 'facility' : 'merchant',
+    description: String(boothData.description || '').trim(),
+    location: String(boothData.location || '').trim(),
+    status: boothData.status === 'inactive' ? 'inactive' : 'active',
+    contact: String(boothData.contact || '').trim(),
+    link_url: String(boothData.link_url || '').trim(),
+    display_order: Number(boothData.display_order) || current.length + 1
+  };
+  const index = current.findIndex(item => item.id === booth.id);
+  if (index >= 0) current[index] = booth;
+  else current.push(booth);
+  const normalized = normalizeSpeelwijkBooths(current);
+  localStorage.setItem('sms_speelwijk_booths', JSON.stringify(normalized));
+  try {
+    await saveSpeelwijkConfigRemote('SPEELWIJK_BOOTHS_CONFIG', normalized);
+    return { success: true, data: booth, remoteSynced: true };
+  } catch (error) {
+    return { success: true, data: booth, remoteSynced: false, error: error.message };
+  }
+}
+
+export async function deleteSpeelwijkBooth(id) {
+  const current = await getSpeelwijkBooths({ migrateLocal: true });
+  const filtered = current.filter(item => item.id !== id);
+  try {
+    await saveSpeelwijkConfigRemote('SPEELWIJK_BOOTHS_CONFIG', filtered);
+    localStorage.setItem('sms_speelwijk_booths', JSON.stringify(filtered));
+    return { success: true, remoteSynced: true };
+  } catch (error) {
+    localStorage.setItem('sms_speelwijk_booths', JSON.stringify(filtered));
+    return { success: true, remoteSynced: false, error: error.message };
+  }
+}
+
 // 5. Prizes CRUD
 const SPEELWIJK_PRIZES_CONFIG_VERSION = '2026-08-categories-v3';
 const DEFAULT_SPEELWIJK_PRIZES = [

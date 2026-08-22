@@ -541,6 +541,10 @@
               <span class="material-symbols-outlined text-base">military_tech</span>
               <span>HADIAH &amp; TROFI</span>
             </button>
+            <button id="subtab-btn-speelwijk-booths" class="speelwijk-subtab-btn px-4 py-2.5 text-on-surface-variant hover:text-white border-b-2 border-transparent flex items-center gap-1.5 transition-colors">
+              <span class="material-symbols-outlined text-base">storefront</span>
+              <span>BOOTH &amp; FASILITAS</span>
+            </button>
             <button id="subtab-btn-speelwijk-reporting" class="speelwijk-subtab-btn px-4 py-2.5 text-on-surface-variant hover:text-white border-b-2 border-transparent flex items-center gap-1.5 transition-colors">
               <span class="material-symbols-outlined text-base">monitoring</span>
               <span>REPORTING EVENT</span>
@@ -856,7 +860,31 @@
             </div>
           </div>
 
-          <!-- SUB-VIEW 6: EVENT REPORTING -->
+          <!-- SUB-VIEW 6: BOOTHS & FACILITIES -->
+          <div id="speelwijk-subview-booths" class="speelwijk-subview hidden space-y-4">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div><h4 class="font-stats-lg text-base text-white font-bold uppercase text-primary-container flex items-center gap-2"><span class="material-symbols-outlined">storefront</span>Booth Merchant &amp; Fasilitas</h4><p class="text-xs text-on-surface-variant mt-1">Kelola informasi merchant, area layanan, dan fasilitas untuk ditampilkan di microsite event.</p></div>
+              <div class="flex gap-2"><input id="speelwijk-booths-search" type="search" placeholder="Cari booth/fasilitas..." class="w-full sm:w-56 bg-surface-container border border-surface-variant rounded px-3 py-2 text-xs text-white focus:border-primary-container focus:outline-none"/><select id="speelwijk-booths-filter-type" class="bg-surface-container border border-surface-variant rounded px-3 py-2 text-xs text-white focus:border-primary-container focus:outline-none"><option value="ALL">SEMUA</option><option value="merchant">MERCHANT</option><option value="facility">FASILITAS</option></select></div>
+            </div>
+            <form id="form-speelwijk-booth" class="bg-surface-container border border-surface-variant rounded-lg p-4 space-y-3">
+              <input id="speelwijk-booth-form-id" type="hidden"/>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <input id="speelwijk-booth-input-name" type="text" required placeholder="Nama booth / fasilitas *" class="bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                <select id="speelwijk-booth-input-type" class="bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"><option value="merchant">Merchant</option><option value="facility">Fasilitas</option></select>
+                <select id="speelwijk-booth-input-status" class="bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"><option value="active">Aktif / tampil</option><option value="inactive">Nonaktif / sembunyikan</option></select>
+                <input id="speelwijk-booth-input-location" type="text" placeholder="Lokasi booth" class="bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                <input id="speelwijk-booth-input-description" type="text" required placeholder="Deskripsi / layanan *" class="bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                <input id="speelwijk-booth-input-contact" type="text" placeholder="Kontak / PIC (opsional)" class="bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                <input id="speelwijk-booth-input-link" type="url" placeholder="Link website/Instagram (opsional)" class="bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+              </div>
+              <div class="flex items-center justify-between gap-3"><label class="flex items-center gap-2 text-[10px] text-on-surface-variant">Urutan tampil <input id="speelwijk-booth-input-order" type="number" min="1" step="1" class="w-20 bg-surface-container-high border border-surface-variant rounded px-2 py-1.5 text-white text-xs focus:border-primary-container focus:outline-none"/></label><div class="flex justify-end gap-2"><button id="btn-cancel-speelwijk-booth" type="button" class="hidden px-3 py-2 text-[10px] text-on-surface-variant font-label-caps">BATAL</button><button id="btn-save-speelwijk-booth" type="submit" class="bg-primary-container text-black font-bold px-4 py-2 rounded text-[10px] font-label-caps">SIMPAN BOOTH</button></div></div>
+            </form>
+            <div class="bg-surface-container border border-surface-variant rounded-lg overflow-x-auto"><table class="w-full text-left min-w-[760px]"><thead class="text-[10px] font-label-caps text-primary-container border-b border-surface-variant"><tr><th class="p-3">NAMA &amp; DESKRIPSI</th><th class="p-3">JENIS</th><th class="p-3">LOKASI</th><th class="p-3">STATUS</th><th class="p-3 text-right">AKSI</th></tr></thead><tbody id="admin-speelwijk-booths-tbody"></tbody></table></div>
+          </div>
+
+          <!-- SUB-VIEW 7: EVENT REPORTING -->
           <div id="speelwijk-subview-reporting" class="speelwijk-subview hidden space-y-5">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
               <div>
