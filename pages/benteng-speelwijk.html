@@ -114,6 +114,24 @@
     .slant-btn {
       clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
     }
+    .mobile-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 60;
+      width: min(88vw, 380px);
+      height: 100vh;
+      overflow-y: auto;
+      padding: 1.5rem;
+      background: #201f1f;
+      border-left: 1px solid #4f4632;
+      box-shadow: -18px 0 45px rgba(0, 0, 0, .45);
+      transform: translateX(100%);
+      transition: transform .3s ease;
+    }
+    .mobile-drawer.open { transform: translateX(0); }
+    .drawer-overlay { opacity: 0; transition: opacity .3s ease; }
+    .drawer-overlay.open { opacity: 1; }
     /* Custom Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
@@ -173,8 +191,10 @@
       </div>
     </div>
 
-    <!-- Mobile Drawer Navigation -->
-    <div id="mobile-drawer" class="hidden border-t border-surface-variant bg-surface-container-low px-4 py-4 space-y-3 font-label-caps text-xs">
+    <!-- Slide-in Drawer Navigation -->
+    <div id="mobile-drawer-overlay" class="drawer-overlay hidden fixed inset-0 z-[55] bg-black/70 backdrop-blur-sm" onclick="toggleMobileMenu()" aria-hidden="true"></div>
+    <div id="mobile-drawer" class="mobile-drawer space-y-3 font-label-caps text-xs" aria-hidden="true">
+      <div class="mb-5 flex items-center justify-between border-b border-surface-variant pb-4"><span class="text-xs font-bold uppercase tracking-[.2em] text-primary-fixed-dim">MENU EVENT</span><button type="button" class="rounded border border-surface-variant p-1 text-on-surface-variant hover:text-primary-fixed-dim" onclick="toggleMobileMenu()" aria-label="Tutup menu"><span class="material-symbols-outlined">close</span></button></div>
       <a class="block py-2 text-primary-fixed-dim font-bold" href="#hero" onclick="toggleMobileMenu()">BERANDA</a>
       <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#history" onclick="toggleMobileMenu()">MISI SEJARAH</a>
       <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#schedule" onclick="toggleMobileMenu()">JADWAL TERBANG</a>
@@ -182,7 +202,7 @@
       <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#prizes" onclick="toggleMobileMenu()">HADIAH &amp; TROFI</a>
       <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#register" onclick="toggleMobileMenu()">REGISTRASI PILOT</a>
       <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#partners" onclick="toggleMobileMenu()">SPONSOR &amp; PARTNERS</a>
-      <div class="pt-2 border-t border-surface-variant flex gap-2">
+      <div class="pt-2 border-t border-surface-variant flex gap-2 md:hidden">
         <a href="#register" class="flex-1 bg-primary-container text-black font-bold py-2.5 text-center rounded slant-btn" onclick="toggleMobileMenu()">DAFTAR PILOT</a>
         <a href="/" class="px-3 py-2.5 border border-surface-variant text-center rounded text-white flex items-center justify-center">
           <span class="material-symbols-outlined text-base">home</span>
@@ -842,9 +862,16 @@
     // 1. Mobile Menu Toggle
     window.toggleMobileMenu = function() {
       const drawer = document.getElementById('mobile-drawer');
-      if (drawer) {
-        drawer.classList.toggle('hidden');
+      const overlay = document.getElementById('mobile-drawer-overlay');
+      if (!drawer) return;
+      const isOpen = drawer.classList.toggle('open');
+      drawer.setAttribute('aria-hidden', String(!isOpen));
+      if (overlay) {
+        overlay.classList.toggle('hidden', !isOpen);
+        overlay.classList.toggle('open', isOpen);
+        overlay.setAttribute('aria-hidden', String(!isOpen));
       }
+      document.body.classList.toggle('overflow-hidden', isOpen);
     };
     document.getElementById('mobile-menu-btn')?.addEventListener('click', toggleMobileMenu);
 
