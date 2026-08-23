@@ -449,6 +449,21 @@ const DEFAULT_SPEELWIJK_RUNDOWN = [
   { id: 'session_7', day: '2', time: '17:00 WIB', title: 'Podium & Closing Ceremony', desc: 'Penyerahan piala, sertifikat kehormatan skuad, dan foto bersama seluruh pilot & komunitas.' }
 ];
 
+function normalizeSpeelwijkRundown(value) {
+  const source = Array.isArray(value) ? value : [];
+  const nextOrderByDay = {};
+  const rundown = source.map((item, index) => {
+    const day = String(item.day || '1');
+    const providedOrder = Number(item.display_order);
+    const fallbackOrder = (nextOrderByDay[day] || 0) + 1;
+    const displayOrder = providedOrder > 0 ? providedOrder : fallbackOrder;
+    nextOrderByDay[day] = Math.max(nextOrderByDay[day] || 0, displayOrder);
+    return { ...item, id: item.id || `session_${index + 1}`, day, display_order: displayOrder };
+  });
+
+  return rundown.sort((a, b) => String(a.day).localeCompare(String(b.day)) || a.display_order - b.display_order);
+}
+
 // Default Settings
 const DEFAULT_SPEELWIJK_SETTINGS = {
   title: 'Fly Through History',
@@ -667,8 +682,9 @@ export async function getSpeelwijkRundown({ migrateLocal = false } = {}) {
   try {
     const remote = await getSpeelwijkConfigRemote('SPEELWIJK_RUNDOWN_CONFIG');
     if (Array.isArray(remote)) {
-      localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(remote));
-      return remote;
+      const rundown = normalizeSpeelwijkRundown(remote);
+      localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(rundown));
+      return rundown;
     }
   } catch (error) {
     console.warn('Remote rundown config fetch error:', error.message);
@@ -677,8 +693,9 @@ export async function getSpeelwijkRundown({ migrateLocal = false } = {}) {
   const local = localStorage.getItem('sms_speelwijk_rundown');
   let rundown = DEFAULT_SPEELWIJK_RUNDOWN;
   if (local) {
-    try { rundown = JSON.parse(local); } catch (e) { /* use defaults */ }
+    try { rundown = normalizeSpeelwijkRundown(JSON.parse(local)); } catch (e) { /* use defaults */ }
   } else {
+    rundown = normalizeSpeelwijkRundown(rundown);
     localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(rundown));
   }
 
@@ -693,17 +710,21 @@ export async function getSpeelwijkRundown({ migrateLocal = false } = {}) {
 export async function saveSpeelwijkRundownItem(sessionData) {
   const isEdit = Boolean(sessionData.id);
   const id = sessionData.id || `session_${Date.now()}`;
-  const payload = { ...sessionData, id };
   const current = await getSpeelwijkRundown();
+  const existing = current.find(item => item.id === id);
+  const day = String(sessionData.day || existing?.day || '1');
+  const nextOrder = current.filter(item => String(item.day) === day).length + 1;
+  const payload = { ...sessionData, id, day, display_order: Number(sessionData.display_order) || existing?.display_order || nextOrder };
   let updated;
   if (isEdit) {
     updated = current.map(item => item.id === id ? payload : item);
   } else {
     updated = [...current, payload];
   }
-  localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(updated));
+  const normalized = normalizeSpeelwijkRundown(updated);
+  localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(normalized));
   try {
-    await saveSpeelwijkConfigRemote('SPEELWIJK_RUNDOWN_CONFIG', updated);
+    await saveSpeelwijkConfigRemote('SPEELWIJK_RUNDOWN_CONFIG', normalized);
     return { success: true, data: payload, remoteSynced: true };
   } catch (error) {
     console.warn('Rundown config remote save error:', error.message);
@@ -713,7 +734,7 @@ export async function saveSpeelwijkRundownItem(sessionData) {
 
 export async function deleteSpeelwijkRundownItem(id) {
   const current = await getSpeelwijkRundown();
-  const filtered = current.filter(item => item.id !== id);
+  const filtered = normalizeSpeelwijkRundown(current.filter(item => item.id !== id));
   localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(filtered));
   try {
     await saveSpeelwijkConfigRemote('SPEELWIJK_RUNDOWN_CONFIG', filtered);
@@ -721,6 +742,18 @@ export async function deleteSpeelwijkRundownItem(id) {
   } catch (error) {
     console.warn('Rundown config remote delete error:', error.message);
     return { success: true, remoteSynced: false, error: error.message };
+  }
+}
+
+export async function reorderSpeelwijkRundown(items) {
+  const normalized = normalizeSpeelwijkRundown(items);
+  localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(normalized));
+  try {
+    await saveSpeelwijkConfigRemote('SPEELWIJK_RUNDOWN_CONFIG', normalized);
+    return { success: true, data: normalized, remoteSynced: true };
+  } catch (error) {
+    console.warn('Rundown order remote save error:', error.message);
+    return { success: true, data: normalized, remoteSynced: false, error: error.message };
   }
 }
 
@@ -778,6 +811,15 @@ const DEFAULT_SPEELWIJK_PARTNERS = [
   { id: 'p9', name: 'RADIO_LINK', type: 'supporter', logo_url: '' }
 ];
 
+function normalizeSpeelwijkPartners(value) {
+  if (!Array.isArray(value)) return [];
+  return value.map((item, index) => ({
+    ...item,
+    id: item.id || `partner_${index + 1}`,
+    display_order: Number(item.display_order) || index + 1
+  })).sort((a, b) => a.display_order - b.display_order);
+}
+
 async function saveSpeelwijkPartnersRemote(partners) {
   const { data: existing, error: selectError } = await supabase
     .from('contacts')
@@ -809,8 +851,9 @@ export async function getSpeelwijkPartners({ migrateLocal = false } = {}) {
     if (remoteRows?.[0]?.message) {
       const remotePartners = JSON.parse(remoteRows[0].message);
       if (Array.isArray(remotePartners)) {
-        localStorage.setItem('sms_speelwijk_partners', JSON.stringify(remotePartners));
-        return remotePartners;
+        const partners = normalizeSpeelwijkPartners(remotePartners);
+        localStorage.setItem('sms_speelwijk_partners', JSON.stringify(partners));
+        return partners;
       }
     }
   } catch (error) {
@@ -818,9 +861,9 @@ export async function getSpeelwijkPartners({ migrateLocal = false } = {}) {
   }
 
   const local = localStorage.getItem('sms_speelwijk_partners');
-  let partners = DEFAULT_SPEELWIJK_PARTNERS;
+  let partners = normalizeSpeelwijkPartners(DEFAULT_SPEELWIJK_PARTNERS);
   if (local) {
-    try { partners = JSON.parse(local); } catch (e) { /* use defaults */ }
+    try { partners = normalizeSpeelwijkPartners(JSON.parse(local)); } catch (e) { /* use defaults */ }
   } else {
     localStorage.setItem('sms_speelwijk_partners', JSON.stringify(partners));
   }
@@ -835,13 +878,19 @@ export async function getSpeelwijkPartners({ migrateLocal = false } = {}) {
 
 export async function saveSpeelwijkPartner(partnerData) {
   const current = await getSpeelwijkPartners({ migrateLocal: true });
-  const payload = { ...partnerData, id: partnerData.id || `p_${Math.random().toString(36).substr(2, 9)}` };
+  const existing = current.find(partner => partner.id === partnerData.id);
+  const payload = {
+    ...partnerData,
+    id: partnerData.id || `p_${Math.random().toString(36).substr(2, 9)}`,
+    display_order: Number(partnerData.display_order) || existing?.display_order || current.length + 1
+  };
   const idx = current.findIndex(p => p.id === payload.id);
   if (idx !== -1) current[idx] = { ...current[idx], ...payload };
   else current.push(payload);
-  localStorage.setItem('sms_speelwijk_partners', JSON.stringify(current));
+  const normalized = normalizeSpeelwijkPartners(current);
+  localStorage.setItem('sms_speelwijk_partners', JSON.stringify(normalized));
   try {
-    await saveSpeelwijkPartnersRemote(current);
+    await saveSpeelwijkPartnersRemote(normalized);
     return { success: true, data: payload, remoteSynced: true };
   } catch (error) {
     console.warn('Sponsor config remote save error:', error.message);
@@ -851,7 +900,7 @@ export async function saveSpeelwijkPartner(partnerData) {
 
 export async function deleteSpeelwijkPartner(id) {
   const current = await getSpeelwijkPartners({ migrateLocal: true });
-  const filtered = current.filter(p => p.id !== id);
+  const filtered = normalizeSpeelwijkPartners(current.filter(p => p.id !== id));
   localStorage.setItem('sms_speelwijk_partners', JSON.stringify(filtered));
   try {
     await saveSpeelwijkPartnersRemote(filtered);
@@ -859,6 +908,18 @@ export async function deleteSpeelwijkPartner(id) {
   } catch (error) {
     console.warn('Sponsor config remote delete error:', error.message);
     return { success: true, remoteSynced: false, error: error.message };
+  }
+}
+
+export async function reorderSpeelwijkPartners(items) {
+  const normalized = normalizeSpeelwijkPartners(items);
+  localStorage.setItem('sms_speelwijk_partners', JSON.stringify(normalized));
+  try {
+    await saveSpeelwijkPartnersRemote(normalized);
+    return { success: true, data: normalized, remoteSynced: true };
+  } catch (error) {
+    console.warn('Partner order remote save error:', error.message);
+    return { success: true, data: normalized, remoteSynced: false, error: error.message };
   }
 }
 
@@ -936,7 +997,7 @@ export async function saveSpeelwijkBooth(boothData) {
 
 export async function deleteSpeelwijkBooth(id) {
   const current = await getSpeelwijkBooths({ migrateLocal: true });
-  const filtered = current.filter(item => item.id !== id);
+  const filtered = normalizeSpeelwijkBooths(current.filter(item => item.id !== id));
   try {
     await saveSpeelwijkConfigRemote('SPEELWIJK_BOOTHS_CONFIG', filtered);
     localStorage.setItem('sms_speelwijk_booths', JSON.stringify(filtered));
@@ -944,6 +1005,18 @@ export async function deleteSpeelwijkBooth(id) {
   } catch (error) {
     localStorage.setItem('sms_speelwijk_booths', JSON.stringify(filtered));
     return { success: true, remoteSynced: false, error: error.message };
+  }
+}
+
+export async function reorderSpeelwijkBooths(items) {
+  const normalized = normalizeSpeelwijkBooths(items);
+  localStorage.setItem('sms_speelwijk_booths', JSON.stringify(normalized));
+  try {
+    await saveSpeelwijkConfigRemote('SPEELWIJK_BOOTHS_CONFIG', normalized);
+    return { success: true, data: normalized, remoteSynced: true };
+  } catch (error) {
+    console.warn('Booth order remote save error:', error.message);
+    return { success: true, data: normalized, remoteSynced: false, error: error.message };
   }
 }
 
@@ -957,17 +1030,27 @@ const DEFAULT_SPEELWIJK_PRIZES = [
   { id: 'pr5', category: 'Cinematic FPV', rank: 'Kategori', amount: 'Bagian dari total hadiah Rp. 15.000.000' }
 ];
 
+function normalizeSpeelwijkPrizes(value) {
+  if (!Array.isArray(value)) return [];
+  return value.map((item, index) => ({
+    ...item,
+    id: item.id || `prize_${index + 1}`,
+    display_order: Number(item.display_order) || index + 1
+  })).sort((a, b) => a.display_order - b.display_order);
+}
+
 export function getSpeelwijkPrizes() {
   const local = localStorage.getItem('sms_speelwijk_prizes');
   const version = localStorage.getItem('sms_speelwijk_prizes_version');
   if (local && version === SPEELWIJK_PRIZES_CONFIG_VERSION) {
     try {
-      return JSON.parse(local);
+      return normalizeSpeelwijkPrizes(JSON.parse(local));
     } catch (e) {}
   }
-  localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(DEFAULT_SPEELWIJK_PRIZES));
+  const defaults = normalizeSpeelwijkPrizes(DEFAULT_SPEELWIJK_PRIZES);
+  localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(defaults));
   localStorage.setItem('sms_speelwijk_prizes_version', SPEELWIJK_PRIZES_CONFIG_VERSION);
-  return DEFAULT_SPEELWIJK_PRIZES;
+  return defaults;
 }
 
 async function getSpeelwijkPrizesRemote() {
@@ -1005,9 +1088,10 @@ export async function getSpeelwijkPrizesShared({ migrateLocal = false } = {}) {
   try {
     const remote = await getSpeelwijkPrizesRemote();
     if (remote) {
-      localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(remote));
+      const prizes = normalizeSpeelwijkPrizes(remote);
+      localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(prizes));
       localStorage.setItem('sms_speelwijk_prizes_version', SPEELWIJK_PRIZES_CONFIG_VERSION);
-      return remote;
+      return prizes;
     }
   } catch (error) {
     console.warn('Remote prize config fetch error:', error.message);
@@ -1023,28 +1107,34 @@ export async function getSpeelwijkPrizesShared({ migrateLocal = false } = {}) {
 
 export async function saveSpeelwijkPrize(prizeData) {
   const current = await getSpeelwijkPrizesShared({ migrateLocal: true });
-  if (prizeData.id) {
-    const idx = current.findIndex(p => p.id === prizeData.id);
+  const existing = current.find(prize => prize.id === prizeData.id);
+  const payload = {
+    ...prizeData,
+    display_order: Number(prizeData.display_order) || existing?.display_order || current.length + 1
+  };
+  if (payload.id) {
+    const idx = current.findIndex(p => p.id === payload.id);
     if (idx !== -1) {
-      current[idx] = { ...current[idx], ...prizeData };
+      current[idx] = { ...current[idx], ...payload };
     }
   } else {
-    prizeData.id = 'pr_' + Math.random().toString(36).substr(2, 9);
-    current.push(prizeData);
+    payload.id = 'pr_' + Math.random().toString(36).substr(2, 9);
+    current.push(payload);
   }
-  localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(current));
+  const normalized = normalizeSpeelwijkPrizes(current);
+  localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(normalized));
   try {
-    await saveSpeelwijkPrizesRemote(current);
-    return { success: true, data: prizeData, remoteSynced: true };
+    await saveSpeelwijkPrizesRemote(normalized);
+    return { success: true, data: payload, remoteSynced: true };
   } catch (error) {
     console.warn('Prize config remote save error:', error.message);
-    return { success: true, data: prizeData, remoteSynced: false, error: error.message };
+    return { success: true, data: payload, remoteSynced: false, error: error.message };
   }
 }
 
 export async function deleteSpeelwijkPrize(id) {
   const current = await getSpeelwijkPrizesShared({ migrateLocal: true });
-  const filtered = current.filter(p => p.id !== id);
+  const filtered = normalizeSpeelwijkPrizes(current.filter(p => p.id !== id));
   localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(filtered));
   try {
     await saveSpeelwijkPrizesRemote(filtered);
@@ -1052,6 +1142,18 @@ export async function deleteSpeelwijkPrize(id) {
   } catch (error) {
     console.warn('Prize config remote delete error:', error.message);
     return { success: true, remoteSynced: false, error: error.message };
+  }
+}
+
+export async function reorderSpeelwijkPrizes(items) {
+  const normalized = normalizeSpeelwijkPrizes(items);
+  localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(normalized));
+  try {
+    await saveSpeelwijkPrizesRemote(normalized);
+    return { success: true, data: normalized, remoteSynced: true };
+  } catch (error) {
+    console.warn('Prize order remote save error:', error.message);
+    return { success: true, data: normalized, remoteSynced: false, error: error.message };
   }
 }
 

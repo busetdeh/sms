@@ -38,18 +38,22 @@ import {
   getSpeelwijkRundown,
   saveSpeelwijkRundownItem,
   deleteSpeelwijkRundownItem,
+  reorderSpeelwijkRundown,
   getSpeelwijkSettings,
   saveSpeelwijkSettings,
   getSpeelwijkPartners,
   saveSpeelwijkPartner,
   deleteSpeelwijkPartner,
+  reorderSpeelwijkPartners,
   getSpeelwijkBooths,
   saveSpeelwijkBooth,
   deleteSpeelwijkBooth,
+  reorderSpeelwijkBooths,
   getSpeelwijkPrizes,
   getSpeelwijkPrizesShared,
   saveSpeelwijkPrize,
   deleteSpeelwijkPrize,
+  reorderSpeelwijkPrizes,
   getSpeelwijkReporting,
   saveSpeelwijkReporting,
   saveSpeelwijkSponsorshipIncome,
@@ -822,6 +826,72 @@ function renderSpeelwijkRegistrations() {
   });
 }
 
+function enableSpeelwijkDragSort(container, onReorder, enabled = true) {
+  if (!container) return;
+
+  container._speelwijkDragReorder = enabled ? onReorder : null;
+  if (!container.dataset.dragSortInitialized) {
+    container.dataset.dragSortInitialized = 'true';
+    container.addEventListener('dragover', event => {
+      if (!container._speelwijkDragReorder) return;
+      event.preventDefault();
+      const dragging = container.querySelector('.speelwijk-dragging');
+      if (!dragging) return;
+      const afterElement = [...container.querySelectorAll('[data-drag-id]:not(.speelwijk-dragging)')]
+        .reduce((closest, child) => {
+          const box = child.getBoundingClientRect();
+          const offset = event.clientY - box.top - box.height / 2;
+          if (offset < 0 && offset > closest.offset) return { offset, element: child };
+          return closest;
+        }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+      if (afterElement) container.insertBefore(dragging, afterElement);
+      else container.appendChild(dragging);
+    });
+    container.addEventListener('drop', async event => {
+      if (!container._speelwijkDragReorder) return;
+      event.preventDefault();
+      const ids = [...container.querySelectorAll('[data-drag-id]')].map(item => item.dataset.dragId);
+      try {
+        await container._speelwijkDragReorder(ids);
+      } catch (error) {
+        showToast(`Urutan gagal disimpan: ${error.message}`, 'error');
+      }
+    });
+  }
+
+  container.querySelectorAll('[data-drag-id]').forEach(item => {
+    item.draggable = Boolean(enabled);
+    item.classList.toggle('cursor-grab', enabled);
+    item.classList.toggle('active:cursor-grabbing', enabled);
+    if (item.dataset.dragListener) return;
+    item.dataset.dragListener = 'true';
+    item.addEventListener('dragstart', event => {
+      if (!item.draggable) return;
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', item.dataset.dragId);
+      item.classList.add('speelwijk-dragging', 'opacity-50');
+    });
+    item.addEventListener('dragend', () => item.classList.remove('speelwijk-dragging', 'opacity-50'));
+  });
+}
+
+function applySpeelwijkOrder(items, ids) {
+  const orderById = new Map(ids.map((id, index) => [String(id), index + 1]));
+  return items.map(item => orderById.has(String(item.id))
+    ? { ...item, display_order: orderById.get(String(item.id)) }
+    : item);
+}
+
+async function persistSpeelwijkOrder({ items, ids, reorder, reload, label }) {
+  const ordered = applySpeelwijkOrder(items, ids);
+  const result = await reorder(ordered);
+  showToast(
+    result.remoteSynced === false ? `${label} diurutkan lokal; sinkronisasi server gagal.` : `Urutan ${label.toLowerCase()} berhasil disimpan.`,
+    result.remoteSynced === false ? 'error' : 'success'
+  );
+  await reload();
+}
+
 async function loadSpeelwijkRundown() {
   cachedSpeelwijkRundown = await getSpeelwijkRundown({ migrateLocal: true });
   const day1Container = document.getElementById('speelwijk-rundown-day1-container');
@@ -841,14 +911,18 @@ async function loadSpeelwijkRundown() {
     }
     items.forEach(item => {
       const card = document.createElement('div');
+      card.dataset.dragId = item.id;
       card.className = 'p-3 bg-surface-container-high/60 border border-surface-variant rounded flex items-start justify-between gap-3 hover:border-primary-container/40 transition-colors';
       card.innerHTML = `
-        <div>
+        <div class="flex items-start gap-2 min-w-0">
+          <span class="material-symbols-outlined text-on-surface-variant text-base mt-0.5" title="Seret untuk mengubah urutan">drag_indicator</span>
+          <div>
           <div class="flex items-center gap-2 mb-1">
             <span class="px-1.5 py-0.5 rounded bg-primary-container/20 text-primary-container font-mono-data text-[11px] font-bold border border-primary-container/40">${item.time}</span>
             <span class="font-bold text-white text-xs font-label-caps">${item.title}</span>
           </div>
           <p class="text-[11px] text-on-surface-variant leading-relaxed">${item.desc || '-'}</p>
+          </div>
         </div>
         <div class="flex items-center gap-1 shrink-0">
           <button data-id="${item.id}" class="btn-edit-speelwijk-session p-1 text-primary-container hover:bg-surface-container rounded" title="Edit Sesi"><span class="material-symbols-outlined text-sm">edit</span></button>
@@ -857,6 +931,17 @@ async function loadSpeelwijkRundown() {
       `;
       container.appendChild(card);
     });
+    const day = String(items[0]?.day || (container === day1Container ? '1' : '2'));
+    enableSpeelwijkDragSort(container, ids => persistSpeelwijkOrder({
+      items: cachedSpeelwijkRundown.filter(item => String(item.day) === day),
+      ids,
+      reorder: orderedDayItems => reorderSpeelwijkRundown([
+        ...cachedSpeelwijkRundown.filter(item => String(item.day) !== day),
+        ...orderedDayItems
+      ]),
+      reload: loadSpeelwijkRundown,
+      label: `rundown Day ${day}`
+    }));
   };
 
   renderList(day1Items, day1Container, 'Belum ada sesi Day 1.');
@@ -963,12 +1048,16 @@ function renderSpeelwijkPartners() {
         </td>
       </tr>
     `;
+    enableSpeelwijkDragSort(tbody, null, false);
     return;
   }
+
+  const allowDrag = !searchQuery && filterType === 'ALL';
 
   filtered.forEach(p => {
     const tr = document.createElement('tr');
     tr.className = 'border-b border-surface-variant hover:bg-surface-container-high/40 transition-colors text-xs text-white';
+    if (allowDrag) tr.dataset.dragId = p.id;
 
     const logoHtml = p.logo_url 
       ? `<img src="${p.logo_url}" alt="${p.name}" class="h-8 max-w-[80px] object-contain bg-black/30 p-1 rounded border border-surface-variant"/>`
@@ -979,7 +1068,7 @@ function renderSpeelwijkPartners() {
       : `<span class="px-2 py-0.5 rounded bg-surface-variant text-on-surface-variant border border-surface-variant font-label-caps text-[10px] font-bold">SUPPORTED BY</span>`;
 
     tr.innerHTML = `
-      <td class="p-3 font-mono-data font-bold">${p.name}</td>
+      <td class="p-3 font-mono-data font-bold"><span class="material-symbols-outlined align-middle text-sm text-on-surface-variant mr-1" title="Seret untuk mengubah urutan">drag_indicator</span>${p.name}</td>
       <td class="p-3">${typeHtml}</td>
       <td class="p-3">${logoHtml}</td>
       <td class="p-3 text-right">
@@ -995,6 +1084,14 @@ function renderSpeelwijkPartners() {
     `;
     tbody.appendChild(tr);
   });
+
+  enableSpeelwijkDragSort(tbody, ids => persistSpeelwijkOrder({
+    items: cachedSpeelwijkPartners,
+    ids,
+    reorder: reorderSpeelwijkPartners,
+    reload: loadSpeelwijkPartners,
+    label: 'partner/sponsor'
+  }), allowDrag);
 
   // Attach button listeners
   tbody.querySelectorAll('.btn-edit-speelwijk-partner').forEach(btn => {
@@ -1043,14 +1140,23 @@ function renderSpeelwijkBooths() {
     const matchesType = filter === 'ALL' || item.type === filter;
     return matchesQuery && matchesType;
   });
+  const allowDrag = !query && filter === 'ALL';
   tbody.innerHTML = filtered.length ? filtered.map(item => `
-    <tr class="border-b border-surface-variant text-xs text-white">
-      <td class="p-3"><div class="font-bold">${escapeReportingText(item.name)}</div><div class="text-[10px] text-on-surface-variant">${escapeReportingText(item.description || '-')}</div></td>
+    <tr ${allowDrag ? `data-drag-id="${escapeReportingText(item.id)}"` : ''} class="border-b border-surface-variant text-xs text-white">
+      <td class="p-3"><span class="material-symbols-outlined align-middle text-sm text-on-surface-variant mr-1" title="Seret untuk mengubah urutan">drag_indicator</span><div class="inline-block align-middle"><div class="font-bold">${escapeReportingText(item.name)}</div><div class="text-[10px] text-on-surface-variant">${escapeReportingText(item.description || '-')}</div></div></td>
       <td class="p-3"><span class="rounded px-2 py-1 text-[9px] font-bold ${item.type === 'facility' ? 'bg-blue-950/60 text-blue-200' : 'bg-primary-container/15 text-primary-container'}">${item.type === 'facility' ? 'FASILITAS' : 'MERCHANT'}</span></td>
       <td class="p-3 text-on-surface-variant">${escapeReportingText(item.location || '-')}</td>
       <td class="p-3"><span class="rounded px-2 py-1 text-[9px] font-bold ${item.status === 'inactive' ? 'bg-red-950/60 text-red-200' : 'bg-green-950/60 text-green-200'}">${item.status === 'inactive' ? 'NONAKTIF' : 'AKTIF'}</span></td>
       <td class="p-3 text-right whitespace-nowrap"><button data-speelwijk-booth-edit="${escapeReportingText(item.id)}" class="text-primary-container hover:text-white mr-2" title="Edit"><span class="material-symbols-outlined text-sm">edit</span></button><button data-speelwijk-booth-delete="${escapeReportingText(item.id)}" class="text-red-400 hover:text-red-200" title="Hapus"><span class="material-symbols-outlined text-sm">delete</span></button></td>
     </tr>`).join('') : '<tr><td colspan="5" class="p-6 text-center text-on-surface-variant text-xs">Belum ada booth atau fasilitas.</td></tr>';
+
+  enableSpeelwijkDragSort(tbody, ids => persistSpeelwijkOrder({
+    items: cachedSpeelwijkBooths,
+    ids,
+    reorder: reorderSpeelwijkBooths,
+    reload: loadSpeelwijkBooths,
+    label: 'booth/fasilitas'
+  }), allowDrag);
 
   tbody.querySelectorAll('[data-speelwijk-booth-edit]').forEach(button => {
     button.addEventListener('click', () => {
@@ -1152,29 +1258,18 @@ function renderSpeelwijkPrizes() {
         </td>
       </tr>
     `;
+    enableSpeelwijkDragSort(tbody, null, false);
     return;
   }
-
-  // Sort by category first, then by rank rankOrder
-  const categoryOrder = { 'Race Whoop 2-2.5” max 4s Pro (DJI)': 1, 'Race Whoop 2-2.5” max 4s Beginner (DJI)': 2, 'Freestyle max 5” max 6s Pro (DJI)': 3, 'Freestyle max 5” max 6s Beginner (DJI)': 4, 'Cinematic FPV': 5 };
-  const rankOrder = { 'Kategori': 1, 'Juara 1': 2, 'Juara 2': 3, 'Juara 3': 4 };
-
-  filtered.sort((a, b) => {
-    const catA = categoryOrder[a.category] || 99;
-    const catB = categoryOrder[b.category] || 99;
-    if (catA !== catB) return catA - catB;
-
-    const rankA = rankOrder[a.rank] || 99;
-    const rankB = rankOrder[b.rank] || 99;
-    return rankA - rankB;
-  });
+  const allowDrag = !searchQuery && filterCat === 'ALL';
 
   filtered.forEach(p => {
     const tr = document.createElement('tr');
     tr.className = 'border-b border-surface-variant hover:bg-surface-container-high/40 transition-colors text-xs text-white';
+    if (allowDrag) tr.dataset.dragId = p.id;
 
     tr.innerHTML = `
-      <td class="p-3 font-mono-data font-bold text-primary-container">${p.category}</td>
+      <td class="p-3 font-mono-data font-bold text-primary-container"><span class="material-symbols-outlined align-middle text-sm text-on-surface-variant mr-1" title="Seret untuk mengubah urutan">drag_indicator</span>${p.category}</td>
       <td class="p-3 font-bold">${p.rank}</td>
       <td class="p-3 font-mono-data font-bold text-white">${p.amount}</td>
       <td class="p-3 text-right">
@@ -1190,6 +1285,14 @@ function renderSpeelwijkPrizes() {
     `;
     tbody.appendChild(tr);
   });
+
+  enableSpeelwijkDragSort(tbody, ids => persistSpeelwijkOrder({
+    items: cachedSpeelwijkPrizes,
+    ids,
+    reorder: reorderSpeelwijkPrizes,
+    reload: loadSpeelwijkPrizes,
+    label: 'hadiah/trophy'
+  }), allowDrag);
 
   // Attach button listeners
   tbody.querySelectorAll('.btn-edit-speelwijk-prize').forEach(btn => {
