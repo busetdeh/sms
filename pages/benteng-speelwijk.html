@@ -132,6 +132,7 @@
     .mobile-drawer.open { transform: translateX(0); }
     .drawer-overlay { opacity: 0; transition: opacity .3s ease; }
     .drawer-overlay.open { opacity: 1; }
+    #register { scroll-margin-top: 96px; }
     /* Custom Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
@@ -874,6 +875,16 @@
       document.body.classList.toggle('overflow-hidden', isOpen);
     };
     document.getElementById('mobile-menu-btn')?.addEventListener('click', toggleMobileMenu);
+
+    document.querySelectorAll('a[href="#register"]').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        const target = document.getElementById('register');
+        if (!target) return;
+        event.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.replaceState(null, '', '#register');
+      });
+    });
 
     document.getElementById('qris-download-link')?.addEventListener('click', async (event) => {
       const link = event.currentTarget;
