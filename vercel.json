@@ -12,6 +12,10 @@
       "headers": [{ "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, proxy-revalidate" }]
     },
     {
+      "source": "/benteng-speelwijk-profile",
+      "headers": [{ "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, proxy-revalidate" }]
+    },
+    {
       "source": "/pages/benteng-speelwijk",
       "headers": [{ "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, proxy-revalidate" }]
     }
@@ -26,6 +30,7 @@
     { "source": "/kontak", "destination": "/pages/kontak.html" },
     { "source": "/artikel", "destination": "/pages/artikel.html" },
     { "source": "/sms-fly-through-history", "destination": "/benteng-speelwijk" },
+    { "source": "/benteng-speelwijk-profile", "destination": "/benteng-speelwijk-profile.html" },
     { "source": "/pages/sms-fly-through-history", "destination": "/pages/benteng-speelwijk" },
     { "source": "/pages/tentang-kami", "destination": "/pages/tentang-kami.html" },
     { "source": "/pages/galeri", "destination": "/pages/galeri.html" },
