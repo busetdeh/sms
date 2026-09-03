@@ -558,7 +558,7 @@
           <div class="mt-4 p-4 bg-primary/10 border border-primary/30 rounded flex items-center justify-between">
             <div>
               <span class="font-label-caps text-xs text-primary uppercase tracking-wider block">Biaya Registrasi Slot Pilot</span>
-            <span class="text-[11px] text-on-surface-variant">Termasuk Pit Access, Frekuensi Slot, Tenda Camping, Official Jersey &amp; Konsumsi 2 Hari</span>
+            <span id="speelwijk-registration-benefits" class="text-[11px] text-on-surface-variant">Termasuk Pit Access, Frekuensi Slot, Tenda Camping, Official Jersey &amp; Konsumsi 2 Hari</span>
             </div>
             <span class="text-xl sm:text-2xl text-primary-fixed-dim font-bold font-mono-data">Rp 200.000</span>
           </div>
@@ -1061,6 +1061,7 @@
 
           const priceBadge = document.querySelector('#register .text-primary-fixed-dim.font-bold.font-mono-data');
           if (priceBadge && settings.fee) priceBadge.textContent = settings.fee;
+          setText('speelwijk-registration-benefits', settings.registrationBenefits || 'Termasuk Pit Access, Frekuensi Slot, Tenda Camping, Official Jersey & Konsumsi 2 Hari');
 
           // Payment box sync
           const qrisFee = document.getElementById('qris-display-fee');

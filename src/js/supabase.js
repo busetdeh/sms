@@ -471,6 +471,7 @@ const DEFAULT_SPEELWIJK_SETTINGS = {
   slug: 'sms-fly-through-history',
   date: '17 - 18 Oktober 2026',
   fee: 'Rp 200.000',
+  registrationBenefits: 'Termasuk Pit Access, Frekuensi Slot, Tenda Camping, Official Jersey & Konsumsi 2 Hari',
   waNumber: '6287772272928',
   location: 'Benteng Speelwijk, Banten Lama',
   coords: "6°01'59\"S 106°09'14\"E",

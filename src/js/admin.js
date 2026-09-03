@@ -983,6 +983,7 @@ async function loadSpeelwijkSettings() {
 
   setVal('setting-speelwijk-date', cachedSpeelwijkSettings.date);
   setVal('setting-speelwijk-fee', cachedSpeelwijkSettings.fee);
+  setVal('setting-speelwijk-registration-benefits', cachedSpeelwijkSettings.registrationBenefits || 'Termasuk Pit Access, Frekuensi Slot, Tenda Camping, Official Jersey & Konsumsi 2 Hari');
   setVal('setting-speelwijk-wa', cachedSpeelwijkSettings.waNumber);
   setVal('setting-speelwijk-loc', cachedSpeelwijkSettings.location);
   setVal('setting-speelwijk-coords', cachedSpeelwijkSettings.coords);
@@ -2285,6 +2286,7 @@ function initFormSubmissions() {
 
     const date = document.getElementById('setting-speelwijk-date').value.trim();
     const fee = document.getElementById('setting-speelwijk-fee').value.trim();
+    const registrationBenefits = document.getElementById('setting-speelwijk-registration-benefits')?.value.trim() || '';
     const waNumber = document.getElementById('setting-speelwijk-wa').value.trim();
     const location = document.getElementById('setting-speelwijk-loc').value.trim();
     const coords = document.getElementById('setting-speelwijk-coords').value.trim();
@@ -2306,6 +2308,7 @@ function initFormSubmissions() {
       slug,
       date, 
       fee, 
+      registrationBenefits,
       waNumber, 
       location, 
       coords, 
