@@ -16,6 +16,10 @@
       "headers": [{ "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, proxy-revalidate" }]
     },
     {
+      "source": "/benteng-speelwijk-profile-eng",
+      "headers": [{ "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, proxy-revalidate" }]
+    },
+    {
       "source": "/pages/benteng-speelwijk",
       "headers": [{ "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, proxy-revalidate" }]
     }
@@ -31,6 +35,9 @@
     { "source": "/artikel", "destination": "/pages/artikel.html" },
     { "source": "/sms-fly-through-history", "destination": "/benteng-speelwijk" },
     { "source": "/benteng-speelwijk-profile", "destination": "/benteng-speelwijk-profile.html" },
+    { "source": "/benteng-speelwijk-profile-eng", "destination": "/benteng-speelwijk-profile-eng.html" },
+    { "source": "/pages/benteng-speelwijk-profile", "destination": "/pages/benteng-speelwijk-profile.html" },
+    { "source": "/pages/benteng-speelwijk-profile-eng", "destination": "/pages/benteng-speelwijk-profile-eng.html" },
     { "source": "/pages/sms-fly-through-history", "destination": "/pages/benteng-speelwijk" },
     { "source": "/pages/tentang-kami", "destination": "/pages/tentang-kami.html" },
     { "source": "/pages/galeri", "destination": "/pages/galeri.html" },
