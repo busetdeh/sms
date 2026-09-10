@@ -225,7 +225,7 @@
       <!-- Parallax Layer 1: Floating Tactical HUD Reticles & Flight Paths -->
       <div id="speelwijk-parallax-hud" class="absolute inset-0 z-[5] pointer-events-none overflow-hidden will-change-transform">
         <!-- Floating HUD Element 1 (Top Right) -->
-        <div class="absolute top-28 right-8 lg:right-20 bg-surface-container-high/70 backdrop-blur-md border border-primary/30 p-3 rounded font-mono-data text-[10px] text-primary-fixed-dim hidden md:flex flex-col gap-1 shadow-[0_0_15px_rgba(255,199,0,0.15)] animate-pulse">
+        <div class="absolute top-20 right-8 lg:right-12 bg-surface-container-high/70 backdrop-blur-md border border-primary/30 p-3 rounded font-mono-data text-[10px] text-primary-fixed-dim hidden md:flex lg:hidden 2xl:flex flex-col gap-1 shadow-[0_0_15px_rgba(255,199,0,0.15)] animate-pulse">
           <div class="flex items-center gap-1.5 font-bold">
             <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
             <span>GATE_04 // AIR_TRACK_LOCKED</span>
@@ -247,46 +247,96 @@
       </div>
 
       <!-- Parallax Layer 2: Main Hero Content -->
-      <div id="speelwijk-parallax-content" class="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-start gap-6 sm:gap-8 will-change-transform">
-        <div class="flex flex-col gap-3">
-          <span id="speelwijk-hero-subtitle" class="font-label-caps text-xs text-primary tracking-[0.2em] uppercase border border-primary/40 px-3.5 py-1.5 rounded inline-block w-fit bg-primary/15 backdrop-blur-md shadow-[0_0_15px_rgba(255,199,0,0.2)]">
-            ⚡ Benteng Speelwijk Drone Fest 2026
-          </span>
-          <h1 id="speelwijk-hero-title" class="text-4xl sm:text-6xl md:text-7xl font-bold text-white uppercase max-w-4xl tracking-tight leading-tight">
-            Fly Through History
-          </h1>
-        </div>
+      <div id="speelwijk-parallax-content" class="relative z-10 w-full max-w-7xl mx-auto will-change-transform">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 xl:gap-12 items-center">
+          
+          <!-- Left Column: Hero Text & Actions -->
+          <div class="lg:col-span-7 flex flex-col items-start gap-6 sm:gap-8">
+            <div class="flex flex-col gap-3">
+              <span id="speelwijk-hero-subtitle" class="font-label-caps text-xs text-primary tracking-[0.2em] uppercase border border-primary/40 px-3.5 py-1.5 rounded inline-block w-fit bg-primary/15 backdrop-blur-md shadow-[0_0_15px_rgba(255,199,0,0.2)]">
+                ⚡ Benteng Speelwijk Drone Fest 2026
+              </span>
+              <h1 id="speelwijk-hero-title" class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white uppercase max-w-4xl tracking-tight leading-tight">
+                Fly Through History
+              </h1>
+            </div>
 
-        <p id="speelwijk-hero-description" class="text-on-surface-variant max-w-2xl text-sm sm:text-base leading-relaxed">
-          Drone FPV ngebut dan meliuk menembus reruntuhan bersejarah Benteng Speelwijk — pertama kalinya kompetisi presisi dan misi terbang sinematik digelar di kawasan cagar budaya Banten-Indonesia.
-        </p>
+            <p id="speelwijk-hero-description" class="text-on-surface-variant max-w-2xl text-sm sm:text-base leading-relaxed">
+              Drone FPV ngebut dan meliuk menembus reruntuhan bersejarah Benteng Speelwijk — pertama kalinya kompetisi presisi dan misi terbang sinematik digelar di kawasan cagar budaya Banten-Indonesia.
+            </p>
 
-        <div class="flex flex-wrap gap-4 sm:gap-6 font-mono-data text-xs sm:text-sm text-on-surface-variant bg-surface-container-low/80 border border-surface-variant p-3.5 rounded-lg backdrop-blur-md shadow-xl">
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary-fixed-dim text-lg">calendar_today</span>
-            <span id="speelwijk-hero-date" class="text-white font-bold">17 - 18 Oktober 2026</span>
+            <div class="flex flex-wrap gap-4 sm:gap-6 font-mono-data text-xs sm:text-sm text-on-surface-variant bg-surface-container-low/80 border border-surface-variant p-3.5 rounded-lg backdrop-blur-md shadow-xl">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary-fixed-dim text-lg">calendar_today</span>
+                <span id="speelwijk-hero-date" class="text-white font-bold">17 - 18 Oktober 2026</span>
+              </div>
+              <div class="w-px h-4 bg-surface-variant my-auto hidden sm:block"></div>
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary-fixed-dim text-lg">location_on</span>
+                <span id="speelwijk-hero-location">Benteng Speelwijk, Banten Lama</span>
+              </div>
+              <div class="w-px h-4 bg-surface-variant my-auto hidden sm:block"></div>
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary-fixed-dim text-lg">verified_user</span>
+                <span>SMS Certified Race Track</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 mt-2 w-full sm:w-auto">
+              <a class="bg-primary-container text-black font-label-caps text-xs font-bold px-8 py-3.5 rounded text-center uppercase tracking-wider hover:bg-yellow-400 transition-all border border-primary-container shadow-[0_0_25px_rgba(255,199,0,0.5)] hover:scale-105 slant-btn" href="#register">
+                DAFTAR PILOT SEKARANG
+              </a>
+              <a class="bg-surface-container text-primary font-label-caps text-xs font-bold px-8 py-3.5 rounded text-center uppercase tracking-wider hover:bg-surface-container-high transition-all border border-outline-variant hover:border-primary/50" href="#history">
+                LIHAT DETAIL MISI
+              </a>
+            </div>
           </div>
-          <div class="w-px h-4 bg-surface-variant my-auto hidden sm:block"></div>
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary-fixed-dim text-lg">location_on</span>
-            <span id="speelwijk-hero-location">Benteng Speelwijk, Banten Lama</span>
-          </div>
-          <div class="w-px h-4 bg-surface-variant my-auto hidden sm:block"></div>
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary-fixed-dim text-lg">verified_user</span>
-            <span>SMS Certified Race Track</span>
-          </div>
-        </div>
 
-        <div class="flex flex-col sm:flex-row gap-4 mt-2 w-full sm:w-auto">
-          <a class="bg-primary-container text-black font-label-caps text-xs font-bold px-8 py-3.5 rounded text-center uppercase tracking-wider hover:bg-yellow-400 transition-all border border-primary-container shadow-[0_0_25px_rgba(255,199,0,0.5)] hover:scale-105 slant-btn" href="#register">
-            DAFTAR PILOT SEKARANG
-          </a>
-          <a class="bg-surface-container text-primary font-label-caps text-xs font-bold px-8 py-3.5 rounded text-center uppercase tracking-wider hover:bg-surface-container-high transition-all border border-outline-variant hover:border-primary/50" href="#history">
-            LIHAT DETAIL MISI
-          </a>
-        </div>
+          <!-- Right Column: YouTube Video Embed -->
+          <div class="lg:col-span-5 flex flex-col items-center lg:items-end w-full mt-4 lg:mt-0">
+            <div class="relative w-full max-w-[280px] sm:max-w-[320px] lg:max-w-[320px] xl:max-w-[340px] bg-surface-container-low/90 backdrop-blur-md border border-primary/40 rounded-2xl p-3 shadow-[0_0_35px_rgba(255,199,0,0.2)] group hover:border-primary transition-all duration-300">
+              
+              <!-- Video HUD Header -->
+              <div class="flex items-center justify-between font-mono-data text-[10px] text-primary-fixed-dim mb-2.5 px-1 border-b border-surface-variant pb-2">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                  <span class="font-bold tracking-wider text-white">LIVE TEASER</span>
+                </div>
+                <div class="flex items-center gap-1 text-[9px] text-on-surface-variant">
+                  <span class="material-symbols-outlined text-[12px] text-primary">videocam</span>
+                  <span>FPV REEL</span>
+                </div>
+              </div>
 
+              <!-- Iframe Container (9:16 aspect ratio) -->
+              <div class="relative w-full aspect-[9/16] rounded-xl overflow-hidden bg-black border border-surface-variant shadow-inner">
+                <iframe 
+                  class="absolute inset-0 w-full h-full"
+                  src="https://www.youtube.com/embed/I5UxTkChG_s?rel=0&modestbranding=1" 
+                  title="Benteng Speelwijk Drone Fest Teaser" 
+                  frameborder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  allowfullscreen
+                  loading="lazy">
+                </iframe>
+              </div>
+
+              <!-- Video HUD Footer -->
+              <div class="mt-2.5 flex items-center justify-between text-[10px] font-mono-data text-on-surface-variant px-1 pt-1">
+                <div class="flex items-center gap-1 text-primary text-[10px]">
+                  <span class="material-symbols-outlined text-xs">flight</span>
+                  <span class="font-bold">SPEELWIJK 2026</span>
+                </div>
+                <a href="https://www.youtube.com/shorts/I5UxTkChG_s" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors flex items-center gap-1 text-[9px] text-on-surface-variant">
+                  <span>Buka YouTube</span>
+                  <span class="material-symbols-outlined text-[10px]">open_in_new</span>
+                </a>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
       </div>
     </section>
 
