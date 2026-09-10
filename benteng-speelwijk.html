@@ -308,10 +308,10 @@
                 </div>
               </div>
 
-              <!-- Iframe Container (9:16 aspect ratio) -->
+              <!-- Iframe Container (9:16 aspect ratio with top header crop to hide YouTube title & channel overlay) -->
               <div class="relative w-full aspect-[9/16] rounded-xl overflow-hidden bg-black border border-surface-variant shadow-inner">
                 <iframe 
-                  class="absolute inset-0 w-full h-full"
+                  class="absolute -top-[75px] left-0 w-full h-[calc(100%+75px)]"
                   src="https://www.youtube.com/embed/I5UxTkChG_s?rel=0&modestbranding=1" 
                   title="Benteng Speelwijk Drone Fest Teaser" 
                   frameborder="0" 
@@ -319,6 +319,8 @@
                   allowfullscreen
                   loading="lazy">
                 </iframe>
+                <!-- Subtle Top Mask -->
+                <div class="absolute top-0 inset-x-0 h-8 bg-gradient-to-b from-black/80 to-transparent pointer-events-none z-10"></div>
               </div>
 
               <!-- Video HUD Footer -->
