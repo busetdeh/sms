@@ -356,7 +356,7 @@
             <div class="border-b border-surface-variant pb-3 mb-4 flex justify-between items-end">
               <div>
                 <span class="text-[10px] font-label-caps text-primary-fixed-dim uppercase tracking-wider block">DAY 01</span>
-                <h3 class="text-lg sm:text-xl font-bold text-white uppercase font-label-caps">Kualifikasi &amp; Eksibisi</h3>
+                <h3 id="speelwijk-day1-theme" class="text-lg sm:text-xl font-bold text-white uppercase font-label-caps">Kualifikasi &amp; Eksibisi</h3>
               </div>
               <span id="speelwijk-day1-date" class="font-mono-data text-xs text-primary font-bold bg-primary/10 border border-primary/30 px-2 py-1 rounded">17 OKTOBER 2026</span>
             </div>
@@ -393,7 +393,7 @@
             <div class="border-b border-surface-variant pb-3 mb-4 flex justify-between items-end">
               <div>
                 <span class="text-[10px] font-label-caps text-primary-fixed-dim uppercase tracking-wider block">DAY 02</span>
-                <h3 class="text-lg sm:text-xl font-bold text-white uppercase font-label-caps">Semifinal &amp; Grand Finals</h3>
+                <h3 id="speelwijk-day2-theme" class="text-lg sm:text-xl font-bold text-white uppercase font-label-caps">Semifinal &amp; Grand Finals</h3>
               </div>
               <span id="speelwijk-day2-date" class="font-mono-data text-xs text-primary font-bold bg-primary/10 border border-primary/30 px-2 py-1 rounded">18 OKTOBER 2026</span>
             </div>
@@ -1056,6 +1056,10 @@
           setText('speelwijk-coordinates', settings.coords);
           setText('speelwijk-mission-intro', settings.missionIntro);
           setText('speelwijk-mission-pilot', settings.missionPilot);
+          setText('speelwijk-day1-theme', settings.day1Subtitle || 'Kualifikasi & Eksibisi');
+          setText('speelwijk-day1-date', settings.day1Date || '17 OKTOBER 2026');
+          setText('speelwijk-day2-theme', settings.day2Subtitle || 'Semifinal & Grand Finals');
+          setText('speelwijk-day2-date', settings.day2Date || '18 OKTOBER 2026');
 
           const calendarLink = document.getElementById('speelwijk-calendar-link');
           const calendarDateParts = String(settings.date || '').match(/(\d{1,2})\s*-\s*(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);

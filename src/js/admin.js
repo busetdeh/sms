@@ -894,6 +894,34 @@ async function persistSpeelwijkOrder({ items, ids, reorder, reload, label }) {
 
 async function loadSpeelwijkRundown() {
   cachedSpeelwijkRundown = await getSpeelwijkRundown({ migrateLocal: true });
+  if (!cachedSpeelwijkSettings || Object.keys(cachedSpeelwijkSettings).length === 0) {
+    cachedSpeelwijkSettings = await getSpeelwijkSettings({ migrateLocal: true });
+  }
+
+  // Update Day 1 & Day 2 headers on rundown tab
+  const d1Title = cachedSpeelwijkSettings.day1Title || 'DAY 01 (17 OKTOBER 2026)';
+  const d1Subtitle = cachedSpeelwijkSettings.day1Subtitle || 'KUALIFIKASI & EKSIBISI';
+  const d2Title = cachedSpeelwijkSettings.day2Title || 'DAY 02 (18 OKTOBER 2026)';
+  const d2Subtitle = cachedSpeelwijkSettings.day2Subtitle || 'SEMIFINAL & GRAND FINAL';
+
+  const day1TitleEl = document.getElementById('speelwijk-rundown-day1-header-title');
+  const day1SubtitleEl = document.getElementById('speelwijk-rundown-day1-header-subtitle');
+  const day2TitleEl = document.getElementById('speelwijk-rundown-day2-header-title');
+  const day2SubtitleEl = document.getElementById('speelwijk-rundown-day2-header-subtitle');
+
+  if (day1TitleEl) day1TitleEl.textContent = d1Title;
+  if (day1SubtitleEl) day1SubtitleEl.textContent = d1Subtitle;
+  if (day2TitleEl) day2TitleEl.textContent = d2Title;
+  if (day2SubtitleEl) day2SubtitleEl.textContent = d2Subtitle;
+
+  const sessionDaySelect = document.getElementById('speelwijk-session-input-day');
+  if (sessionDaySelect) {
+    const opt1 = sessionDaySelect.querySelector('option[value="1"]');
+    const opt2 = sessionDaySelect.querySelector('option[value="2"]');
+    if (opt1) opt1.textContent = d1Title;
+    if (opt2) opt2.textContent = d2Title;
+  }
+
   const day1Container = document.getElementById('speelwijk-rundown-day1-container');
   const day2Container = document.getElementById('speelwijk-rundown-day2-container');
 
@@ -967,6 +995,24 @@ async function loadSpeelwijkRundown() {
   });
 }
 
+function openSpeelwijkDayHeaderModal(dayNum) {
+  const isDay1 = String(dayNum) === '1';
+  const modal = document.getElementById('admin-speelwijk-day-header-modal');
+  const heading = document.getElementById('speelwijk-day-header-modal-heading');
+  const dayInput = document.getElementById('speelwijk-day-header-day-num');
+  const titleInput = document.getElementById('speelwijk-day-header-input-title');
+  const subtitleInput = document.getElementById('speelwijk-day-header-input-subtitle');
+  const dateInput = document.getElementById('speelwijk-day-header-input-date');
+
+  if (heading) heading.textContent = isDay1 ? 'EDIT HEADER & TEMA DAY 01' : 'EDIT HEADER & TEMA DAY 02';
+  if (dayInput) dayInput.value = isDay1 ? '1' : '2';
+  if (titleInput) titleInput.value = (isDay1 ? cachedSpeelwijkSettings.day1Title : cachedSpeelwijkSettings.day2Title) || (isDay1 ? 'DAY 01 (17 OKTOBER 2026)' : 'DAY 02 (18 OKTOBER 2026)');
+  if (subtitleInput) subtitleInput.value = (isDay1 ? cachedSpeelwijkSettings.day1Subtitle : cachedSpeelwijkSettings.day2Subtitle) || (isDay1 ? 'KUALIFIKASI & EKSIBISI' : 'SEMIFINAL & GRAND FINAL');
+  if (dateInput) dateInput.value = (isDay1 ? cachedSpeelwijkSettings.day1Date : cachedSpeelwijkSettings.day2Date) || (isDay1 ? '17 OKTOBER 2026' : '18 OKTOBER 2026');
+
+  if (modal) modal.classList.add('active');
+}
+
 async function loadSpeelwijkSettings() {
   cachedSpeelwijkSettings = await getSpeelwijkSettings({ migrateLocal: true });
   const setVal = (id, val) => {
@@ -990,6 +1036,24 @@ async function loadSpeelwijkSettings() {
   setVal('setting-speelwijk-desc', cachedSpeelwijkSettings.desc);
   setVal('setting-speelwijk-mission-intro', cachedSpeelwijkSettings.missionIntro);
   setVal('setting-speelwijk-mission-pilot', cachedSpeelwijkSettings.missionPilot);
+
+  // Day 1 & Day 2 header settings
+  setVal('setting-speelwijk-day1-title', cachedSpeelwijkSettings.day1Title || 'DAY 01 (17 OKTOBER 2026)');
+  setVal('setting-speelwijk-day1-subtitle', cachedSpeelwijkSettings.day1Subtitle || 'KUALIFIKASI & EKSIBISI');
+  setVal('setting-speelwijk-day1-date', cachedSpeelwijkSettings.day1Date || '17 OKTOBER 2026');
+  setVal('setting-speelwijk-day2-title', cachedSpeelwijkSettings.day2Title || 'DAY 02 (18 OKTOBER 2026)');
+  setVal('setting-speelwijk-day2-subtitle', cachedSpeelwijkSettings.day2Subtitle || 'SEMIFINAL & GRAND FINAL');
+  setVal('setting-speelwijk-day2-date', cachedSpeelwijkSettings.day2Date || '18 OKTOBER 2026');
+
+  const day1TitleEl = document.getElementById('speelwijk-rundown-day1-header-title');
+  const day1SubtitleEl = document.getElementById('speelwijk-rundown-day1-header-subtitle');
+  const day2TitleEl = document.getElementById('speelwijk-rundown-day2-header-title');
+  const day2SubtitleEl = document.getElementById('speelwijk-rundown-day2-header-subtitle');
+
+  if (day1TitleEl) day1TitleEl.textContent = cachedSpeelwijkSettings.day1Title || 'DAY 01 (17 OKTOBER 2026)';
+  if (day1SubtitleEl) day1SubtitleEl.textContent = cachedSpeelwijkSettings.day1Subtitle || 'KUALIFIKASI & EKSIBISI';
+  if (day2TitleEl) day2TitleEl.textContent = cachedSpeelwijkSettings.day2Title || 'DAY 02 (18 OKTOBER 2026)';
+  if (day2SubtitleEl) day2SubtitleEl.textContent = cachedSpeelwijkSettings.day2Subtitle || 'SEMIFINAL & GRAND FINAL';
 
   // QRIS & Bank transfer fields
   setVal('setting-speelwijk-qris-merchant', cachedSpeelwijkSettings.qrisMerchant || 'Sky Multirotor Squad');
@@ -2285,6 +2349,13 @@ function initFormSubmissions() {
     if (liveBtn) liveBtn.href = `/${slug}`;
 
     const date = document.getElementById('setting-speelwijk-date').value.trim();
+    const day1Title = document.getElementById('setting-speelwijk-day1-title')?.value.trim() || 'DAY 01 (17 OKTOBER 2026)';
+    const day1Subtitle = document.getElementById('setting-speelwijk-day1-subtitle')?.value.trim() || 'KUALIFIKASI & EKSIBISI';
+    const day1Date = document.getElementById('setting-speelwijk-day1-date')?.value.trim() || '17 OKTOBER 2026';
+    const day2Title = document.getElementById('setting-speelwijk-day2-title')?.value.trim() || 'DAY 02 (18 OKTOBER 2026)';
+    const day2Subtitle = document.getElementById('setting-speelwijk-day2-subtitle')?.value.trim() || 'SEMIFINAL & GRAND FINAL';
+    const day2Date = document.getElementById('setting-speelwijk-day2-date')?.value.trim() || '18 OKTOBER 2026';
+
     const fee = document.getElementById('setting-speelwijk-fee').value.trim();
     const registrationBenefits = document.getElementById('setting-speelwijk-registration-benefits')?.value.trim() || '';
     const waNumber = document.getElementById('setting-speelwijk-wa').value.trim();
@@ -2307,6 +2378,12 @@ function initFormSubmissions() {
       subtitle, 
       slug,
       date, 
+      day1Title,
+      day1Subtitle,
+      day1Date,
+      day2Title,
+      day2Subtitle,
+      day2Date,
       fee, 
       registrationBenefits,
       waNumber, 
@@ -2325,7 +2402,80 @@ function initFormSubmissions() {
     };
 
     const result = await saveSpeelwijkSettings(payload);
+    cachedSpeelwijkSettings = payload;
+
+    // Sync rundown card headers
+    const d1TitleEl = document.getElementById('speelwijk-rundown-day1-header-title');
+    const d1SubtitleEl = document.getElementById('speelwijk-rundown-day1-header-subtitle');
+    const d2TitleEl = document.getElementById('speelwijk-rundown-day2-header-title');
+    const d2SubtitleEl = document.getElementById('speelwijk-rundown-day2-header-subtitle');
+    if (d1TitleEl) d1TitleEl.textContent = day1Title;
+    if (d1SubtitleEl) d1SubtitleEl.textContent = day1Subtitle;
+    if (d2TitleEl) d2TitleEl.textContent = day2Title;
+    if (d2SubtitleEl) d2SubtitleEl.textContent = day2Subtitle;
+
     showToast(result.remoteSynced === false ? 'Tersimpan lokal; sinkronisasi server gagal.' : `Pengaturan berhasil disimpan! Slug aktif: /${slug}`, result.remoteSynced === false ? 'error' : 'success');
+  });
+
+  // Day Header Edit Buttons & Click Listeners
+  document.getElementById('btn-edit-day1-header')?.addEventListener('click', () => openSpeelwijkDayHeaderModal('1'));
+  document.getElementById('speelwijk-rundown-day1-header-subtitle')?.addEventListener('click', () => openSpeelwijkDayHeaderModal('1'));
+  document.getElementById('btn-edit-day2-header')?.addEventListener('click', () => openSpeelwijkDayHeaderModal('2'));
+  document.getElementById('speelwijk-rundown-day2-header-subtitle')?.addEventListener('click', () => openSpeelwijkDayHeaderModal('2'));
+
+  // Day Header Modal Form Submission
+  document.getElementById('form-speelwijk-day-header')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const dayNum = document.getElementById('speelwijk-day-header-day-num').value;
+    const isDay1 = String(dayNum) === '1';
+    const title = document.getElementById('speelwijk-day-header-input-title').value.trim();
+    const subtitle = document.getElementById('speelwijk-day-header-input-subtitle').value.trim();
+    const date = document.getElementById('speelwijk-day-header-input-date').value.trim();
+
+    const patch = isDay1 ? {
+      day1Title: title,
+      day1Subtitle: subtitle,
+      day1Date: date
+    } : {
+      day2Title: title,
+      day2Subtitle: subtitle,
+      day2Date: date
+    };
+
+    const payload = { ...cachedSpeelwijkSettings, ...patch };
+    const result = await saveSpeelwijkSettings(payload);
+    cachedSpeelwijkSettings = payload;
+
+    // Update rundown tab card headers
+    const titleEl = document.getElementById(isDay1 ? 'speelwijk-rundown-day1-header-title' : 'speelwijk-rundown-day2-header-title');
+    const subtitleEl = document.getElementById(isDay1 ? 'speelwijk-rundown-day1-header-subtitle' : 'speelwijk-rundown-day2-header-subtitle');
+    if (titleEl) titleEl.textContent = title;
+    if (subtitleEl) subtitleEl.textContent = subtitle;
+
+    // Update settings inputs if loaded
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el && val !== undefined) el.value = val;
+    };
+    if (isDay1) {
+      setVal('setting-speelwijk-day1-title', title);
+      setVal('setting-speelwijk-day1-subtitle', subtitle);
+      setVal('setting-speelwijk-day1-date', date);
+    } else {
+      setVal('setting-speelwijk-day2-title', title);
+      setVal('setting-speelwijk-day2-subtitle', subtitle);
+      setVal('setting-speelwijk-day2-date', date);
+    }
+
+    // Update session select options
+    const sessionDaySelect = document.getElementById('speelwijk-session-input-day');
+    if (sessionDaySelect) {
+      const opt = sessionDaySelect.querySelector(`option[value="${dayNum}"]`);
+      if (opt) opt.textContent = title;
+    }
+
+    document.getElementById('admin-speelwijk-day-header-modal')?.classList.remove('active');
+    showToast(result.remoteSynced === false ? 'Header hari tersimpan lokal; sinkronisasi server gagal.' : `Header & Tema Day ${dayNum} berhasil disimpan!`, result.remoteSynced === false ? 'error' : 'success');
   });
 
   // 8. Speelwijk Partner & Sponsor Form
