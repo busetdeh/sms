@@ -1013,6 +1013,414 @@ function openSpeelwijkDayHeaderModal(dayNum) {
   if (modal) modal.classList.add('active');
 }
 
+export function printSpeelwijkRundown() {
+  const settings = cachedSpeelwijkSettings || {};
+  const rundown = Array.isArray(cachedSpeelwijkRundown) ? cachedSpeelwijkRundown : [];
+
+  const title = settings.title || 'Fly Through History';
+  const subtitle = settings.subtitle || 'Benteng Speelwijk Drone Fest 2026';
+  const eventDate = settings.date || '17 - 18 Oktober 2026';
+  const location = settings.location || 'Benteng Speelwijk, Banten Lama';
+  const coords = settings.coords || "6°01'59\"S 106°09'14\"E";
+  const wa = settings.waNumber ? `+${settings.waNumber}` : '+62 877-7227-2928';
+  const slug = settings.slug || 'sms-fly-through-history';
+  const eventUrl = `https://www.skymultirotor.web.id/${slug}`;
+
+  const day1Title = settings.day1Title || 'DAY 01 (17 OKTOBER 2026)';
+  const day1Subtitle = settings.day1Subtitle || 'KUALIFIKASI & EKSIBISI';
+  const day2Title = settings.day2Title || 'DAY 02 (18 OKTOBER 2026)';
+  const day2Subtitle = settings.day2Subtitle || 'SEMIFINAL & GRAND FINAL';
+
+  const day1Items = rundown.filter(i => String(i.day) === '1');
+  const day2Items = rundown.filter(i => String(i.day) === '2');
+
+  const escapeHtml = (str) => {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  };
+
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    alert('Popup diblokir browser. Silakan izinkan popup untuk mengunduh / mencetak rundown.');
+    return;
+  }
+
+  const renderTableRows = (items) => {
+    if (!items || items.length === 0) {
+      return `<tr><td colspan="4" style="text-align: center; color: #64748b; padding: 18px; font-style: italic;">Belum ada sesi jadwal yang terdaftar untuk hari ini.</td></tr>`;
+    }
+    return items.map((item, idx) => `
+      <tr>
+        <td style="width: 36px; text-align: center; font-weight: bold; color: #475569;">${idx + 1}</td>
+        <td style="width: 105px; font-weight: 700; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; color: #003B73; white-space: nowrap;">${escapeHtml(item.time || '-')}</td>
+        <td style="width: 220px; font-weight: 700; color: #0f172a;">${escapeHtml(item.title || '-')}</td>
+        <td style="color: #334155; font-size: 11px; line-height: 1.45;">${escapeHtml(item.desc || '-')}</td>
+      </tr>
+    `).join('');
+  };
+
+  const html = `<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rundown ${escapeHtml(title)} - Speelwijk 2026</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #1e293b;
+      background: #f1f5f9;
+      padding: 0;
+      margin: 0;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .no-print {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #0f172a;
+      color: #fff;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      font-size: 13px;
+    }
+    .no-print-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .no-print-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-action {
+      border: none;
+      font-weight: 700;
+      font-size: 12.5px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .btn-print {
+      background: #eab308;
+      color: #000;
+    }
+    .btn-print:hover { background: #facc15; }
+    .btn-close {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+    }
+    .btn-close:hover { background: rgba(255,255,255,0.22); }
+    .hint-text {
+      color: #94a3b8;
+      font-size: 11.5px;
+    }
+    .doc-container {
+      max-width: 860px;
+      margin: 24px auto;
+      background: #fff;
+      padding: 36px 40px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    .header-box {
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .badge-org {
+      display: inline-block;
+      background: #003B73;
+      color: #fff;
+      font-size: 9.5px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+    .subtitle {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 14px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px 24px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 11px;
+    }
+    .meta-item { display: flex; gap: 8px; }
+    .meta-label { font-weight: 700; color: #475569; width: 115px; shrink: 0; }
+    .meta-val { color: #0f172a; font-weight: 500; }
+    .day-section {
+      margin-top: 22px;
+      page-break-inside: avoid;
+    }
+    .day-header {
+      background: #0f172a;
+      color: #fff;
+      padding: 9px 14px;
+      border-radius: 6px 6px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .day-title {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #eab308;
+    }
+    .day-theme {
+      font-size: 10.5px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: rgba(255,255,255,0.16);
+      padding: 2.5px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+      background: #fff;
+    }
+    th {
+      background: #f1f5f9;
+      color: #334155;
+      text-transform: uppercase;
+      font-size: 9.5px;
+      letter-spacing: 0.5px;
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      text-align: left;
+    }
+    td {
+      padding: 8px 10px;
+      border: 1px solid #e2e8f0;
+      vertical-align: top;
+    }
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+    .rules-box {
+      margin-top: 24px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      border-radius: 6px;
+      padding: 14px 18px;
+      page-break-inside: avoid;
+    }
+    .rules-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: #003B73;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .rules-list {
+      list-style: none;
+      font-size: 10.5px;
+      color: #334155;
+      line-height: 1.55;
+    }
+    .rules-list li {
+      margin-bottom: 4px;
+      position: relative;
+      padding-left: 14px;
+    }
+    .rules-list li::before {
+      content: "•";
+      position: absolute;
+      left: 2px;
+      color: #eab308;
+      font-weight: bold;
+    }
+    .footer {
+      margin-top: 24px;
+      padding-top: 14px;
+      border-top: 1px solid #cbd5e1;
+      display: flex;
+      justify-content: space-between;
+      font-size: 9.5px;
+      color: #64748b;
+    }
+    @media print {
+      body { background: #fff; margin: 0; padding: 0; font-size: 10.5px; }
+      .no-print { display: none !important; }
+      .doc-container {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .day-section { page-break-inside: avoid; }
+      .rules-box { page-break-inside: avoid; }
+      @page { margin: 12mm; size: A4 portrait; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Print & Download Control Bar -->
+  <div class="no-print">
+    <div class="no-print-left">
+      <strong>PRINTER / PDF PREVIEW: EVENT RUNDOWN</strong>
+      <span class="hint-text">(Pilih destination "Save as PDF" di dialog print untuk download file PDF)</span>
+    </div>
+    <div class="no-print-actions">
+      <button class="btn-action btn-print" onclick="window.print()">
+        <span>🖨️ Cetak / Download PDF</span>
+      </button>
+      <button class="btn-action btn-close" onclick="window.close()">✕ Tutup</button>
+    </div>
+  </div>
+
+  <div class="doc-container">
+    <!-- Header -->
+    <div class="header-box">
+      <div class="badge-org">Sky Multirotor Squad · Official Flight Rundown</div>
+      <h1 class="title">${escapeHtml(title)}</h1>
+      <div class="subtitle">${escapeHtml(subtitle)}</div>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">📅 Tanggal Acara:</span>
+          <span class="meta-val">${escapeHtml(eventDate)}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">📍 Lokasi Event:</span>
+          <span class="meta-val">${escapeHtml(location)}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">🧭 Koordinat:</span>
+          <span class="meta-val">${escapeHtml(coords)}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">📞 WhatsApp Panitia:</span>
+          <span class="meta-val">${escapeHtml(wa)}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">🌐 Portal Microsite:</span>
+          <span class="meta-val">${escapeHtml(eventUrl)}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">🕒 Waktu Dokumen:</span>
+          <span class="meta-val">${new Date().toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short' })} WIB</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Day 1 Schedule -->
+    <div class="day-section">
+      <div class="day-header">
+        <div class="day-title">${escapeHtml(day1Title)}</div>
+        <div class="day-theme">${escapeHtml(day1Subtitle)}</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 36px; text-align: center;">No</th>
+            <th style="width: 105px;">Waktu (WIB)</th>
+            <th style="width: 220px;">Nama Sesi / Agenda</th>
+            <th>Rincian &amp; Instruksi Pilot</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${renderTableRows(day1Items)}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Day 2 Schedule -->
+    <div class="day-section">
+      <div class="day-header">
+        <div class="day-title">${escapeHtml(day2Title)}</div>
+        <div class="day-theme">${escapeHtml(day2Subtitle)}</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 36px; text-align: center;">No</th>
+            <th style="width: 105px;">Waktu (WIB)</th>
+            <th style="width: 220px;">Nama Sesi / Agenda</th>
+            <th>Rincian &amp; Instruksi Pilot</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${renderTableRows(day2Items)}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Safety & Regulations -->
+    <div class="rules-box">
+      <div class="rules-title">⚠️ Prosedur Keselamatan &amp; Aturan Frekuensi Penerbangan</div>
+      <ul class="rules-list">
+        <li><strong>Safety Briefing &amp; Failsafe:</strong> Semua pilot wajib mengikuti safety briefing dan lolos uji failsafe (motor langsung mati saat sinyal radio remote terputus).</li>
+        <li><strong>VTX Frequency Lock:</strong> Dilarang keras menyalakan drone (power-on LiPo) di area pit tanpa izin dari Frequency Marshal guna mencegah video lock out ke pilot yang sedang mengudara.</li>
+        <li><strong>Zona Cagar Budaya:</strong> Hormati struktur bersejarah Benteng Speelwijk. Jalur terbang hanya diperbolehkan melalui track yang telah disterilkan dan ditentukan oleh race director.</li>
+        <li><strong>LiPo Safety &amp; Charging:</strong> Pengisian daya baterai hanya diperbolehkan di area charging station khusus menggunakan LiPo safe bag / fireproof container.</li>
+      </ul>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div>Fly Through History – Benteng Speelwijk FPV Drone Fest 2026 · Sky Multirotor Squad</div>
+      <div>Halaman 1 / Resmi Panitia Pelaksana</div>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function() {
+      setTimeout(function() {
+        window.focus();
+        window.print();
+      }, 350);
+    };
+  </script>
+</body>
+</html>`;
+
+  printWindow.document.write(html);
+  printWindow.document.close();
+}
+
+window.printSpeelwijkRundown = printSpeelwijkRundown;
+
 async function loadSpeelwijkSettings() {
   cachedSpeelwijkSettings = await getSpeelwijkSettings({ migrateLocal: true });
   const setVal = (id, val) => {
@@ -1609,6 +2017,7 @@ function initModalListeners() {
   document.getElementById('btn-add-article')?.addEventListener('click', () => openArticleModal());
   document.getElementById('btn-add-speelwijk-reg')?.addEventListener('click', () => openSpeelwijkRegModal());
   document.getElementById('btn-add-speelwijk-session')?.addEventListener('click', () => openSpeelwijkSessionModal());
+  document.getElementById('btn-print-speelwijk-rundown')?.addEventListener('click', () => printSpeelwijkRundown());
   document.getElementById('btn-add-speelwijk-partner')?.addEventListener('click', () => openSpeelwijkPartnerModal());
   document.getElementById('btn-add-speelwijk-prize')?.addEventListener('click', () => openSpeelwijkPrizeModal());
 
