@@ -798,15 +798,18 @@
         <!-- Main Sponsors -->
         <div class="flex flex-col items-center gap-4">
           <h3 class="font-label-caps text-xs text-on-surface-variant tracking-[0.2em] uppercase font-bold">Main Sponsors</h3>
-          <div id="speelwijk-sponsors-container" class="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-4xl">
-            <div class="bg-surface-container-low border border-surface-variant p-6 rounded-lg flex items-center justify-center hover:border-primary transition-colors group text-center">
-              <div class="font-mono-data text-xs sm:text-sm font-bold text-on-surface-variant group-hover:text-primary transition-colors">AERO_TECH_CORP</div>
+          <div id="speelwijk-sponsors-container" class="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full max-w-5xl">
+            <div class="bg-surface-container-low border border-surface-variant p-4 sm:p-6 rounded-lg flex items-center justify-center hover:border-primary transition-colors group text-center h-24 sm:h-28">
+              <div class="font-mono-data text-xs sm:text-sm font-bold text-on-surface-variant group-hover:text-primary transition-colors">DISPARPORA</div>
             </div>
-            <div class="bg-surface-container-low border border-surface-variant p-6 rounded-lg flex items-center justify-center hover:border-primary transition-colors group text-center">
-              <div class="font-mono-data text-xs sm:text-sm font-bold text-on-surface-variant group-hover:text-primary transition-colors">HORIZON_DYNAMICS</div>
+            <div class="bg-surface-container-low border border-surface-variant p-4 sm:p-6 rounded-lg flex items-center justify-center hover:border-primary transition-colors group text-center h-24 sm:h-28">
+              <div class="font-mono-data text-xs sm:text-sm font-bold text-on-surface-variant group-hover:text-primary transition-colors">POKDARWIS</div>
             </div>
-            <div class="bg-surface-container-low border border-surface-variant p-6 rounded-lg flex items-center justify-center hover:border-primary transition-colors group col-span-2 md:col-span-1 text-center">
-              <div class="font-mono-data text-xs sm:text-sm font-bold text-on-surface-variant group-hover:text-primary transition-colors">HERITAGE_TRUST</div>
+            <div class="bg-surface-container-low border border-surface-variant p-4 sm:p-6 rounded-lg flex items-center justify-center hover:border-primary transition-colors group text-center h-24 sm:h-28">
+              <div class="font-mono-data text-xs sm:text-sm font-bold text-on-surface-variant group-hover:text-primary transition-colors">THROTTLE_WARRIORS</div>
+            </div>
+            <div class="bg-surface-container-low border border-surface-variant p-4 sm:p-6 rounded-lg flex items-center justify-center hover:border-primary transition-colors group text-center h-24 sm:h-28">
+              <div class="font-mono-data text-xs sm:text-sm font-bold text-on-surface-variant group-hover:text-primary transition-colors">BPK_BANTEN</div>
             </div>
           </div>
         </div>
@@ -1156,10 +1159,10 @@
               const linkAttrs = linkUrl ? `href="${escapeParticipantText(linkUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Buka ${escapeParticipantText(p.name)}"` : '';
               const cardTag = linkUrl ? 'a' : 'div';
               const display = p.logo_url 
-                ? `<div role="img" aria-label="${escapeParticipantText(p.name)}" class="absolute inset-0 bg-center bg-no-repeat bg-contain md:bg-cover" style="background-image: url('${p.logo_url}');"></div>`
-                : `<div class="font-mono-data text-xs sm:text-sm font-bold text-on-surface-variant group-hover:text-primary transition-colors">${escapeParticipantText(p.name)}</div>`;
+                ? `<div role="img" aria-label="${escapeParticipantText(p.name)}" class="absolute inset-2 sm:inset-3 bg-center bg-no-repeat bg-contain" style="background-image: url('${p.logo_url}');"></div>`
+                : `<div class="font-mono-data text-xs sm:text-sm font-bold text-on-surface-variant group-hover:text-primary transition-colors px-2">${escapeParticipantText(p.name)}</div>`;
               return `
-                <${cardTag} ${linkAttrs} class="relative overflow-hidden bg-surface-container-low border border-surface-variant p-6 rounded-lg flex items-center justify-center hover:border-primary transition-colors group text-center h-24 ${linkUrl ? 'cursor-pointer' : ''}">
+                <${cardTag} ${linkAttrs} class="relative overflow-hidden bg-surface-container-low border border-surface-variant p-4 sm:p-6 rounded-lg flex items-center justify-center hover:border-primary transition-colors group text-center h-24 sm:h-28 w-full ${linkUrl ? 'cursor-pointer' : ''}">
                   ${display}
                 </${cardTag}>
               `;
