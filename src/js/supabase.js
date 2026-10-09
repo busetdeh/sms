@@ -653,6 +653,27 @@ export async function deleteSpeelwijkRegistration(id) {
   }
 }
 
+// Safe localStorage wrappers to prevent throwing in restricted environments (e.g. Safari Private Mode)
+function safeGetStorage(key) {
+  try {
+    return typeof localStorage !== 'undefined' ? localStorage.getItem(key) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function safeSetStorage(key, value) {
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(key, value);
+      return true;
+    }
+  } catch (e) {
+    // quota exceeded or private mode
+  }
+  return false;
+}
+
 // 2. Rundown CRUD
 async function getSpeelwijkConfigRemote(name) {
   const { data, error } = await supabase
@@ -690,20 +711,20 @@ export async function getSpeelwijkRundown({ migrateLocal = false } = {}) {
     const remote = await getSpeelwijkConfigRemote('SPEELWIJK_RUNDOWN_CONFIG');
     if (Array.isArray(remote)) {
       const rundown = normalizeSpeelwijkRundown(remote);
-      localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(rundown));
+      safeSetStorage('sms_speelwijk_rundown', JSON.stringify(rundown));
       return rundown;
     }
   } catch (error) {
     console.warn('Remote rundown config fetch error:', error.message);
   }
 
-  const local = localStorage.getItem('sms_speelwijk_rundown');
+  const local = safeGetStorage('sms_speelwijk_rundown');
   let rundown = DEFAULT_SPEELWIJK_RUNDOWN;
   if (local) {
     try { rundown = normalizeSpeelwijkRundown(JSON.parse(local)); } catch (e) { /* use defaults */ }
   } else {
     rundown = normalizeSpeelwijkRundown(rundown);
-    localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(rundown));
+    safeSetStorage('sms_speelwijk_rundown', JSON.stringify(rundown));
   }
 
   if (migrateLocal) {
@@ -729,7 +750,7 @@ export async function saveSpeelwijkRundownItem(sessionData) {
     updated = [...current, payload];
   }
   const normalized = normalizeSpeelwijkRundown(updated);
-  localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(normalized));
+  safeSetStorage('sms_speelwijk_rundown', JSON.stringify(normalized));
   try {
     await saveSpeelwijkConfigRemote('SPEELWIJK_RUNDOWN_CONFIG', normalized);
     return { success: true, data: payload, remoteSynced: true };
@@ -742,7 +763,7 @@ export async function saveSpeelwijkRundownItem(sessionData) {
 export async function deleteSpeelwijkRundownItem(id) {
   const current = await getSpeelwijkRundown();
   const filtered = normalizeSpeelwijkRundown(current.filter(item => item.id !== id));
-  localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(filtered));
+  safeSetStorage('sms_speelwijk_rundown', JSON.stringify(filtered));
   try {
     await saveSpeelwijkConfigRemote('SPEELWIJK_RUNDOWN_CONFIG', filtered);
     return { success: true, remoteSynced: true };
@@ -754,7 +775,7 @@ export async function deleteSpeelwijkRundownItem(id) {
 
 export async function reorderSpeelwijkRundown(items) {
   const normalized = normalizeSpeelwijkRundown(items);
-  localStorage.setItem('sms_speelwijk_rundown', JSON.stringify(normalized));
+  safeSetStorage('sms_speelwijk_rundown', JSON.stringify(normalized));
   try {
     await saveSpeelwijkConfigRemote('SPEELWIJK_RUNDOWN_CONFIG', normalized);
     return { success: true, data: normalized, remoteSynced: true };
@@ -770,19 +791,19 @@ export async function getSpeelwijkSettings({ migrateLocal = false } = {}) {
     const remote = await getSpeelwijkConfigRemote('SPEELWIJK_SETTINGS_CONFIG');
     if (remote && typeof remote === 'object' && !Array.isArray(remote)) {
       const settings = { ...DEFAULT_SPEELWIJK_SETTINGS, ...remote };
-      localStorage.setItem('sms_speelwijk_settings', JSON.stringify(settings));
+      safeSetStorage('sms_speelwijk_settings', JSON.stringify(settings));
       return settings;
     }
   } catch (error) {
     console.warn('Remote event settings fetch error:', error.message);
   }
 
-  const local = localStorage.getItem('sms_speelwijk_settings');
+  const local = safeGetStorage('sms_speelwijk_settings');
   let settings = DEFAULT_SPEELWIJK_SETTINGS;
   if (local) {
     try { settings = { ...DEFAULT_SPEELWIJK_SETTINGS, ...JSON.parse(local) }; } catch (e) { /* use defaults */ }
   } else {
-    localStorage.setItem('sms_speelwijk_settings', JSON.stringify(settings));
+    safeSetStorage('sms_speelwijk_settings', JSON.stringify(settings));
   }
 
   if (migrateLocal) {
@@ -795,7 +816,7 @@ export async function getSpeelwijkSettings({ migrateLocal = false } = {}) {
 
 export async function saveSpeelwijkSettings(settingsData) {
   const payload = { ...DEFAULT_SPEELWIJK_SETTINGS, ...settingsData };
-  localStorage.setItem('sms_speelwijk_settings', JSON.stringify(payload));
+  safeSetStorage('sms_speelwijk_settings', JSON.stringify(payload));
   try {
     await saveSpeelwijkConfigRemote('SPEELWIJK_SETTINGS_CONFIG', payload);
     return { success: true, data: payload, remoteSynced: true };
@@ -859,7 +880,7 @@ export async function getSpeelwijkPartners({ migrateLocal = false } = {}) {
       const remotePartners = JSON.parse(remoteRows[0].message);
       if (Array.isArray(remotePartners)) {
         const partners = normalizeSpeelwijkPartners(remotePartners);
-        localStorage.setItem('sms_speelwijk_partners', JSON.stringify(partners));
+        safeSetStorage('sms_speelwijk_partners', JSON.stringify(partners));
         return partners;
       }
     }
@@ -867,12 +888,12 @@ export async function getSpeelwijkPartners({ migrateLocal = false } = {}) {
     console.warn('Remote sponsor config fetch error:', error.message);
   }
 
-  const local = localStorage.getItem('sms_speelwijk_partners');
+  const local = safeGetStorage('sms_speelwijk_partners');
   let partners = normalizeSpeelwijkPartners(DEFAULT_SPEELWIJK_PARTNERS);
   if (local) {
     try { partners = normalizeSpeelwijkPartners(JSON.parse(local)); } catch (e) { /* use defaults */ }
   } else {
-    localStorage.setItem('sms_speelwijk_partners', JSON.stringify(partners));
+    safeSetStorage('sms_speelwijk_partners', JSON.stringify(partners));
   }
 
   if (migrateLocal) {
@@ -895,7 +916,7 @@ export async function saveSpeelwijkPartner(partnerData) {
   if (idx !== -1) current[idx] = { ...current[idx], ...payload };
   else current.push(payload);
   const normalized = normalizeSpeelwijkPartners(current);
-  localStorage.setItem('sms_speelwijk_partners', JSON.stringify(normalized));
+  safeSetStorage('sms_speelwijk_partners', JSON.stringify(normalized));
   try {
     await saveSpeelwijkPartnersRemote(normalized);
     return { success: true, data: payload, remoteSynced: true };
@@ -908,7 +929,7 @@ export async function saveSpeelwijkPartner(partnerData) {
 export async function deleteSpeelwijkPartner(id) {
   const current = await getSpeelwijkPartners({ migrateLocal: true });
   const filtered = normalizeSpeelwijkPartners(current.filter(p => p.id !== id));
-  localStorage.setItem('sms_speelwijk_partners', JSON.stringify(filtered));
+  safeSetStorage('sms_speelwijk_partners', JSON.stringify(filtered));
   try {
     await saveSpeelwijkPartnersRemote(filtered);
     return { success: true, remoteSynced: true };
@@ -920,7 +941,7 @@ export async function deleteSpeelwijkPartner(id) {
 
 export async function reorderSpeelwijkPartners(items) {
   const normalized = normalizeSpeelwijkPartners(items);
-  localStorage.setItem('sms_speelwijk_partners', JSON.stringify(normalized));
+  safeSetStorage('sms_speelwijk_partners', JSON.stringify(normalized));
   try {
     await saveSpeelwijkPartnersRemote(normalized);
     return { success: true, data: normalized, remoteSynced: true };
@@ -931,7 +952,96 @@ export async function reorderSpeelwijkPartners(items) {
 }
 
 /* 5. Booths & Facilities CRUD */
-const DEFAULT_SPEELWIJK_BOOTHS = [];
+export const DEFAULT_SPEELWIJK_BOOTHS = [
+  {
+    id: 'booth_1787419458273',
+    name: 'Tenda Camping Peserta',
+    type: 'facility',
+    description: 'Tenda kapasitas 3 orang',
+    location: '',
+    status: 'active',
+    contact: '',
+    link_url: '',
+    display_order: 1
+  },
+  {
+    id: 'booth_1787417021592',
+    name: 'Mushola',
+    type: 'facility',
+    description: 'Tenda Mushola',
+    location: '',
+    status: 'active',
+    contact: '',
+    link_url: '',
+    display_order: 2
+  },
+  {
+    id: 'booth_1787416913012',
+    name: 'Toilet Truck',
+    type: 'facility',
+    description: 'Toilet 24 jam',
+    location: '',
+    status: 'active',
+    contact: '',
+    link_url: '',
+    display_order: 3
+  },
+  {
+    id: 'booth_1787417378831',
+    name: 'Tenda P3K',
+    type: 'facility',
+    description: 'P3K 16 Jam',
+    location: '',
+    status: 'active',
+    contact: '',
+    link_url: '',
+    display_order: 4
+  },
+  {
+    id: 'booth_1787417451435',
+    name: 'Internet',
+    type: 'facility',
+    description: 'Internet 24 jam',
+    location: '',
+    status: 'active',
+    contact: '',
+    link_url: '',
+    display_order: 5
+  },
+  {
+    id: 'booth_1787417556465',
+    name: 'Kopi dan Snack',
+    type: 'facility',
+    description: 'Selama masih tersedia',
+    location: '',
+    status: 'active',
+    contact: '',
+    link_url: '',
+    display_order: 6
+  },
+  {
+    id: 'booth_1787418326728',
+    name: 'WARKOP UMKM',
+    type: 'merchant',
+    description: 'Kedai Indomie 24 jam',
+    location: '',
+    status: 'inactive',
+    contact: '',
+    link_url: '',
+    display_order: 7
+  },
+  {
+    id: 'booth_1787419829890',
+    name: 'Makan Siang Peserta',
+    type: 'facility',
+    description: 'Makan siang/hari selama 2 hari',
+    location: '',
+    status: 'active',
+    contact: '',
+    link_url: '',
+    display_order: 8
+  }
+];
 
 function normalizeSpeelwijkBooths(value) {
   if (!Array.isArray(value)) return DEFAULT_SPEELWIJK_BOOTHS;
@@ -948,24 +1058,35 @@ function normalizeSpeelwijkBooths(value) {
   })).sort((a, b) => a.display_order - b.display_order);
 }
 
+export function getSpeelwijkBoothsCached() {
+  const local = safeGetStorage('sms_speelwijk_booths');
+  if (local) {
+    try {
+      const parsed = JSON.parse(local);
+      if (Array.isArray(parsed) && parsed.length > 0) return normalizeSpeelwijkBooths(parsed);
+    } catch (error) { /* use defaults */ }
+  }
+  return normalizeSpeelwijkBooths(DEFAULT_SPEELWIJK_BOOTHS);
+}
+
 export async function getSpeelwijkBooths({ migrateLocal = false } = {}) {
   try {
     const remote = await getSpeelwijkConfigRemote('SPEELWIJK_BOOTHS_CONFIG');
     if (Array.isArray(remote)) {
       const booths = normalizeSpeelwijkBooths(remote);
-      localStorage.setItem('sms_speelwijk_booths', JSON.stringify(booths));
+      safeSetStorage('sms_speelwijk_booths', JSON.stringify(booths));
       return booths;
     }
   } catch (error) {
     console.warn('Remote booth config fetch error:', error.message);
   }
 
-  const local = localStorage.getItem('sms_speelwijk_booths');
+  const local = safeGetStorage('sms_speelwijk_booths');
   let booths = DEFAULT_SPEELWIJK_BOOTHS;
   if (local) {
     try { booths = normalizeSpeelwijkBooths(JSON.parse(local)); } catch (error) { /* use defaults */ }
   } else {
-    localStorage.setItem('sms_speelwijk_booths', JSON.stringify(booths));
+    safeSetStorage('sms_speelwijk_booths', JSON.stringify(booths));
   }
 
   if (migrateLocal) {
@@ -993,7 +1114,7 @@ export async function saveSpeelwijkBooth(boothData) {
   if (index >= 0) current[index] = booth;
   else current.push(booth);
   const normalized = normalizeSpeelwijkBooths(current);
-  localStorage.setItem('sms_speelwijk_booths', JSON.stringify(normalized));
+  safeSetStorage('sms_speelwijk_booths', JSON.stringify(normalized));
   try {
     await saveSpeelwijkConfigRemote('SPEELWIJK_BOOTHS_CONFIG', normalized);
     return { success: true, data: booth, remoteSynced: true };
@@ -1007,17 +1128,17 @@ export async function deleteSpeelwijkBooth(id) {
   const filtered = normalizeSpeelwijkBooths(current.filter(item => item.id !== id));
   try {
     await saveSpeelwijkConfigRemote('SPEELWIJK_BOOTHS_CONFIG', filtered);
-    localStorage.setItem('sms_speelwijk_booths', JSON.stringify(filtered));
+    safeSetStorage('sms_speelwijk_booths', JSON.stringify(filtered));
     return { success: true, remoteSynced: true };
   } catch (error) {
-    localStorage.setItem('sms_speelwijk_booths', JSON.stringify(filtered));
+    safeSetStorage('sms_speelwijk_booths', JSON.stringify(filtered));
     return { success: true, remoteSynced: false, error: error.message };
   }
 }
 
 export async function reorderSpeelwijkBooths(items) {
   const normalized = normalizeSpeelwijkBooths(items);
-  localStorage.setItem('sms_speelwijk_booths', JSON.stringify(normalized));
+  safeSetStorage('sms_speelwijk_booths', JSON.stringify(normalized));
   try {
     await saveSpeelwijkConfigRemote('SPEELWIJK_BOOTHS_CONFIG', normalized);
     return { success: true, data: normalized, remoteSynced: true };
@@ -1047,16 +1168,16 @@ function normalizeSpeelwijkPrizes(value) {
 }
 
 export function getSpeelwijkPrizes() {
-  const local = localStorage.getItem('sms_speelwijk_prizes');
-  const version = localStorage.getItem('sms_speelwijk_prizes_version');
+  const local = safeGetStorage('sms_speelwijk_prizes');
+  const version = safeGetStorage('sms_speelwijk_prizes_version');
   if (local && version === SPEELWIJK_PRIZES_CONFIG_VERSION) {
     try {
       return normalizeSpeelwijkPrizes(JSON.parse(local));
     } catch (e) {}
   }
   const defaults = normalizeSpeelwijkPrizes(DEFAULT_SPEELWIJK_PRIZES);
-  localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(defaults));
-  localStorage.setItem('sms_speelwijk_prizes_version', SPEELWIJK_PRIZES_CONFIG_VERSION);
+  safeSetStorage('sms_speelwijk_prizes', JSON.stringify(defaults));
+  safeSetStorage('sms_speelwijk_prizes_version', SPEELWIJK_PRIZES_CONFIG_VERSION);
   return defaults;
 }
 
@@ -1096,8 +1217,8 @@ export async function getSpeelwijkPrizesShared({ migrateLocal = false } = {}) {
     const remote = await getSpeelwijkPrizesRemote();
     if (remote) {
       const prizes = normalizeSpeelwijkPrizes(remote);
-      localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(prizes));
-      localStorage.setItem('sms_speelwijk_prizes_version', SPEELWIJK_PRIZES_CONFIG_VERSION);
+      safeSetStorage('sms_speelwijk_prizes', JSON.stringify(prizes));
+      safeSetStorage('sms_speelwijk_prizes_version', SPEELWIJK_PRIZES_CONFIG_VERSION);
       return prizes;
     }
   } catch (error) {
@@ -1129,7 +1250,7 @@ export async function saveSpeelwijkPrize(prizeData) {
     current.push(payload);
   }
   const normalized = normalizeSpeelwijkPrizes(current);
-  localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(normalized));
+  safeSetStorage('sms_speelwijk_prizes', JSON.stringify(normalized));
   try {
     await saveSpeelwijkPrizesRemote(normalized);
     return { success: true, data: payload, remoteSynced: true };
@@ -1142,7 +1263,7 @@ export async function saveSpeelwijkPrize(prizeData) {
 export async function deleteSpeelwijkPrize(id) {
   const current = await getSpeelwijkPrizesShared({ migrateLocal: true });
   const filtered = normalizeSpeelwijkPrizes(current.filter(p => p.id !== id));
-  localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(filtered));
+  safeSetStorage('sms_speelwijk_prizes', JSON.stringify(filtered));
   try {
     await saveSpeelwijkPrizesRemote(filtered);
     return { success: true, remoteSynced: true };
@@ -1154,7 +1275,7 @@ export async function deleteSpeelwijkPrize(id) {
 
 export async function reorderSpeelwijkPrizes(items) {
   const normalized = normalizeSpeelwijkPrizes(items);
-  localStorage.setItem('sms_speelwijk_prizes', JSON.stringify(normalized));
+  safeSetStorage('sms_speelwijk_prizes', JSON.stringify(normalized));
   try {
     await saveSpeelwijkPrizesRemote(normalized);
     return { success: true, data: normalized, remoteSynced: true };
@@ -1189,19 +1310,19 @@ export async function getSpeelwijkReporting({ migrateLocal = false } = {}) {
     const remote = await getSpeelwijkConfigRemote('SPEELWIJK_REPORTING_CONFIG');
     if (remote && typeof remote === 'object' && !Array.isArray(remote)) {
       const reporting = normalizeSpeelwijkReporting(remote);
-      localStorage.setItem('sms_speelwijk_reporting', JSON.stringify(reporting));
+      safeSetStorage('sms_speelwijk_reporting', JSON.stringify(reporting));
       return reporting;
     }
   } catch (error) {
     console.warn('Remote event reporting fetch error:', error.message);
   }
 
-  const local = localStorage.getItem('sms_speelwijk_reporting');
+  const local = safeGetStorage('sms_speelwijk_reporting');
   let reporting = DEFAULT_SPEELWIJK_REPORTING;
   if (local) {
     try { reporting = normalizeSpeelwijkReporting(JSON.parse(local)); } catch (error) { /* use defaults */ }
   } else {
-    localStorage.setItem('sms_speelwijk_reporting', JSON.stringify(reporting));
+    safeSetStorage('sms_speelwijk_reporting', JSON.stringify(reporting));
   }
 
   if (migrateLocal) {
@@ -1214,7 +1335,7 @@ export async function getSpeelwijkReporting({ migrateLocal = false } = {}) {
 
 export async function saveSpeelwijkReporting(reportingData) {
   const reporting = normalizeSpeelwijkReporting(reportingData);
-  localStorage.setItem('sms_speelwijk_reporting', JSON.stringify(reporting));
+  safeSetStorage('sms_speelwijk_reporting', JSON.stringify(reporting));
   try {
     await saveSpeelwijkConfigRemote('SPEELWIJK_REPORTING_CONFIG', reporting);
     return { success: true, data: reporting, remoteSynced: true };

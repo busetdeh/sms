@@ -869,8 +869,86 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div><div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-primary-container">storefront</span><h3 class="font-label-caps text-primary-container text-xs uppercase tracking-[.2em] font-bold">Booth Tenant &amp; Ekshibisi</h3></div><div id="speelwijk-booths-merchants" class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div class="p-5 rounded-lg border border-surface-variant text-sm text-on-surface-variant">Memuat informasi booth...</div></div></div>
-          <div><div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-primary-container">room_service</span><h3 class="font-label-caps text-primary-container text-xs uppercase tracking-[.2em] font-bold">Fasilitas Event</h3></div><div id="speelwijk-booths-facilities" class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div class="p-5 rounded-lg border border-surface-variant text-sm text-on-surface-variant">Memuat informasi fasilitas...</div></div></div>
+          <div>
+            <div class="flex items-center gap-2 mb-4">
+              <span class="material-symbols-outlined text-primary-container">storefront</span>
+              <h3 class="font-label-caps text-primary-container text-xs uppercase tracking-[.2em] font-bold">Booth Tenant &amp; Ekshibisi</h3>
+            </div>
+            <div id="speelwijk-booths-merchants" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="col-span-full rounded-lg border border-dashed border-surface-variant p-5 text-center text-sm text-on-surface-variant">Belum ada booth tenant &amp; ekshibisi yang diumumkan.</div>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-4">
+              <span class="material-symbols-outlined text-primary-container">room_service</span>
+              <h3 class="font-label-caps text-primary-container text-xs uppercase tracking-[.2em] font-bold">Fasilitas Event</h3>
+            </div>
+            <div id="speelwijk-booths-facilities" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="block rounded-lg border border-surface-variant bg-surface-container-low p-5 transition-colors hover:border-primary-container">
+                <div class="flex items-start gap-3">
+                  <span class="material-symbols-outlined text-primary-container">room_service</span>
+                  <div class="min-w-0">
+                    <div class="font-bold text-white">Tenda Camping Peserta</div>
+                    <div class="mt-1 text-xs leading-relaxed text-on-surface-variant">Tenda kapasitas 3 orang</div>
+                  </div>
+                </div>
+              </div>
+              <div class="block rounded-lg border border-surface-variant bg-surface-container-low p-5 transition-colors hover:border-primary-container">
+                <div class="flex items-start gap-3">
+                  <span class="material-symbols-outlined text-primary-container">room_service</span>
+                  <div class="min-w-0">
+                    <div class="font-bold text-white">Mushola</div>
+                    <div class="mt-1 text-xs leading-relaxed text-on-surface-variant">Tenda Mushola</div>
+                  </div>
+                </div>
+              </div>
+              <div class="block rounded-lg border border-surface-variant bg-surface-container-low p-5 transition-colors hover:border-primary-container">
+                <div class="flex items-start gap-3">
+                  <span class="material-symbols-outlined text-primary-container">room_service</span>
+                  <div class="min-w-0">
+                    <div class="font-bold text-white">Toilet Truck</div>
+                    <div class="mt-1 text-xs leading-relaxed text-on-surface-variant">Toilet 24 jam</div>
+                  </div>
+                </div>
+              </div>
+              <div class="block rounded-lg border border-surface-variant bg-surface-container-low p-5 transition-colors hover:border-primary-container">
+                <div class="flex items-start gap-3">
+                  <span class="material-symbols-outlined text-primary-container">room_service</span>
+                  <div class="min-w-0">
+                    <div class="font-bold text-white">Tenda P3K</div>
+                    <div class="mt-1 text-xs leading-relaxed text-on-surface-variant">P3K 16 Jam</div>
+                  </div>
+                </div>
+              </div>
+              <div class="block rounded-lg border border-surface-variant bg-surface-container-low p-5 transition-colors hover:border-primary-container">
+                <div class="flex items-start gap-3">
+                  <span class="material-symbols-outlined text-primary-container">room_service</span>
+                  <div class="min-w-0">
+                    <div class="font-bold text-white">Internet</div>
+                    <div class="mt-1 text-xs leading-relaxed text-on-surface-variant">Internet 24 jam</div>
+                  </div>
+                </div>
+              </div>
+              <div class="block rounded-lg border border-surface-variant bg-surface-container-low p-5 transition-colors hover:border-primary-container">
+                <div class="flex items-start gap-3">
+                  <span class="material-symbols-outlined text-primary-container">room_service</span>
+                  <div class="min-w-0">
+                    <div class="font-bold text-white">Kopi dan Snack</div>
+                    <div class="mt-1 text-xs leading-relaxed text-on-surface-variant">Selama masih tersedia</div>
+                  </div>
+                </div>
+              </div>
+              <div class="block rounded-lg border border-surface-variant bg-surface-container-low p-5 transition-colors hover:border-primary-container">
+                <div class="flex items-start gap-3">
+                  <span class="material-symbols-outlined text-primary-container">room_service</span>
+                  <div class="min-w-0">
+                    <div class="font-bold text-white">Makan Siang Peserta</div>
+                    <div class="mt-1 text-xs leading-relaxed text-on-surface-variant">Makan siang/hari selama 2 hari</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1439,6 +1517,7 @@
       saveSpeelwijkRegistration,
       getSpeelwijkPartners,
       getSpeelwijkBooths,
+      getSpeelwijkBoothsCached,
       getSpeelwijkPrizesShared
     } from '/src/js/supabase.js';
 
@@ -1630,8 +1709,8 @@
 
     registrationTabButtons.forEach(button => button.addEventListener('click', () => switchRegistrationTab(button.dataset.registrationTab)));
 
-    // 4. Dynamic Rundown & Settings Sync
-    async function syncLiveContent() {
+    // 4. Dynamic Live Content Sync (Parallel, Resilient & Immediate Cache)
+    async function syncLiveRundown() {
       try {
         const rundown = await getSpeelwijkRundown();
         const day1El = document.getElementById('speelwijk-live-rundown-day1');
@@ -1644,10 +1723,10 @@
           if (day1El && day1Items.length > 0) {
             day1El.innerHTML = day1Items.map(item => `
               <div class="flex items-start gap-4 p-3 bg-surface-container hover:bg-surface-container-high transition-colors rounded group border-l-2 border-transparent hover:border-primary">
-                <span class="font-mono-data text-xs text-primary-fixed-dim w-16 pt-0.5 font-bold">${item.time}</span>
+                <span class="font-mono-data text-xs text-primary-fixed-dim w-16 pt-0.5 font-bold">${escapeParticipantText(item.time)}</span>
                 <div>
-                  <h4 class="text-sm font-bold text-white group-hover:text-primary transition-colors">${item.title}</h4>
-                  <p class="text-on-surface-variant text-xs mt-0.5">${item.desc || '-'}</p>
+                  <h4 class="text-sm font-bold text-white group-hover:text-primary transition-colors">${escapeParticipantText(item.title)}</h4>
+                  <p class="text-on-surface-variant text-xs mt-0.5">${escapeParticipantText(item.desc || '-')}</p>
                 </div>
               </div>
             `).join('');
@@ -1656,17 +1735,22 @@
           if (day2El && day2Items.length > 0) {
             day2El.innerHTML = day2Items.map((item, idx) => `
               <div class="flex items-start gap-4 p-3 ${idx === day2Items.length - 1 ? 'bg-primary/15 hover:bg-primary/20 border-primary' : 'bg-surface-container hover:bg-surface-container-high border-transparent'} transition-colors rounded group border-l-2 hover:border-primary">
-                <span class="font-mono-data text-xs text-primary-fixed-dim w-16 pt-0.5 font-bold">${item.time}</span>
+                <span class="font-mono-data text-xs text-primary-fixed-dim w-16 pt-0.5 font-bold">${escapeParticipantText(item.time)}</span>
                 <div>
-                  <h4 class="text-sm font-bold ${idx === day2Items.length - 1 ? 'text-primary-fixed-dim uppercase' : 'text-white group-hover:text-primary'} transition-colors">${item.title}</h4>
-                  <p class="text-on-surface-variant text-xs mt-0.5">${item.desc || '-'}</p>
+                  <h4 class="text-sm font-bold ${idx === day2Items.length - 1 ? 'text-primary-fixed-dim uppercase' : 'text-white group-hover:text-primary'} transition-colors">${escapeParticipantText(item.title)}</h4>
+                  <p class="text-on-surface-variant text-xs mt-0.5">${escapeParticipantText(item.desc || '-')}</p>
                 </div>
               </div>
             `).join('');
           }
         }
+      } catch (e) {
+        console.warn('Rundown sync notice:', e);
+      }
+    }
 
-        // Settings sync
+    async function syncLiveSettings() {
+      try {
         const settings = await getSpeelwijkSettings();
         if (settings) {
           const setText = (id, value) => {
@@ -1751,22 +1835,49 @@
           const payInst = document.getElementById('payment-display-instructions');
           if (payInst && settings.paymentInstructions) payInst.textContent = settings.paymentInstructions;
         }
+      } catch (e) {
+        console.warn('Settings sync notice:', e);
+      }
+    }
 
-        // Booths & facilities sync
+    async function syncLiveBooths() {
+      const merchantBoothsEl = document.getElementById('speelwijk-booths-merchants');
+      const facilitiesEl = document.getElementById('speelwijk-booths-facilities');
+      const renderBooths = (items, emptyText) => items.length ? items.map(item => {
+        const linkUrl = /^https?:\/\//i.test(String(item.link_url || '')) ? String(item.link_url).trim() : '';
+        const cardTag = linkUrl ? 'a' : 'div';
+        const linkAttrs = linkUrl ? `href="${escapeParticipantText(linkUrl)}" target="_blank" rel="noopener noreferrer"` : '';
+        const icon = item.type === 'facility' ? 'room_service' : 'storefront';
+        return `<${cardTag} ${linkAttrs} class="block rounded-lg border border-surface-variant bg-surface-container-low p-5 transition-colors hover:border-primary-container ${linkUrl ? 'cursor-pointer' : ''}"><div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary-container">${icon}</span><div class="min-w-0"><div class="font-bold text-white">${escapeParticipantText(item.name)}</div><div class="mt-1 text-xs leading-relaxed text-on-surface-variant">${escapeParticipantText(item.description || '')}</div>${item.location ? `<div class="mt-3 flex items-center gap-1 text-[10px] text-primary-fixed-dim"><span class="material-symbols-outlined text-xs">location_on</span>${escapeParticipantText(item.location)}</div>` : ''}${item.contact ? `<div class="mt-1 text-[10px] text-on-surface-variant">PIC: ${escapeParticipantText(item.contact)}</div>` : ''}</div></div></${cardTag}>`;
+      }).join('') : `<div class="col-span-full rounded-lg border border-dashed border-surface-variant p-5 text-center text-sm text-on-surface-variant">${emptyText}</div>`;
+
+      // 1. Immediately render cached data if available
+      try {
+        const cached = getSpeelwijkBoothsCached();
+        if (cached && cached.length) {
+          const activeMerchants = cached.filter(item => item.type === 'merchant' && item.status !== 'inactive');
+          const activeFacilities = cached.filter(item => item.type === 'facility' && item.status !== 'inactive');
+          if (merchantBoothsEl) merchantBoothsEl.innerHTML = renderBooths(activeMerchants, 'Belum ada booth tenant &amp; ekshibisi yang diumumkan.');
+          if (facilitiesEl && activeFacilities.length > 0) facilitiesEl.innerHTML = renderBooths(activeFacilities, 'Informasi fasilitas akan segera diumumkan.');
+        }
+      } catch (e) {
+        console.warn('Booths cached sync notice:', e);
+      }
+
+      // 2. Fetch fresh remote data from Supabase in background
+      try {
         const booths = await getSpeelwijkBooths();
-        const merchantBoothsEl = document.getElementById('speelwijk-booths-merchants');
-        const facilitiesEl = document.getElementById('speelwijk-booths-facilities');
-        const renderBooths = (items, emptyText) => items.length ? items.map(item => {
-          const linkUrl = /^https?:\/\//i.test(String(item.link_url || '')) ? String(item.link_url).trim() : '';
-          const cardTag = linkUrl ? 'a' : 'div';
-          const linkAttrs = linkUrl ? `href="${escapeParticipantText(linkUrl)}" target="_blank" rel="noopener noreferrer"` : '';
-          const icon = item.type === 'facility' ? 'room_service' : 'storefront';
-          return `<${cardTag} ${linkAttrs} class="block rounded-lg border border-surface-variant bg-surface-container-low p-5 transition-colors hover:border-primary-container ${linkUrl ? 'cursor-pointer' : ''}"><div class="flex items-start gap-3"><span class="material-symbols-outlined text-primary-container">${icon}</span><div class="min-w-0"><div class="font-bold text-white">${escapeParticipantText(item.name)}</div><div class="mt-1 text-xs leading-relaxed text-on-surface-variant">${escapeParticipantText(item.description || '')}</div>${item.location ? `<div class="mt-3 flex items-center gap-1 text-[10px] text-primary-fixed-dim"><span class="material-symbols-outlined text-xs">location_on</span>${escapeParticipantText(item.location)}</div>` : ''}${item.contact ? `<div class="mt-1 text-[10px] text-on-surface-variant">PIC: ${escapeParticipantText(item.contact)}</div>` : ''}</div></div></${cardTag}>`;
-        }).join('') : `<div class="col-span-full rounded-lg border border-dashed border-surface-variant p-5 text-center text-sm text-on-surface-variant">${emptyText}</div>`;
-        if (merchantBoothsEl) merchantBoothsEl.innerHTML = renderBooths((booths || []).filter(item => item.type === 'merchant' && item.status !== 'inactive'), 'Belum ada booth tenant &amp; ekshibisi yang diumumkan.');
-        if (facilitiesEl) facilitiesEl.innerHTML = renderBooths((booths || []).filter(item => item.type === 'facility' && item.status !== 'inactive'), 'Informasi fasilitas akan segera diumumkan.');
+        if (booths && booths.length) {
+          if (merchantBoothsEl) merchantBoothsEl.innerHTML = renderBooths(booths.filter(item => item.type === 'merchant' && item.status !== 'inactive'), 'Belum ada booth tenant &amp; ekshibisi yang diumumkan.');
+          if (facilitiesEl) facilitiesEl.innerHTML = renderBooths(booths.filter(item => item.type === 'facility' && item.status !== 'inactive'), 'Informasi fasilitas akan segera diumumkan.');
+        }
+      } catch (e) {
+        console.warn('Booths remote sync notice:', e);
+      }
+    }
 
-        // Partners & Sponsors sync
+    async function syncLivePartners() {
+      try {
         const partners = await getSpeelwijkPartners();
         if (partners && partners.length > 0) {
           const sponsorsEl = document.getElementById('speelwijk-sponsors-container');
@@ -1807,8 +1918,13 @@
             }).join('');
           }
         }
+      } catch (e) {
+        console.warn('Partners sync notice:', e);
+      }
+    }
 
-        // Prizes sync
+    async function syncLivePrizes() {
+      try {
         const prizes = await getSpeelwijkPrizesShared();
         const summaryList = document.getElementById('speelwijk-category-summary-list');
         if (summaryList && prizes?.length) {
@@ -1822,7 +1938,6 @@
         }
         const prizesEl = document.getElementById('speelwijk-prizes-container');
         if (prizesEl && prizes && prizes.length > 0) {
-          // Group by category
           const categories = {};
           prizes.forEach(p => {
             if (!categories[p.category]) {
@@ -1831,7 +1946,6 @@
             categories[p.category].push(p);
           });
 
-          // Sort each category by rank (Juara 1, Juara 2, Juara 3)
           const rankOrder = { 'Juara 1': 1, 'Juara 2': 2, 'Juara 3': 3 };
           
           prizesEl.innerHTML = Object.keys(categories).map(catName => {
@@ -1841,7 +1955,7 @@
 
             return `
               <div class="space-y-4">
-                <h3 class="font-headline-md text-primary tracking-wider uppercase border-l-2 border-primary pl-4 text-lg font-bold">${catName}</h3>
+                <h3 class="font-headline-md text-primary tracking-wider uppercase border-l-2 border-primary pl-4 text-lg font-bold">${escapeParticipantText(catName)}</h3>
                 <div class="grid grid-cols-3 gap-2.5 sm:gap-6">
                   ${catPrizes.map(p => {
                     let iconColor = '#ffd700';
@@ -1859,8 +1973,8 @@
                     return `
                       <div class="bg-surface-container-low border border-surface-variant rounded-lg p-3 sm:p-6 flex flex-col items-center text-center group hover:border-primary transition-all duration-300">
                         <span class="material-symbols-outlined text-2xl sm:text-[48px] mb-2 sm:mb-4" style="color: ${iconColor};">military_tech</span>
-                        <h4 class="font-headline-md ${rankClass} uppercase mb-1 sm:mb-2 font-bold text-[10px] sm:text-sm">${p.rank}</h4>
-                        <p class="font-display-lg text-xs sm:text-lg md:text-2xl ${amountClass} font-bold font-mono-data">${p.amount}</p>
+                        <h4 class="font-headline-md ${rankClass} uppercase mb-1 sm:mb-2 font-bold text-[10px] sm:text-sm">${escapeParticipantText(p.rank)}</h4>
+                        <p class="font-display-lg text-xs sm:text-lg md:text-2xl ${amountClass} font-bold font-mono-data">${escapeParticipantText(p.amount)}</p>
                       </div>
                     `;
                   }).join('')}
@@ -1870,8 +1984,18 @@
           }).join('');
         }
       } catch (e) {
-        console.warn('Sync live content notice:', e);
+        console.warn('Prizes sync notice:', e);
       }
+    }
+
+    async function syncLiveContent() {
+      await Promise.allSettled([
+        syncLiveRundown(),
+        syncLiveSettings(),
+        syncLiveBooths(),
+        syncLivePartners(),
+        syncLivePrizes()
+      ]);
     }
 
     syncLiveContent();
