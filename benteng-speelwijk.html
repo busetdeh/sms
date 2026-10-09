@@ -172,7 +172,7 @@
         <a class="text-primary-fixed-dim hover:text-white font-bold transition-colors uppercase" href="#hero">Beranda</a>
         <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#history">Misi Sejarah</a>
         <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#schedule">Jadwal Terbang</a>
-        <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#booths">Booth &amp; Fasilitas</a>
+        <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#booths">Map &amp; Fasilitas</a>
         <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#prizes">Hadiah &amp; Trofi</a>
         <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#register">Registrasi Pilot</a>
         <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#partners">Sponsor</a>
@@ -199,7 +199,7 @@
       <a class="block py-2 text-primary-fixed-dim font-bold" href="#hero" onclick="toggleMobileMenu()">BERANDA</a>
       <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#history" onclick="toggleMobileMenu()">MISI SEJARAH</a>
       <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#schedule" onclick="toggleMobileMenu()">JADWAL TERBANG</a>
-      <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#booths" onclick="toggleMobileMenu()">BOOTH &amp; FASILITAS</a>
+      <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#booths" onclick="toggleMobileMenu()">MAP &amp; FASILITAS</a>
       <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#prizes" onclick="toggleMobileMenu()">HADIAH &amp; TROFI</a>
       <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#register" onclick="toggleMobileMenu()">REGISTRASI PILOT</a>
       <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#partners" onclick="toggleMobileMenu()">SPONSOR &amp; PARTNERS</a>
@@ -774,8 +774,98 @@
     </section>
     <!-- Booths & Facilities Section -->
     <section class="py-16 md:py-24 px-4 sm:px-8 bg-surface-dim border-t border-surface-variant" id="booths">
-      <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-12"><div class="text-primary-fixed-dim font-label-caps text-xs uppercase tracking-widest mb-1">AREA EVENT</div><h2 class="text-2xl sm:text-3xl font-bold text-white uppercase tracking-tight">Booth Merchant &amp; Fasilitas</h2><div class="h-0.5 w-20 bg-primary-container mx-auto mt-2"></div><p class="mt-3 text-sm text-on-surface-variant">Informasi merchant dan fasilitas yang tersedia selama Fly Through History – Benteng Speelwijk FPV Drone Fest.</p></div>
+      <div class="max-w-7xl mx-auto" id="map">
+        <div class="text-center mb-12">
+          <div class="text-primary-fixed-dim font-label-caps text-xs uppercase tracking-widest mb-1">AREA EVENT</div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white uppercase tracking-tight">Map Event &amp; Fasilitas</h2>
+          <div class="h-0.5 w-20 bg-primary-container mx-auto mt-2"></div>
+          <p class="mt-3 text-sm text-on-surface-variant">Denah tata letak area pelaksanaan, merchant booth, dan fasilitas selama Fly Through History – Benteng Speelwijk FPV Drone Fest.</p>
+        </div>
+
+        <!-- Section: Map Event -->
+        <div class="mb-14">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary-container">map</span>
+              <h3 class="font-label-caps text-primary-container text-xs sm:text-sm uppercase tracking-[.2em] font-bold">Map Event</h3>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="openMapModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-surface-variant bg-surface hover:border-primary-container hover:text-primary text-on-surface-variant text-[11px] font-label-caps transition-all cursor-pointer">
+                <span class="material-symbols-outlined text-sm">zoom_in</span>
+                <span>Perbesar Peta</span>
+              </button>
+              <a href="/event-map-speelwijk.jpg" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-surface-variant bg-surface hover:border-primary-container hover:text-primary text-on-surface-variant text-[11px] font-label-caps transition-all">
+                <span class="material-symbols-outlined text-sm">open_in_new</span>
+                <span>Buka Tab Baru</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="bg-surface-container-low border border-surface-variant rounded-lg p-3 sm:p-5 shadow-xl">
+            <div class="relative group rounded-lg overflow-hidden border border-surface-variant bg-surface cursor-pointer" onclick="openMapModal()">
+              <img src="/event-map-speelwijk.jpg" alt="Map Event Fly Through History - Benteng Speelwijk FPV Drone Fest" class="w-full h-auto object-contain transition-transform duration-300 group-hover:scale-[1.01]" loading="lazy" />
+              <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                <span class="bg-black/80 text-white text-xs font-label-caps px-4 py-2 rounded-full border border-primary-container/40 flex items-center gap-1.5 backdrop-blur-sm shadow-lg">
+                  <span class="material-symbols-outlined text-sm text-primary-container">fullscreen</span>
+                  Klik untuk melihat ukuran penuh
+                </span>
+              </div>
+            </div>
+
+            <!-- Area Legends -->
+            <div class="mt-4 pt-4 border-t border-surface-variant/60">
+              <div class="text-[11px] font-label-caps uppercase text-on-surface-variant font-bold tracking-wider mb-3 flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-xs text-primary-container">pin_drop</span>
+                Keterangan Zona &amp; Fasilitas Area
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs font-mono-data">
+                <div class="p-2.5 rounded bg-surface border border-surface-variant/60 flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-sm bg-green-500 shrink-0 shadow-[0_0_8px_rgba(34,197,94,0.4)]"></span>
+                  <div class="min-w-0">
+                    <div class="font-bold text-white text-[11px] truncate">Flying Area</div>
+                    <div class="text-[10px] text-on-surface-variant truncate">Lintasan &amp; Race</div>
+                  </div>
+                </div>
+                <div class="p-2.5 rounded bg-surface border border-surface-variant/60 flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-sm bg-red-600 shrink-0 shadow-[0_0_8px_rgba(220,38,38,0.4)]"></span>
+                  <div class="min-w-0">
+                    <div class="font-bold text-white text-[11px] truncate">Restricted Area</div>
+                    <div class="text-[10px] text-on-surface-variant truncate">Zona Cagar Budaya</div>
+                  </div>
+                </div>
+                <div class="p-2.5 rounded bg-surface border border-surface-variant/60 flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-sm bg-yellow-400 shrink-0 shadow-[0_0_8px_rgba(250,204,21,0.4)]"></span>
+                  <div class="min-w-0">
+                    <div class="font-bold text-white text-[11px] truncate">FOH</div>
+                    <div class="text-[10px] text-on-surface-variant truncate">Pusat Operasional</div>
+                  </div>
+                </div>
+                <div class="p-2.5 rounded bg-surface border border-surface-variant/60 flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-sm bg-blue-600 shrink-0 shadow-[0_0_8px_rgba(37,99,235,0.4)]"></span>
+                  <div class="min-w-0">
+                    <div class="font-bold text-white text-[11px] truncate">Booth UMKM</div>
+                    <div class="text-[10px] text-on-surface-variant truncate">Bazaar &amp; Kuliner</div>
+                  </div>
+                </div>
+                <div class="p-2.5 rounded bg-surface border border-surface-variant/60 flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-sm border-2 border-dashed border-blue-400 shrink-0"></span>
+                  <div class="min-w-0">
+                    <div class="font-bold text-white text-[11px] truncate">Camping Ground</div>
+                    <div class="text-[10px] text-on-surface-variant truncate">Area Tenda Pilot</div>
+                  </div>
+                </div>
+                <div class="p-2.5 rounded bg-surface border border-surface-variant/60 flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-sm bg-purple-600 shrink-0 shadow-[0_0_8px_rgba(147,51,234,0.4)]"></span>
+                  <div class="min-w-0">
+                    <div class="font-bold text-white text-[11px] truncate">Penginapan</div>
+                    <div class="text-[10px] text-on-surface-variant truncate">Akomodasi &amp; Fasilitas</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div><div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-primary-container">storefront</span><h3 class="font-label-caps text-primary-container text-xs uppercase tracking-[.2em] font-bold">Merchant Booth</h3></div><div id="speelwijk-booths-merchants" class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div class="p-5 rounded-lg border border-surface-variant text-sm text-on-surface-variant">Memuat informasi booth...</div></div></div>
           <div><div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-primary-container">room_service</span><h3 class="font-label-caps text-primary-container text-xs uppercase tracking-[.2em] font-bold">Fasilitas Event</h3></div><div id="speelwijk-booths-facilities" class="grid grid-cols-1 sm:grid-cols-2 gap-4"><div class="p-5 rounded-lg border border-surface-variant text-sm text-on-surface-variant">Memuat informasi fasilitas...</div></div></div>
@@ -842,6 +932,30 @@
     </div>
   </section>
 
+  <!-- Map Image Modal / Lightbox -->
+  <div id="map-modal" class="fixed inset-0 z-[70] hidden bg-black/90 backdrop-blur-md p-4 sm:p-6 items-center justify-center transition-opacity" onclick="closeMapModal(event)">
+    <div class="relative max-w-5xl w-full max-h-[92vh] flex flex-col items-center bg-surface-container border border-surface-variant rounded-xl p-3 sm:p-4 shadow-2xl" onclick="event.stopPropagation()">
+      <div class="w-full flex items-center justify-between pb-3 border-b border-surface-variant/70 mb-3 text-white">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary-container">map</span>
+          <span class="font-label-caps text-xs sm:text-sm font-bold uppercase tracking-wider">Map Event Benteng Speelwijk</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="/event-map-speelwijk.jpg" target="_blank" rel="noopener noreferrer" class="text-xs text-primary-fixed-dim hover:text-white flex items-center gap-1 font-label-caps uppercase transition-colors">
+            <span class="material-symbols-outlined text-sm">open_in_new</span>
+            <span>Buka Tab Baru</span>
+          </a>
+          <button id="close-map-modal-btn" type="button" onclick="closeMapModal()" class="rounded border border-surface-variant p-1 text-on-surface-variant hover:text-white hover:border-white transition-colors cursor-pointer" aria-label="Tutup peta">
+            <span class="material-symbols-outlined text-base">close</span>
+          </button>
+        </div>
+      </div>
+      <div class="overflow-auto max-h-[78vh] w-full rounded-lg border border-surface-variant bg-surface flex items-center justify-center p-1 sm:p-2">
+        <img src="/event-map-speelwijk.jpg" alt="Map Event Fly Through History - Benteng Speelwijk Full" class="max-w-full max-h-[74vh] object-contain rounded" />
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer class="bg-surface-container-lowest text-primary-fixed-dim font-label-caps text-xs border-t border-surface-variant">
     <div class="w-full px-4 sm:px-8 py-8 flex flex-col md:flex-row justify-between items-center gap-4 max-w-7xl mx-auto">
@@ -869,6 +983,35 @@
       getSpeelwijkBooths,
       getSpeelwijkPrizesShared
     } from '/src/js/supabase.js';
+
+    // Map Modal Controls
+    window.openMapModal = function() {
+      const modal = document.getElementById('map-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.classList.add('overflow-hidden');
+      }
+    };
+    window.closeMapModal = function(e) {
+      if (e && e.target && e.target !== e.currentTarget && !e.target.closest('#close-map-modal-btn')) return;
+      const modal = document.getElementById('map-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.classList.remove('overflow-hidden');
+      }
+    };
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('map-modal');
+        if (modal && !modal.classList.contains('hidden')) {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+          document.body.classList.remove('overflow-hidden');
+        }
+      }
+    });
 
     // 1. Mobile Menu Toggle
     window.toggleMobileMenu = function() {
