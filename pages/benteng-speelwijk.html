@@ -175,6 +175,7 @@
         <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#booths">Map &amp; Fasilitas</a>
         <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#prizes">Hadiah &amp; Trofi</a>
         <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#register">Registrasi Pilot</a>
+        <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#rules">Do &amp; Don't</a>
         <a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors uppercase" href="#partners">Sponsor</a>
       </div>
 
@@ -202,6 +203,7 @@
       <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#booths" onclick="toggleMobileMenu()">MAP &amp; FASILITAS</a>
       <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#prizes" onclick="toggleMobileMenu()">HADIAH &amp; TROFI</a>
       <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#register" onclick="toggleMobileMenu()">REGISTRASI PILOT</a>
+      <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#rules" onclick="toggleMobileMenu()">DO &amp; DON'T</a>
       <a class="block py-2 text-on-surface-variant hover:text-primary-fixed-dim" href="#partners" onclick="toggleMobileMenu()">SPONSOR &amp; PARTNERS</a>
       <div class="pt-2 border-t border-surface-variant flex gap-2 md:hidden">
         <a href="#register" class="flex-1 bg-primary-container text-black font-bold py-2.5 text-center rounded slant-btn" onclick="toggleMobileMenu()">DAFTAR PILOT</a>
@@ -873,6 +875,462 @@
       </div>
     </section>
 
+    <!-- Do & Don't Section -->
+    <section class="py-16 md:py-24 px-4 sm:px-8 bg-surface-dim border-t border-surface-variant relative" id="rules">
+      <div class="max-w-7xl mx-auto">
+        <!-- Section Header -->
+        <div class="text-center mb-12">
+          <div class="text-primary-fixed-dim font-label-caps text-xs uppercase tracking-widest mb-1">PANDUAN &amp; KESELAMATAN EVENT</div>
+          <h2 class="text-2xl sm:text-4xl font-bold text-white uppercase tracking-tight">Do &amp; Don't Event</h2>
+          <div class="h-0.5 w-20 bg-primary-container mx-auto mt-2"></div>
+          <p class="mt-3 text-sm text-on-surface-variant max-w-2xl mx-auto">
+            Protokol keselamatan penerbangan FPV, komitmen pelestarian situs cagar budaya (Zero Damage), serta tata tertib wajib bagi seluruh pilot, official tim, dan pengunjung festival.
+          </p>
+        </div>
+
+        <!-- Zero Damage Core Commitment Banner -->
+        <div class="mb-10 bg-gradient-to-r from-surface-container-low via-surface-container to-surface-container-low border border-primary-container/30 rounded-xl p-5 sm:p-6 shadow-xl relative overflow-hidden">
+          <div class="absolute -right-10 -bottom-10 opacity-5 pointer-events-none select-none hidden md:block">
+            <span class="material-symbols-outlined text-[160px] text-primary">verified_user</span>
+          </div>
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-5 relative z-10">
+            <div class="flex items-start gap-3.5">
+              <div class="w-10 h-10 rounded-lg bg-primary-container/20 border border-primary-container/40 flex items-center justify-center shrink-0 text-primary-container">
+                <span class="material-symbols-outlined text-2xl">shield</span>
+              </div>
+              <div>
+                <h3 class="text-base sm:text-lg font-bold text-white uppercase font-label-caps tracking-wide flex items-center gap-2">
+                  <span>Komitmen Utama: Zero Damage &amp; Safety First</span>
+                  <span class="px-2 py-0.5 text-[9px] bg-primary-container text-black font-bold rounded">RESMI</span>
+                </h3>
+                <p class="text-xs sm:text-sm text-on-surface-variant mt-1 leading-relaxed">
+                  Benteng Speelwijk adalah warisan sejarah abad ke-17 yang dilindungi undang-undang. Keselamatan bersama dan pelestarian batu cagar budaya merupakan prioritas nomor satu selama event berlangsung.
+                </p>
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 shrink-0">
+              <span class="px-3 py-1 rounded bg-surface border border-surface-variant text-[11px] font-mono-data text-primary flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+                Safety Netting 3M
+              </span>
+              <span class="px-3 py-1 rounded bg-surface border border-surface-variant text-[11px] font-mono-data text-green-400 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+                Zero Damage Benteng
+              </span>
+              <span class="px-3 py-1 rounded bg-surface border border-surface-variant text-[11px] font-mono-data text-yellow-300 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-yellow-300"></span>
+                VTX Channel Lock
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category Filter Tabs -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 scrollbar-none sm:justify-center font-label-caps text-xs">
+          <button type="button" onclick="switchRulesTab('all')" data-category="all" class="rules-tab-btn px-4 py-2 rounded-lg font-bold uppercase transition-all bg-primary-container text-black border border-primary-container shrink-0 cursor-pointer shadow-[0_0_12px_rgba(255,199,0,0.25)]">
+            Semua Panduan
+          </button>
+          <button type="button" onclick="switchRulesTab('fpv')" data-category="fpv" class="rules-tab-btn px-4 py-2 rounded-lg font-bold uppercase transition-all bg-surface-container text-on-surface-variant hover:text-white border border-surface-variant shrink-0 cursor-pointer">
+            🛸 Protokol FPV
+          </button>
+          <button type="button" onclick="switchRulesTab('heritage')" data-category="heritage" class="rules-tab-btn px-4 py-2 rounded-lg font-bold uppercase transition-all bg-surface-container text-on-surface-variant hover:text-white border border-surface-variant shrink-0 cursor-pointer">
+            🏛️ Cagar Budaya
+          </button>
+          <button type="button" onclick="switchRulesTab('camping')" data-category="camping" class="rules-tab-btn px-4 py-2 rounded-lg font-bold uppercase transition-all bg-surface-container text-on-surface-variant hover:text-white border border-surface-variant shrink-0 cursor-pointer">
+            ⛺ Camping &amp; Area
+          </button>
+          <button type="button" onclick="switchRulesTab('etika')" data-category="etika" class="rules-tab-btn px-4 py-2 rounded-lg font-bold uppercase transition-all bg-surface-container text-on-surface-variant hover:text-white border border-surface-variant shrink-0 cursor-pointer">
+            🤝 Kearifan Lokal
+          </button>
+        </div>
+
+        <!-- Rules Grid Container -->
+        <div class="space-y-8" id="rules-content-container">
+
+          <!-- Kategori 1: Protokol FPV -->
+          <div class="rules-category-block space-y-4" data-category="fpv">
+            <div class="flex items-center gap-2 border-b border-surface-variant/80 pb-3">
+              <span class="material-symbols-outlined text-primary-container">flight_takeoff</span>
+              <h3 class="font-label-caps text-white text-sm sm:text-base font-bold uppercase tracking-wider">
+                1. Protokol Keselamatan Terbang &amp; Frekuensi FPV
+              </h3>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              <!-- DO Card -->
+              <div class="rounded-xl border border-green-500/30 bg-gradient-to-b from-green-950/20 to-surface-container-low p-5 sm:p-6 space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-green-500/20">
+                  <div class="flex items-center gap-2 text-green-400">
+                    <span class="material-symbols-outlined text-2xl">check_circle</span>
+                    <span class="font-label-caps text-xs sm:text-sm font-bold uppercase tracking-widest">DO — Wajib Dilakukan</span>
+                  </div>
+                  <span class="text-[10px] font-mono-data bg-green-500/20 text-green-300 px-2 py-0.5 rounded border border-green-500/30">WAJIB</span>
+                </div>
+                <ul class="space-y-3.5 text-xs text-on-surface leading-relaxed">
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-green-400 text-sm mt-0.5 shrink-0">check</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Registrasi Frekuensi VTX ke FOH</strong>
+                      Laporkan kanal video (analog/digital HD) dan batas daya pemancar ke meja FOH sebelum menyalakan drone.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-green-400 text-sm mt-0.5 shrink-0">check</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Uji Failsafe &amp; Disarm Mandiri</strong>
+                      Pastikan pengaturan *failsafe motor stop* aktif dan berfungsi normal sebelum drone ditempatkan di launch pad.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-green-400 text-sm mt-0.5 shrink-0">check</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Terbang Hanya di Designated Flying Area</strong>
+                      Meliuk dan bermanuver hanya di dalam zona lintasan resmi yang telah dilindungi jaring pengaman (*safety net*).
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-green-400 text-sm mt-0.5 shrink-0">check</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Amankan Baterai LiPo dengan Safe Bag</strong>
+                      Isi daya (*charging*) dan simpan baterai LiPo di area paddock menggunakan kantong khusus tahan api (*LiPo safe bag*).
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- DON'T Card -->
+              <div class="rounded-xl border border-red-500/30 bg-gradient-to-b from-red-950/20 to-surface-container-low p-5 sm:p-6 space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-red-500/20">
+                  <div class="flex items-center gap-2 text-red-400">
+                    <span class="material-symbols-outlined text-2xl">cancel</span>
+                    <span class="font-label-caps text-xs sm:text-sm font-bold uppercase tracking-widest">DON'T — Dilarang Keras</span>
+                  </div>
+                  <span class="text-[10px] font-mono-data bg-red-500/20 text-red-300 px-2 py-0.5 rounded border border-red-500/30">LARANGAN</span>
+                </div>
+                <ul class="space-y-3.5 text-xs text-on-surface leading-relaxed">
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-red-400 text-sm mt-0.5 shrink-0">close</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Dilarang Colok LiPo / VTX di Paddock</strong>
+                      Menyalakan VTX tanpa izin marshal dapat membutakan (*video blackout*) goggle pilot lain yang sedang mengudara.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-red-400 text-sm mt-0.5 shrink-0">close</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Dilarang Arming di Luar Flight Pad</strong>
+                      Dilarang menyalakan propeler di area tenda peserta, paddock, atau kerumunan orang demi mencegah cedera fisik.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-red-400 text-sm mt-0.5 shrink-0">close</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Dilarang Menembus Restricted Area</strong>
+                      Dilarang sengaja bermanuver berbahaya ke area terlarang, parkiran, atau menukik mendekati penonton tanpa izin FOH.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-red-400 text-sm mt-0.5 shrink-0">close</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Dilarang Mengisi Daya Tanpa Pengawasan</strong>
+                      Jangan meninggalkan baterai yang sedang di-charge di dalam tenda tanpa ditunggui untuk mencegah risiko korsleting.
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kategori 2: Cagar Budaya -->
+          <div class="rules-category-block space-y-4" data-category="heritage">
+            <div class="flex items-center gap-2 border-b border-surface-variant/80 pb-3">
+              <span class="material-symbols-outlined text-primary-container">account_balance</span>
+              <h3 class="font-label-caps text-white text-sm sm:text-base font-bold uppercase tracking-wider">
+                2. Pelestarian Cagar Budaya Benteng Speelwijk (Zero Damage)
+              </h3>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              <!-- DO Card -->
+              <div class="rounded-xl border border-green-500/30 bg-gradient-to-b from-green-950/20 to-surface-container-low p-5 sm:p-6 space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-green-500/20">
+                  <div class="flex items-center gap-2 text-green-400">
+                    <span class="material-symbols-outlined text-2xl">check_circle</span>
+                    <span class="font-label-caps text-xs sm:text-sm font-bold uppercase tracking-widest">DO — Wajib Dilakukan</span>
+                  </div>
+                  <span class="text-[10px] font-mono-data bg-green-500/20 text-green-300 px-2 py-0.5 rounded border border-green-500/30">WAJIB</span>
+                </div>
+                <ul class="space-y-3.5 text-xs text-on-surface leading-relaxed">
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-green-400 text-sm mt-0.5 shrink-0">check</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Hormati Keutuhan Struktur Sejarah</strong>
+                      Jaga kelestarian batu bata dan reruntuhan benteng sebagai aset cagar budaya peninggalan bersejarah Banten.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-green-400 text-sm mt-0.5 shrink-0">check</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Evakuasi Crash Drone Melalui Marshal</strong>
+                      Jika drone mengalami crash di area reruntuhan batu, wajib lapor ke marshal untuk dievakuasi secara aman.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-green-400 text-sm mt-0.5 shrink-0">check</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Gunakan Rangka Obstacle Mandiri (Freestanding)</strong>
+                      Seluruh tiang kamera, tenda, dan bendera wajib memakai pemberat sendiri tanpa memaku atau mengikat ke batu benteng.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-green-400 text-sm mt-0.5 shrink-0">check</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Penerapan Zero Waste Area</strong>
+                      Kelola sampah pribadi dengan kantong sampah mandiri dan buang pada tempat sampah terpilah yang disediakan.
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- DON'T Card -->
+              <div class="rounded-xl border border-red-500/30 bg-gradient-to-b from-red-950/20 to-surface-container-low p-5 sm:p-6 space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-red-500/20">
+                  <div class="flex items-center gap-2 text-red-400">
+                    <span class="material-symbols-outlined text-2xl">cancel</span>
+                    <span class="font-label-caps text-xs sm:text-sm font-bold uppercase tracking-widest">DON'T — Dilarang Keras</span>
+                  </div>
+                  <span class="text-[10px] font-mono-data bg-red-500/20 text-red-300 px-2 py-0.5 rounded border border-red-500/30">LARANGAN</span>
+                </div>
+                <ul class="space-y-3.5 text-xs text-on-surface leading-relaxed">
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-red-400 text-sm mt-0.5 shrink-0">close</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Dilarang Memanjat Dinding Bata Kuno</strong>
+                      Dinding kuno rentan rapuh; dilarang keras menaiki, menduduki, atau melompati struktur dinding cagar budaya.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-red-400 text-sm mt-0.5 shrink-0">close</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Dilarang Masuk Restricted Area Sendiri</strong>
+                      Dilarang menerobos barikade Restricted Area atau memanjat reruntuhan sendirian untuk mengambil drone yang jatuh.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-red-400 text-sm mt-0.5 shrink-0">close</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Dilarang Memaku / Mengikat ke Batuan Situs</strong>
+                      Dilarang mengikat tali tenda, kawat spanduk, atau menempelkan benda apa pun langsung pada batuan benteng.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-red-400 text-sm mt-0.5 shrink-0">close</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Dilarang Vandalisme &amp; Pengrusakan</strong>
+                      Dilarang mencoret dinding (vandalisme), menggores, mengikis, atau memindahkan bata/artefak benteng dalam bentuk apa pun.
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kategori 3: Camping & Area -->
+          <div class="rules-category-block space-y-4" data-category="camping">
+            <div class="flex items-center gap-2 border-b border-surface-variant/80 pb-3">
+              <span class="material-symbols-outlined text-primary-container">camping</span>
+              <h3 class="font-label-caps text-white text-sm sm:text-base font-bold uppercase tracking-wider">
+                3. Ketertiban Camping Ground &amp; Fasilitas Venue
+              </h3>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              <!-- DO Card -->
+              <div class="rounded-xl border border-green-500/30 bg-gradient-to-b from-green-950/20 to-surface-container-low p-5 sm:p-6 space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-green-500/20">
+                  <div class="flex items-center gap-2 text-green-400">
+                    <span class="material-symbols-outlined text-2xl">check_circle</span>
+                    <span class="font-label-caps text-xs sm:text-sm font-bold uppercase tracking-widest">DO — Wajib Dilakukan</span>
+                  </div>
+                  <span class="text-[10px] font-mono-data bg-green-500/20 text-green-300 px-2 py-0.5 rounded border border-green-500/30">WAJIB</span>
+                </div>
+                <ul class="space-y-3.5 text-xs text-on-surface leading-relaxed">
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-green-400 text-sm mt-0.5 shrink-0">check</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Pasang Tenda di Camping Ground Resmi</strong>
+                      Dirikan tenda hanya pada area kapling yang telah ditentukan panitia dan pastikan tidak menghalangi jalur evakuasi.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-green-400 text-sm mt-0.5 shrink-0">check</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Gunakan Sumber Daya Listrik Sesuai Jatah</strong>
+                      Manfaatkan titik colokan genset/listrik secara tertib dan pastikan kabel sambungan terlindung dari cuaca dan air.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-green-400 text-sm mt-0.5 shrink-0">check</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Patuhi Jam Tenang Malam (Silent Hours)</strong>
+                      Mulai pukul 23:00 WIB, turunkan kebisingan di camping ground agar seluruh pilot dapat beristirahat optimal.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-green-400 text-sm mt-0.5 shrink-0">check</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Jaga Fasilitas Mushola &amp; Toilet</strong>
+                      Gunakan air secukupnya dan jaga kebersihan fasilitas sanitasi serta tempat ibadah yang disediakan bersama.
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- DON'T Card -->
+              <div class="rounded-xl border border-red-500/30 bg-gradient-to-b from-red-950/20 to-surface-container-low p-5 sm:p-6 space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-red-500/20">
+                  <div class="flex items-center gap-2 text-red-400">
+                    <span class="material-symbols-outlined text-2xl">cancel</span>
+                    <span class="font-label-caps text-xs sm:text-sm font-bold uppercase tracking-widest">DON'T — Dilarang Keras</span>
+                  </div>
+                  <span class="text-[10px] font-mono-data bg-red-500/20 text-red-300 px-2 py-0.5 rounded border border-red-500/30">LARANGAN</span>
+                </div>
+                <ul class="space-y-3.5 text-xs text-on-surface leading-relaxed">
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-red-400 text-sm mt-0.5 shrink-0">close</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Dilarang Berkemah di Atas Reruntuhan Situs</strong>
+                      Dilarang mendirikan tenda di zona terlarang, lintasan terbang, atau di atas batuan kuno benteng.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-red-400 text-sm mt-0.5 shrink-0">close</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Dilarang Membuat Api Unggun Terbuka</strong>
+                      Dilarang menyalakan api unggun atau membakar sampah sembarangan untuk mencegah risiko kebakaran rumput kering.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-red-400 text-sm mt-0.5 shrink-0">close</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Dilarang Menyalakan Sound System Bising</strong>
+                      Hindari penggunaan speaker bising di luar jam operasional yang dapat mengganggu kenyamanan peserta dan warga sekitar.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-red-400 text-sm mt-0.5 shrink-0">close</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Dilarang Membuang Sisa Makanan Sembarangan</strong>
+                      Sisa makanan wajib dibungkus rapi agar tidak menimbulkan bau tidak sedap atau mengundang serangga dan binatang liar.
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kategori 4: Kearifan Lokal -->
+          <div class="rules-category-block space-y-4" data-category="etika">
+            <div class="flex items-center gap-2 border-b border-surface-variant/80 pb-3">
+              <span class="material-symbols-outlined text-primary-container">groups</span>
+              <h3 class="font-label-caps text-white text-sm sm:text-base font-bold uppercase tracking-wider">
+                4. Etika, Kearifan Lokal &amp; Ketertiban Kawasan Banten Lama
+              </h3>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              <!-- DO Card -->
+              <div class="rounded-xl border border-green-500/30 bg-gradient-to-b from-green-950/20 to-surface-container-low p-5 sm:p-6 space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-green-500/20">
+                  <div class="flex items-center gap-2 text-green-400">
+                    <span class="material-symbols-outlined text-2xl">check_circle</span>
+                    <span class="font-label-caps text-xs sm:text-sm font-bold uppercase tracking-widest">DO — Wajib Dilakukan</span>
+                  </div>
+                  <span class="text-[10px] font-mono-data bg-green-500/20 text-green-300 px-2 py-0.5 rounded border border-green-500/30">WAJIB</span>
+                </div>
+                <ul class="space-y-3.5 text-xs text-on-surface leading-relaxed">
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-green-400 text-sm mt-0.5 shrink-0">check</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Berpakaian Sopan &amp; Berperilaku Santun</strong>
+                      Kawasan Banten Lama adalah zona cagar budaya dan wisata religi; kenakan pakaian yang pantas dan hormati warga setempat.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-green-400 text-sm mt-0.5 shrink-0">check</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Jeda Suara Saat Waktu Adzan Sholat</strong>
+                      Seluruh aktivitas terbang berkebisingan tinggi dan pengeras suara akan dijeda sejenak selama kumandang adzan berlangsung.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-green-400 text-sm mt-0.5 shrink-0">check</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Dukung Pelaku UMKM Lokal Banten</strong>
+                      Ramaikan gerai kuliner dan suvenir khas Serang (Rabeg, Sate Bandeng, dll.) di area booth UMKM resmi.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-green-400 text-sm mt-0.5 shrink-0">check</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Utamakan Keselamatan Penonton</strong>
+                      Selalu utamakan keselamatan pengunjung, anak-anak, dan penonton umum di sekitar area pembatas festival.
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- DON'T Card -->
+              <div class="rounded-xl border border-red-500/30 bg-gradient-to-b from-red-950/20 to-surface-container-low p-5 sm:p-6 space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-red-500/20">
+                  <div class="flex items-center gap-2 text-red-400">
+                    <span class="material-symbols-outlined text-2xl">cancel</span>
+                    <span class="font-label-caps text-xs sm:text-sm font-bold uppercase tracking-widest">DON'T — Dilarang Keras</span>
+                  </div>
+                  <span class="text-[10px] font-mono-data bg-red-500/20 text-red-300 px-2 py-0.5 rounded border border-red-500/30">LARANGAN</span>
+                </div>
+                <ul class="space-y-3.5 text-xs text-on-surface leading-relaxed">
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-red-400 text-sm mt-0.5 shrink-0">close</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Dilarang Berpakaian Tidak Pantas</strong>
+                      Hormati norma kesopanan masyarakat setempat saat beraktivitas di ruang terbuka dan fasilitas publik.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-red-400 text-sm mt-0.5 shrink-0">close</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Dilarang Terbang Saat Jeda Adzan</strong>
+                      Patuhi instruksi FOH untuk menunda penerbangan (*flight hold*) selama waktu sholat berkumandang.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-red-400 text-sm mt-0.5 shrink-0">close</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Dilarang Membawa Miras, Narkoba, &amp; Sajam</strong>
+                      Barang terlarang tidak memiliki toleransi di lingkungan festival dan akan langsung diserahkan kepada aparat berwenang.
+                    </div>
+                  </li>
+                  <li class="flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-red-400 text-sm mt-0.5 shrink-0">close</span>
+                    <div>
+                      <strong class="text-white block font-label-caps text-[11px] uppercase tracking-wide">Dilarang Memicu Kegaduhan Lingkungan</strong>
+                      Jaga ketertiban dan nama baik komunitas FPV serta seluruh pihak penyelenggara di hadapan masyarakat umum.
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Section Legal / Rules Footnote -->
+        <div class="mt-10 p-4 rounded-lg bg-surface-container-low border border-surface-variant text-center">
+          <p class="text-[11px] sm:text-xs text-on-surface-variant leading-relaxed">
+            <span class="text-primary-fixed-dim font-bold">Catatan Penyelenggara:</span> Pelanggaran terhadap protokol keselamatan penerbangan dan ketentuan pelestarian cagar budaya dapat berakibat pada diskualifikasi kepesertaan serta sanksi hukum sesuai <span class="text-white font-medium">UU No. 11 Tahun 2010 tentang Cagar Budaya</span>.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
   </main>
 
   <!-- Partners Section -->
@@ -1012,6 +1470,27 @@
         }
       }
     });
+
+    // Rules Tab Filter
+    window.switchRulesTab = function(category) {
+      const tabs = document.querySelectorAll('.rules-tab-btn');
+      tabs.forEach(btn => {
+        const isActive = btn.dataset.category === category;
+        if (isActive) {
+          btn.className = 'rules-tab-btn px-4 py-2 rounded-lg font-bold uppercase transition-all bg-primary-container text-black border border-primary-container shrink-0 cursor-pointer shadow-[0_0_12px_rgba(255,199,0,0.25)]';
+        } else {
+          btn.className = 'rules-tab-btn px-4 py-2 rounded-lg font-bold uppercase transition-all bg-surface-container text-on-surface-variant hover:text-white border border-surface-variant shrink-0 cursor-pointer';
+        }
+      });
+      const items = document.querySelectorAll('.rules-category-block');
+      items.forEach(block => {
+        if (category === 'all' || block.dataset.category === category) {
+          block.classList.remove('hidden');
+        } else {
+          block.classList.add('hidden');
+        }
+      });
+    };
 
     // 1. Mobile Menu Toggle
     window.toggleMobileMenu = function() {
