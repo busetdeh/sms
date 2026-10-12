@@ -13,5 +13,8 @@
   },
   "dependencies": {
     "nodemailer": "^10.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }

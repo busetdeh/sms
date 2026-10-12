@@ -25,6 +25,7 @@
     }
   ],
   "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/:path*" },
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/reporting", "destination": "/reporting.html" },
     { "source": "/pages/admin", "destination": "/pages/admin.html" },
