@@ -843,6 +843,28 @@
                 </div>
               </div>
 
+              <!-- Section 4: Testing & Status Hostinger SMTP -->
+              <div class="pt-4 border-t border-surface-variant space-y-3">
+                <div class="text-xs font-label-caps text-on-surface-variant font-bold uppercase tracking-wider flex items-center gap-1.5 text-primary-fixed-dim">
+                  <span class="material-symbols-outlined text-sm">forward_to_inbox</span>
+                  <span>4. Uji Coba Pengiriman Email (Hostinger SMTP)</span>
+                </div>
+                <p class="text-xs text-on-surface-variant leading-relaxed">
+                  Fitur ini digunakan untuk memastikan konfigurasi SMTP Hostinger di Vercel atau server berjalan normal. Masukkan email tujuan dan klik tombol untuk mengirimkan email percobaan.
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <div class="flex-1">
+                    <input id="setting-test-smtp-email" type="email" placeholder="Masukkan email penerima test (contoh: pilot@gmail.com)" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white text-xs focus:border-primary-container focus:outline-none"/>
+                  </div>
+                  <button type="button" id="btn-test-smtp" class="bg-surface-variant hover:bg-primary-container hover:text-black text-white font-bold font-label-caps text-xs px-5 py-2.5 rounded transition-all flex items-center justify-center gap-2 border border-outline-variant">
+                    <span class="material-symbols-outlined text-sm">send</span>
+                    <span>TEST KIRIM EMAIL</span>
+                  </button>
+                </div>
+                <div id="test-smtp-status" class="hidden text-xs p-3 rounded font-mono-data border"></div>
+              </div>
+
               <div class="pt-4 border-t border-surface-variant flex justify-end">
                 <button type="submit" class="bg-primary-container text-black font-bold font-label-caps text-xs px-8 py-3 rounded slant-btn hover:bg-yellow-400 flex items-center gap-2 shadow-lg">
                   <span class="material-symbols-outlined text-base">save</span>

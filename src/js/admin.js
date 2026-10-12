@@ -2826,6 +2826,63 @@ function initFormSubmissions() {
     showToast(result.remoteSynced === false ? 'Tersimpan lokal; sinkronisasi server gagal.' : `Pengaturan berhasil disimpan! Slug aktif: /${slug}`, result.remoteSynced === false ? 'error' : 'success');
   });
 
+  // Hostinger SMTP Test Button Handler
+  const btnTestSmtp = document.getElementById('btn-test-smtp');
+  if (btnTestSmtp) {
+    btnTestSmtp.addEventListener('click', async () => {
+      const emailInput = document.getElementById('setting-test-smtp-email');
+      const statusBox = document.getElementById('test-smtp-status');
+      const targetEmail = emailInput?.value?.trim();
+
+      if (!targetEmail || !targetEmail.includes('@')) {
+        showToast('Masukkan alamat email tujuan pengujian yang valid.', 'error');
+        emailInput?.focus();
+        return;
+      }
+
+      const origText = btnTestSmtp.innerHTML;
+      btnTestSmtp.disabled = true;
+      btnTestSmtp.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">progress_activity</span> Menguji SMTP...';
+      if (statusBox) {
+        statusBox.className = 'text-xs p-3 rounded font-mono-data border bg-surface-container-high border-outline-variant text-white';
+        statusBox.textContent = 'Menghubungi server Hostinger SMTP...';
+        statusBox.classList.remove('hidden');
+      }
+
+      try {
+        const res = await fetch('/api/test-smtp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ targetEmail })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          showToast('Testing SMTP Berhasil! Email telah terkirim.', 'success');
+          if (statusBox) {
+            statusBox.className = 'text-xs p-3 rounded font-mono-data border bg-green-950/40 border-green-500/40 text-green-300';
+            statusBox.innerHTML = `<strong>✅ BERHASIL:</strong> ${data.message}<br><span class="text-[11px] text-green-400/80">Message ID: ${data.info?.messageId || '-'} | Server: ${data.info?.smtpHost}:${data.info?.smtpPort}</span>`;
+          }
+        } else {
+          showToast('Pengujian SMTP gagal: ' + (data.errorMessage || data.error), 'error');
+          if (statusBox) {
+            statusBox.className = 'text-xs p-3 rounded font-mono-data border bg-red-950/40 border-red-500/40 text-red-300';
+            statusBox.innerHTML = `<strong>❌ GAGAL:</strong> ${data.error || 'Gagal koneksi'}<br><span class="text-[11px] text-red-400">${data.errorMessage || ''}</span><br><span class="text-[10px] text-on-surface-variant">${data.troubleshooting?.hint || ''}</span>`;
+          }
+        }
+      } catch (err) {
+        showToast('Gagal menghubungi endpoint /api/test-smtp. Pastikan sudah dideploy di Vercel.', 'error');
+        if (statusBox) {
+          statusBox.className = 'text-xs p-3 rounded font-mono-data border bg-red-950/40 border-red-500/40 text-red-300';
+          statusBox.textContent = '❌ Error koneksi ke server: ' + err.message + ' (Pastikan perubahan sudah di-commit & push ke GitHub agar Vercel mendeploy /api)';
+        }
+      } finally {
+        btnTestSmtp.disabled = false;
+        btnTestSmtp.innerHTML = origText;
+      }
+    });
+  }
+
   // Day Header Edit Buttons & Click Listeners
   document.getElementById('btn-edit-day1-header')?.addEventListener('click', () => openSpeelwijkDayHeaderModal('1'));
   document.getElementById('speelwijk-rundown-day1-header-subtitle')?.addEventListener('click', () => openSpeelwijkDayHeaderModal('1'));

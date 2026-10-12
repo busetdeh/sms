@@ -2174,6 +2174,30 @@
             paymentProof: paymentProof
           });
 
+          // Trigger automated confirmation email via Hostinger SMTP
+          if (email && email.includes('@')) {
+            fetch('/api/send-registration-email', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                name,
+                callsign: community,
+                phone: whatsapp,
+                email,
+                category,
+                paymentMethod,
+                fee,
+                eventTitle: settings?.title || 'Fly Through History – Benteng Speelwijk Drone Fest 2026',
+                eventDate: settings?.date || '17 - 18 Oktober 2026',
+                eventLocation: settings?.location || 'Benteng Speelwijk, Banten Lama'
+              })
+            }).then(r => r.json()).then(res => {
+              if (res?.success) {
+                console.log('Hostinger SMTP confirmation email sent successfully.');
+              }
+            }).catch(err => console.warn('SMTP email trigger notice:', err));
+          }
+
           showToast(registrationResult.remoteSynced === false
             ? 'Data tersimpan lokal; sinkronisasi server gagal. Membuka WhatsApp konfirmasi...'
             : 'Pendaftaran & bukti transfer berhasil tercatat! Membuka WhatsApp konfirmasi...', registrationResult.remoteSynced === false ? 'error' : 'success');
