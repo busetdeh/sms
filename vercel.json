@@ -36,11 +36,19 @@
       "headers": [{ "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, proxy-revalidate" }]
     },
     {
+      "source": "/benteng-speelwijk-validasi",
+      "headers": [{ "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, proxy-revalidate" }]
+    },
+    {
       "source": "/pages/benteng-speelwijk-checkin",
       "headers": [{ "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, proxy-revalidate" }]
     },
     {
       "source": "/pages/benteng-speelwijk-checkin-print",
+      "headers": [{ "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, proxy-revalidate" }]
+    },
+    {
+      "source": "/pages/benteng-speelwijk-validasi",
       "headers": [{ "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, proxy-revalidate" }]
     },
     {
@@ -65,12 +73,14 @@
     { "source": "/benteng-speelwijk-registrasi-ots", "destination": "/benteng-speelwijk-ots" },
     { "source": "/benteng-speelwijk-checkin", "destination": "/benteng-speelwijk-checkin.html" },
     { "source": "/benteng-speelwijk-checkin-print", "destination": "/benteng-speelwijk-checkin-print.html" },
+    { "source": "/benteng-speelwijk-validasi", "destination": "/benteng-speelwijk-validasi.html" },
     { "source": "/pages/benteng-speelwijk-profile", "destination": "/pages/benteng-speelwijk-profile.html" },
     { "source": "/pages/benteng-speelwijk-profile-eng", "destination": "/pages/benteng-speelwijk-profile-eng.html" },
     { "source": "/pages/benteng-speelwijk-ots", "destination": "/pages/benteng-speelwijk-ots.html" },
     { "source": "/pages/benteng-speelwijk-registrasi-ots", "destination": "/pages/benteng-speelwijk-ots" },
     { "source": "/pages/benteng-speelwijk-checkin", "destination": "/pages/benteng-speelwijk-checkin.html" },
     { "source": "/pages/benteng-speelwijk-checkin-print", "destination": "/pages/benteng-speelwijk-checkin-print.html" },
+    { "source": "/pages/benteng-speelwijk-validasi", "destination": "/pages/benteng-speelwijk-validasi.html" },
     { "source": "/pages/sms-fly-through-history", "destination": "/pages/benteng-speelwijk" },
     { "source": "/pages/tentang-kami", "destination": "/pages/tentang-kami.html" },
     { "source": "/pages/galeri", "destination": "/pages/galeri.html" },

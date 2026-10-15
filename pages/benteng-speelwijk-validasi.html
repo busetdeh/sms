@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html class="dark scroll-smooth" lang="id">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-62QYCYTE3M"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-62QYCYTE3M');
+  </script>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Validasi &amp; Check-In Peserta - Benteng Speelwijk Drone Fest 2026 | SMS</title>
+  <meta name="description" content="Portal validasi status lunas dan konfirmasi kehadiran check-in peserta Benteng Speelwijk Drone Fest 2026. Buka setelah scan QR Code di meja registrasi."/>
+  <link rel="icon" type="image/png" href="/logo.png"/>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- HTML5 QR Code Scanner Library (for optional Panitia scanner) -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-tint": "#f5bf00",
+            "tertiary-container": "#48e5cf",
+            "primary-container": "#ffc700",
+            "primary": "#ffe9b9",
+            "primary-fixed-dim": "#f5bf00",
+            "surface-variant": "#353534",
+            "on-background": "#e5e2e1",
+            "surface-container-low": "#1c1b1b",
+            "surface-dim": "#131313",
+            "surface-container-high": "#2b2a2a",
+            "surface": "#201f1f",
+            "outline-variant": "#4d4639"
+          },
+          fontFamily: {
+            "headline": ["Space Grotesk", "sans-serif"],
+            "body": ["Space Grotesk", "sans-serif"],
+            "label-caps": ["Space Grotesk", "sans-serif"],
+            "mono-data": ["Space Grotesk", "sans-serif"]
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #131313;
+      color: #e5e2e1;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .hud-grid {
+      background-size: 30px 30px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 199, 0, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 199, 0, 0.04) 1px, transparent 1px);
+    }
+    .slant-btn {
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    }
+  </style>
+</head>
+
+<body class="bg-background text-on-background min-h-screen selection:bg-primary-container selection:text-black">
+
+  <!-- Top Bar -->
+  <header class="sticky top-0 z-50 bg-surface/90 backdrop-blur-md border-b border-surface-variant no-print">
+    <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
+      
+      <!-- Brand -->
+      <a href="/benteng-speelwijk" class="flex items-center gap-2 group">
+        <img src="/logo-sms-speelwijk.png" alt="Logo Speelwijk 2026" class="h-9 w-auto object-contain transition-transform group-hover:scale-105"/>
+        <div class="border-l border-surface-variant pl-2.5">
+          <span class="text-[9px] font-mono-data tracking-widest text-primary-fixed-dim block uppercase font-bold">PORTAL VALIDASI CHECK-IN</span>
+          <span class="text-xs font-bold text-white tracking-wide uppercase">Benteng Speelwijk 2026</span>
+        </div>
+      </a>
+
+      <!-- Quick Action -->
+      <div class="flex items-center gap-2">
+        <button type="button" id="btn-toggle-sound" class="p-2 bg-surface border border-outline-variant hover:border-primary rounded text-on-surface-variant hover:text-white transition-colors flex items-center gap-1 text-xs" title="Suara Chime">
+          <span id="sound-icon" class="material-symbols-outlined text-base text-primary-container">volume_up</span>
+        </button>
+
+        <a href="/benteng-speelwijk-checkin" class="border border-surface-variant hover:border-primary text-on-surface-variant hover:text-white text-xs font-label-caps px-2.5 py-1.5 rounded flex items-center gap-1 transition-colors" title="Lihat Display QR Meja">
+          <span class="material-symbols-outlined text-sm">qr_code</span>
+          <span class="hidden sm:inline">Display</span> QR
+        </a>
+
+        <a href="/benteng-speelwijk-ots" class="border border-tertiary-container/50 hover:bg-tertiary-container hover:text-black text-tertiary-fixed text-xs font-label-caps font-bold px-2.5 py-1.5 rounded flex items-center gap-1 transition-colors">
+          <span class="material-symbols-outlined text-sm">store</span>
+          <span>Daftar OTS</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="py-6 sm:py-10 px-4 relative hud-grid">
+    <div class="max-w-2xl mx-auto space-y-6">
+
+      <!-- Header Announcement Card -->
+      <div class="bg-surface-container-low border border-surface-variant rounded-2xl p-5 sm:p-7 shadow-xl relative overflow-hidden">
+        <div class="flex items-center justify-between gap-3 mb-2">
+          <div class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-green-500/15 border border-green-500/30 text-green-300 text-[11px] font-mono-data font-bold">
+            <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+            <span>VALIDASI KEHADIRAN &amp; STATUS LUNAS</span>
+          </div>
+          <span class="text-[11px] font-mono-data text-on-surface-variant">Live Sync Supabase</span>
+        </div>
+
+        <h1 class="text-xl sm:text-2xl font-bold text-white uppercase tracking-tight font-headline">
+          Konfirmasi Kehadiran Pilot di Lokasi
+        </h1>
+        <p class="text-xs sm:text-sm text-on-surface-variant mt-1 leading-relaxed">
+          Masukkan <strong>Nama Lengkap</strong>, <strong>Callsign</strong>, atau <strong>Nomor WhatsApp</strong> Anda yang terdaftar. Sistem akan memvalidasi apakah tiket Anda sudah <strong>LUNAS</strong> dan mencatat kehadiran Anda.
+        </p>
+      </div>
+
+      <!-- Search & Input Box -->
+      <div class="bg-surface-container-low border-2 border-primary/30 rounded-2xl p-5 shadow-2xl space-y-3 relative">
+        <label for="search-input" class="block text-xs font-label-caps font-bold text-primary-fixed-dim uppercase tracking-wider">
+          Cari Data Pendaftaran Anda:
+        </label>
+        
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-on-surface-variant">
+            <span class="material-symbols-outlined text-xl">search</span>
+          </div>
+          <input 
+            type="text" 
+            id="search-input" 
+            placeholder="Ketik Nama, Callsign (cth: RED_FOX), atau No. HP..." 
+            autocomplete="off"
+            class="w-full pl-11 pr-24 py-3 bg-surface border-2 border-surface-variant focus:border-primary rounded-xl text-white placeholder:text-gray-500 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary/20"
+          />
+          <button 
+            type="button" 
+            id="btn-clear-search" 
+            class="absolute inset-y-0 right-0 pr-3 flex items-center text-on-surface-variant hover:text-white hidden cursor-pointer"
+            title="Bersihkan input"
+          >
+            <span class="material-symbols-outlined text-sm bg-surface-variant rounded-full p-1">close</span>
+          </button>
+        </div>
+
+        <!-- Live Autocomplete Suggestions Dropdown -->
+        <div id="search-suggestions" class="hidden max-h-56 overflow-y-auto divide-y divide-surface-variant/60 rounded-xl bg-surface border border-primary/30 shadow-2xl text-xs font-mono-data mt-1 z-30">
+          <!-- Autocomplete items inserted via JS -->
+        </div>
+
+        <div class="flex items-center justify-between text-[11px] font-mono-data text-on-surface-variant pt-1">
+          <span>💡 Ketik minimal 2 huruf untuk memunculkan daftar.</span>
+          <span id="reg-count-indicator" class="text-primary-fixed-dim">Memuat data...</span>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- RESULT VALIDATION CARD CONTAINER          -->
+      <!-- ========================================== -->
+      <div id="validation-result-area" class="space-y-4">
+        
+        <!-- Empty Placeholder State -->
+        <div id="state-empty" class="p-8 border-2 border-dashed border-surface-variant rounded-2xl text-center space-y-2 text-on-surface-variant">
+          <span class="material-symbols-outlined text-4xl text-primary-container/40">person_search</span>
+          <div class="text-xs sm:text-sm font-medium text-white">Belum Ada Peserta yang Dipilih</div>
+          <p class="text-xs max-w-sm mx-auto text-on-surface-variant leading-relaxed">
+            Silakan ketikkan nama atau nomor telepon Anda di kolom pencarian di atas untuk melihat status pembayaran dan validasi check-in.
+          </p>
+        </div>
+
+        <!-- Loading State -->
+        <div id="state-loading" class="hidden p-8 border border-surface-variant rounded-2xl text-center space-y-3 bg-surface-container-low">
+          <span class="material-symbols-outlined text-3xl text-primary-container animate-spin">progress_activity</span>
+          <div class="text-xs font-mono-data text-white">Memvalidasi data peserta dengan server...</div>
+        </div>
+
+        <!-- NOT FOUND STATE -->
+        <div id="state-not-found" class="hidden p-6 border-2 border-red-500/40 bg-red-950/20 rounded-2xl space-y-4 text-center">
+          <div class="w-14 h-14 rounded-full bg-red-500/20 border border-red-500/40 flex items-center justify-center mx-auto text-red-400">
+            <span class="material-symbols-outlined text-3xl">cancel</span>
+          </div>
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-red-300 uppercase font-headline">Data Peserta Tidak Ditemukan</h2>
+            <p class="text-xs text-on-surface-variant mt-1 max-w-md mx-auto leading-relaxed">
+              Nama atau nomor WhatsApp yang Anda masukkan tidak terdaftar dalam database event. Pastikan ejaan sesuai saat mendaftar online.
+            </p>
+          </div>
+          <div class="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a href="/benteng-speelwijk-ots" class="w-full sm:w-auto px-4 py-2.5 bg-primary-container hover:bg-yellow-400 text-black text-xs font-label-caps font-bold rounded-lg slant-btn transition-all flex items-center justify-center gap-1.5">
+              <span class="material-symbols-outlined text-sm">store</span>
+              <span>Daftar On-The-Spot (OTS) Sekarang</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SUCCESS STATE: LUNAS & CHECK-IN BERHASIL   -->
+        <!-- ========================================== -->
+        <div id="state-success-lunas" class="hidden p-5 sm:p-7 border-2 border-green-500 bg-gradient-to-b from-green-950/30 to-surface-container-low rounded-2xl space-y-5 shadow-2xl relative overflow-hidden">
+          
+          <div class="flex items-center justify-between pb-3 border-b border-green-500/30">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-green-400 text-3xl">check_circle</span>
+              <div>
+                <span class="text-[10px] font-mono-data tracking-wider uppercase font-bold text-green-300 block">STATUS TERVERIFIKASI RESMI</span>
+                <h2 class="text-base sm:text-lg font-bold text-white uppercase font-headline">CHECK-IN BERHASIL • STATUS LUNAS</h2>
+              </div>
+            </div>
+            <span id="badge-ots-verified" class="hidden px-2.5 py-1 rounded text-[10px] font-mono-data font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 uppercase">
+              OTS VERIFIED
+            </span>
+          </div>
+
+          <!-- Highlight Notice for Registration Desk -->
+          <div class="p-3.5 bg-green-950/50 border border-green-500/50 rounded-xl text-center">
+            <span class="text-xs sm:text-sm font-bold text-green-200 block">
+              ✅ Tunjukkan Layar Ini ke Panitia di Meja Registrasi!
+            </span>
+            <span class="text-[11px] text-green-300/80 block mt-0.5">
+              Untuk mengklaim Official Jersey Event, ID Badge, &amp; Pit Tag Akses.
+            </span>
+          </div>
+
+          <!-- Digital Participant Pass Details -->
+          <div class="bg-surface rounded-xl p-4 border border-surface-variant space-y-3 font-mono-data text-xs">
+            <div class="flex items-center justify-between pb-2 border-b border-surface-variant/60">
+              <span class="text-[10px] text-on-surface-variant">NOMOR REGISTRASI:</span>
+              <span id="res-reg-code" class="font-bold text-primary-container text-sm">SPW-2026-001</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <span class="text-[10px] text-on-surface-variant block">NAMA PILOT:</span>
+                <span id="res-pilot-name" class="font-bold text-white text-sm block">Muhammad Juang</span>
+              </div>
+              <div>
+                <span class="text-[10px] text-on-surface-variant block">CALLSIGN:</span>
+                <span id="res-callsign" class="font-bold text-primary-fixed-dim text-sm block">RED_FOX</span>
+              </div>
+              <div>
+                <span class="text-[10px] text-on-surface-variant block">KOMUNITAS / ASAL:</span>
+                <span id="res-community" class="text-white block truncate">Sky Multirotor Squad</span>
+              </div>
+              <div>
+                <span class="text-[10px] text-on-surface-variant block">NO. WHATSAPP:</span>
+                <span id="res-phone" class="text-white block">08123456789</span>
+              </div>
+              <div>
+                <span class="text-[10px] text-on-surface-variant block">KATEGORI:</span>
+                <span id="res-category" class="font-bold text-yellow-300 block">5 Inch Open Pro</span>
+              </div>
+              <div>
+                <span class="text-[10px] text-on-surface-variant block">SISTEM &amp; VTX:</span>
+                <span id="res-vtx" class="text-cyan-300 block">Analog (R1 5658MHz)</span>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-surface-variant/60 flex items-center justify-between text-[11px]">
+              <span class="text-on-surface-variant">WAKTU CHECK-IN:</span>
+              <span id="res-checkin-time" class="font-bold text-green-300">15 Okt 2026, 08:30 WIB</span>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-col sm:flex-row items-center gap-2.5 pt-1">
+            <button type="button" id="btn-share-wa" class="w-full sm:flex-1 py-2.5 px-3 rounded-lg bg-green-600 hover:bg-green-500 text-white font-label-caps text-xs font-bold flex items-center justify-center gap-1.5 transition-colors">
+              <span class="material-symbols-outlined text-sm">chat</span>
+              <span>Kirim Konfirmasi ke WhatsApp Panitia</span>
+            </button>
+            <button type="button" onclick="window.print()" class="w-full sm:w-auto py-2.5 px-4 rounded-lg bg-surface border border-outline-variant hover:border-primary text-white font-label-caps text-xs flex items-center justify-center gap-1.5 transition-colors">
+              <span class="material-symbols-outlined text-sm">print</span>
+              <span>Simpan / Cetak Bukti</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- ========================================== -->
+        <!-- WARNING STATE: BELUM LUNAS / PENDING      -->
+        <!-- ========================================== -->
+        <div id="state-warning-unpaid" class="hidden p-5 sm:p-7 border-2 border-yellow-500 bg-gradient-to-b from-yellow-950/30 to-surface-container-low rounded-2xl space-y-5 shadow-2xl relative overflow-hidden">
+          
+          <div class="flex items-center justify-between pb-3 border-b border-yellow-500/30">
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-yellow-400 text-3xl">warning</span>
+              <div>
+                <span class="text-[10px] font-mono-data tracking-wider uppercase font-bold text-yellow-300 block">STATUS: BELUM LUNAS (PENDING)</span>
+                <h2 class="text-base sm:text-lg font-bold text-white uppercase font-headline">SILAKAN SELESAIKAN PEMBAYARAN</h2>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded text-[10px] font-mono-data font-bold bg-yellow-500/20 text-yellow-300 border border-yellow-500/40 uppercase">
+              BELUM CHECK-IN
+            </span>
+          </div>
+
+          <!-- Warning Message -->
+          <div class="p-3.5 bg-yellow-950/60 border border-yellow-500/50 rounded-xl space-y-1 text-center">
+            <span class="text-xs sm:text-sm font-bold text-yellow-200 block">
+              ⚠️ Pendaftaran Terdaftar, Namun Belum Lunas
+            </span>
+            <p class="text-[11px] text-yellow-300/80 leading-relaxed">
+              Silakan lakukan pembayaran langsung di <strong>Kasir Meja Registrasi</strong> (Tunai atau QRIS) agar status pendaftaran Anda dinyatakan lunas dan Race Pack dapat diserahkan.
+            </p>
+          </div>
+
+          <!-- Unpaid Participant Details -->
+          <div class="bg-surface rounded-xl p-4 border border-surface-variant space-y-2.5 font-mono-data text-xs">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-on-surface-variant">NOMOR REGISTRASI:</span>
+              <span id="unpaid-reg-code" class="font-bold text-white">SPW-2026-002</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-on-surface-variant">NAMA PILOT:</span>
+              <span id="unpaid-pilot-name" class="font-bold text-white">Fajar Hidayat (NIGHT_HAWK)</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-on-surface-variant">TOTAL BIAYA PENDAFTARAN:</span>
+              <span id="unpaid-fee" class="font-bold text-yellow-300 text-sm">Rp 150.000</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-on-surface-variant">METODE PEMBAYARAN:</span>
+              <span id="unpaid-method" class="text-white">Transfer Bank / Tunai Meja</span>
+            </div>
+          </div>
+
+          <!-- Panitia Action: 1-Click Pay & Check-In -->
+          <div class="p-3.5 bg-surface border border-surface-variant rounded-xl space-y-2">
+            <span class="text-[10px] font-mono-data text-on-surface-variant block uppercase font-bold">AKSI KHUSUS PANITIA / KASIR MEJA:</span>
+            <button type="button" id="btn-settle-checkin" class="w-full py-2.5 px-4 rounded-lg bg-primary-container hover:bg-yellow-400 text-black text-xs font-label-caps font-bold transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(255,199,0,0.3)] cursor-pointer">
+              <span class="material-symbols-outlined text-base">price_check</span>
+              <span>Verifikasi Lunas di Kasir &amp; Selesaikan Check-In</span>
+            </button>
+          </div>
+
+          <!-- WhatsApp Kasir Help -->
+          <button type="button" id="btn-unpaid-wa" class="w-full py-2 px-3 rounded-lg bg-surface border border-surface-variant hover:border-green-500 text-on-surface-variant hover:text-white text-xs font-mono-data flex items-center justify-center gap-1.5 transition-colors">
+            <span class="material-symbols-outlined text-sm text-green-400">help</span>
+            <span>Konfirmasi Bukti Transfer via WhatsApp Panitia</span>
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- Notice & Help Desk Footer -->
+      <div class="p-4 bg-surface-container-low border border-surface-variant rounded-xl text-center space-y-1.5 text-xs font-mono-data text-on-surface-variant">
+        <div>Butuh bantuan verifikasi data atau pergantian frekuensi?</div>
+        <div class="text-white font-medium">Silakan hubungi Panitia Meja Registrasi di venue Benteng Speelwijk.</div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Audio Context Chimes (Web Audio API) -->
+  <script>
+    let audioCtx = null;
+    let isSoundMuted = false;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSound(type) {
+      if (isSoundMuted) return;
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (type === 'success') {
+          // Cheerful two-tone chime (587Hz -> 880Hz)
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(587.33, now);
+          osc.frequency.setValueAtTime(880.00, now + 0.12);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+          osc.start(now);
+          osc.stop(now + 0.45);
+        } else if (type === 'warning') {
+          // Warning alert tone (440Hz -> 349Hz)
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.setValueAtTime(349, now + 0.15);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+          osc.start(now);
+          osc.stop(now + 0.5);
+        } else if (type === 'error') {
+          // Error buzz (200Hz)
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(200, now);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        }
+      } catch (err) {
+        console.warn('Audio notice:', err);
+      }
+    }
+
+    document.getElementById('btn-toggle-sound')?.addEventListener('click', () => {
+      isSoundMuted = !isSoundMuted;
+      const icon = document.getElementById('sound-icon');
+      if (icon) {
+        icon.textContent = isSoundMuted ? 'volume_off' : 'volume_up';
+        icon.className = isSoundMuted ? 'material-symbols-outlined text-base text-on-surface-variant' : 'material-symbols-outlined text-base text-primary-container';
+      }
+    });
+  </script>
+
+  <!-- Validation Logic & Supabase Sync -->
+  <script type="module">
+    import { 
+      getSpeelwijkRegistrations,
+      getSpeelwijkSettings,
+      checkinSpeelwijkParticipant
+    } from '/src/js/supabase.js';
+
+    let allRegistrations = [];
+    let currentParticipant = null;
+    let cachedSettings = null;
+
+    const searchInput = document.getElementById('search-input');
+    const searchSuggestions = document.getElementById('search-suggestions');
+    const btnClear = document.getElementById('btn-clear-search');
+    const regCountIndicator = document.getElementById('reg-count-indicator');
+
+    const stateEmpty = document.getElementById('state-empty');
+    const stateLoading = document.getElementById('state-loading');
+    const stateNotFound = document.getElementById('state-not-found');
+    const stateSuccess = document.getElementById('state-success-lunas');
+    const stateWarning = document.getElementById('state-warning-unpaid');
+
+    function hideAllStates() {
+      stateEmpty?.classList.add('hidden');
+      stateLoading?.classList.add('hidden');
+      stateNotFound?.classList.add('hidden');
+      stateSuccess?.classList.add('hidden');
+      stateWarning?.classList.add('hidden');
+    }
+
+    // Load Data
+    async function loadData() {
+      try {
+        regCountIndicator.textContent = 'Menghubungkan data...';
+        const [regs, settings] = await Promise.all([
+          getSpeelwijkRegistrations().catch(() => []),
+          getSpeelwijkSettings().catch(() => null)
+        ]);
+
+        allRegistrations = Array.isArray(regs) ? regs : [];
+        cachedSettings = settings;
+        regCountIndicator.textContent = `${allRegistrations.length} peserta terdaftar`;
+
+        // Check if query params provided
+        const params = new URLSearchParams(window.location.search);
+        const queryId = params.get('id');
+        const queryCode = params.get('code');
+        const queryPhone = params.get('phone');
+        const queryName = params.get('name');
+
+        if (queryId || queryCode || queryPhone || queryName) {
+          const match = allRegistrations.find(r => 
+            (queryId && (String(r.id) === queryId || r.reg_code === queryId)) ||
+            (queryCode && r.reg_code === queryCode) ||
+            (queryPhone && r.phone && r.phone.replace(/[^0-9]/g, '') === queryPhone.replace(/[^0-9]/g, '')) ||
+            (queryName && r.name && r.name.toLowerCase().includes(queryName.toLowerCase()))
+          );
+
+          if (match) {
+            searchInput.value = match.name || match.callsign;
+            validateParticipant(match);
+          } else {
+            hideAllStates();
+            stateNotFound.classList.remove('hidden');
+          }
+        }
+      } catch (err) {
+        console.error('Error loading registrations:', err);
+        regCountIndicator.textContent = 'Gagal memuat database';
+      }
+    }
+
+    // Autocomplete Search
+    searchInput?.addEventListener('input', (e) => {
+      const val = e.target.value.trim().toLowerCase();
+      btnClear?.classList.toggle('hidden', val.length === 0);
+
+      if (val.length < 2) {
+        searchSuggestions.classList.add('hidden');
+        searchSuggestions.innerHTML = '';
+        return;
+      }
+
+      const matches = allRegistrations.filter(r => {
+        const name = (r.name || '').toLowerCase();
+        const callsign = (r.callsign || '').toLowerCase();
+        const phone = (r.phone || '').replace(/[^0-9]/g, '');
+        const code = (r.reg_code || '').toLowerCase();
+        const cleanedVal = val.replace(/[^0-9]/g, '');
+
+        return name.includes(val) || 
+               callsign.includes(val) || 
+               code.includes(val) ||
+               (cleanedVal.length >= 3 && phone.includes(cleanedVal));
+      }).slice(0, 8);
+
+      if (matches.length === 0) {
+        searchSuggestions.innerHTML = `
+          <div class="p-3 text-center text-on-surface-variant">
+            Tidak ada pendaftar yang cocok dengan "<strong>${e.target.value}</strong>"
+          </div>
+        `;
+        searchSuggestions.classList.remove('hidden');
+      } else {
+        searchSuggestions.innerHTML = matches.map(m => {
+          const isPaid = (m.payment_status || '').toUpperCase() === 'LUNAS' || (m.notes || '').includes('OTS');
+          const isOTS = (m.notes || '').includes('OTS') || (m.payment_method || '').includes('Meja');
+          const badgeClass = isPaid ? 'bg-green-500/20 text-green-300 border-green-500/40' : 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40';
+          const badgeText = isOTS ? 'OTS • LUNAS' : isPaid ? 'LUNAS' : 'PENDING';
+
+          return `
+            <div class="suggestion-item p-3 hover:bg-surface-container-high cursor-pointer flex items-center justify-between gap-2 transition-colors" data-id="${m.id}">
+              <div>
+                <span class="font-bold text-white text-sm block">${m.name || 'Tanpa Nama'} <span class="text-primary-fixed-dim">(${m.callsign || '-'})</span></span>
+                <span class="text-[10px] text-on-surface-variant block">${m.reg_code || ''} • ${m.category || ''} • ${m.phone || ''}</span>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${badgeClass}">
+                ${badgeText}
+              </span>
+            </div>
+          `;
+        }).join('');
+
+        searchSuggestions.classList.remove('hidden');
+
+        // Bind clicks
+        searchSuggestions.querySelectorAll('.suggestion-item').forEach(el => {
+          el.addEventListener('click', () => {
+            const id = el.getAttribute('data-id');
+            const found = allRegistrations.find(r => String(r.id) === id);
+            if (found) {
+              searchInput.value = found.name;
+              searchSuggestions.classList.add('hidden');
+              validateParticipant(found);
+            }
+          });
+        });
+      }
+    });
+
+    btnClear?.addEventListener('click', () => {
+      searchInput.value = '';
+      btnClear.classList.add('hidden');
+      searchSuggestions.classList.add('hidden');
+      hideAllStates();
+      stateEmpty?.classList.remove('hidden');
+      currentParticipant = null;
+    });
+
+    // Main Validation Function
+    async function validateParticipant(participant) {
+      if (!participant) return;
+      currentParticipant = participant;
+      hideAllStates();
+      stateLoading?.classList.remove('hidden');
+
+      const isOTS = (participant.notes || '').includes('OTS') || 
+                    (participant.payment_method || '').includes('Meja') || 
+                    (participant.payment_method || '').includes('Tunai');
+      
+      const isPaid = (participant.payment_status || '').toUpperCase() === 'LUNAS' || isOTS;
+
+      // Small delay for natural feel
+      setTimeout(async () => {
+        hideAllStates();
+
+        if (isPaid) {
+          // 1. Success Lunas Case
+          playSound('success');
+
+          // Check-in participant in database
+          try {
+            await checkinSpeelwijkParticipant(participant.id, { markPaid: false });
+            participant.checkin_status = 'CHECKED_IN';
+            participant.checkin_at = new Date().toISOString();
+          } catch (err) {
+            console.warn('Auto check-in sync notice:', err);
+          }
+
+          document.getElementById('res-reg-code').textContent = participant.reg_code || `SPW-2026-${participant.id}`;
+          document.getElementById('res-pilot-name').textContent = participant.name || '-';
+          document.getElementById('res-callsign').textContent = participant.callsign || '-';
+          document.getElementById('res-community').textContent = participant.community || participant.origin || 'Independen';
+          document.getElementById('res-phone').textContent = participant.phone || '-';
+          document.getElementById('res-category').textContent = participant.category || '5 Inch Open Pro';
+          document.getElementById('res-vtx').textContent = `${participant.vtx_system || 'Analog'} (${participant.vtx_channel || 'R1'})`;
+          
+          const nowStr = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+          document.getElementById('res-checkin-time').textContent = `${nowStr} WIB`;
+
+          const otsBadge = document.getElementById('badge-ots-verified');
+          if (otsBadge) {
+            otsBadge.classList.toggle('hidden', !isOTS);
+          }
+
+          stateSuccess?.classList.remove('hidden');
+        } else {
+          // 2. Unpaid Warning Case
+          playSound('warning');
+
+          document.getElementById('unpaid-reg-code').textContent = participant.reg_code || `SPW-2026-${participant.id}`;
+          document.getElementById('unpaid-pilot-name').textContent = `${participant.name} (${participant.callsign || '-'})`;
+          document.getElementById('unpaid-fee').textContent = participant.fee || 'Rp 150.000';
+          document.getElementById('unpaid-method').textContent = participant.payment_method || 'Transfer Bank / Loket';
+
+          stateWarning?.classList.remove('hidden');
+        }
+      }, 350);
+    }
+
+    // Panitia Action: Settle & Check-In
+    document.getElementById('btn-settle-checkin')?.addEventListener('click', async () => {
+      if (!currentParticipant) return;
+      const btn = document.getElementById('btn-settle-checkin');
+      const origText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<span class="material-symbols-outlined text-sm animate-spin">progress_activity</span> Memproses verifikasi kasir...`;
+
+      try {
+        await checkinSpeelwijkParticipant(currentParticipant.id, { markPaid: true });
+        currentParticipant.payment_status = 'LUNAS';
+        currentParticipant.checkin_status = 'CHECKED_IN';
+        currentParticipant.checkin_at = new Date().toISOString();
+
+        validateParticipant(currentParticipant);
+      } catch (err) {
+        alert(`Gagal memverifikasi: ${err.message}`);
+        btn.disabled = false;
+        btn.innerHTML = origText;
+      }
+    });
+
+    // Share WA Success
+    document.getElementById('btn-share-wa')?.addEventListener('click', () => {
+      if (!currentParticipant) return;
+      const p = currentParticipant;
+      const targetWa = (cachedSettings?.wa_number || '6281234567890').replace(/[^0-9]/g, '');
+      const msg = encodeURIComponent(
+        `Halo Panitia Meja Registrasi SMS Benteng Speelwijk 2026,\n\nSaya telah melakukan *CHECK-IN RESMI* di lokasi:\n\n` +
+        `*No. Registrasi:* ${p.reg_code}\n` +
+        `*Nama Pilot:* ${p.name}\n` +
+        `*Callsign:* ${p.callsign}\n` +
+        `*Status:* LUNAS & TERVERIFIKASI\n` +
+        `*Kategori:* ${p.category}\n` +
+        `*VTX:* ${p.vtx_system} (${p.vtx_channel})\n\n` +
+        `Saya siap untuk pengambilan Official Jersey & Pit Access Pass. Terima kasih!`
+      );
+      window.open(`https://wa.me/${targetWa}?text=${msg}`, '_blank');
+    });
+
+    // Unpaid WA
+    document.getElementById('btn-unpaid-wa')?.addEventListener('click', () => {
+      if (!currentParticipant) return;
+      const p = currentParticipant;
+      const targetWa = (cachedSettings?.wa_number || '6281234567890').replace(/[^0-9]/g, '');
+      const msg = encodeURIComponent(
+        `Halo Panitia Kasir Meja Registrasi Benteng Speelwijk 2026,\n\nSaya ingin konfirmasi pelunasan tiket di lokasi:\n\n` +
+        `*No. Registrasi:* ${p.reg_code}\n` +
+        `*Nama Pilot:* ${p.name}\n` +
+        `*Callsign:* ${p.callsign}\n` +
+        `*Total Biaya:* ${p.fee || 'Rp 150.000'}\n\n` +
+        `Mohon dibantu verifikasi lunas di meja kasir. Terima kasih!`
+      );
+      window.open(`https://wa.me/${targetWa}?text=${msg}`, '_blank');
+    });
+
+    // Initial load
+    loadData();
+  </script>
+
+</body>
+</html>

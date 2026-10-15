@@ -1118,8 +1118,8 @@
       document.getElementById('ticket-pilot-vtx').textContent = `${data.vtxSystem} (${data.vtxChannel})`;
       document.getElementById('ticket-pilot-payment').textContent = data.paymentMethod;
 
-      // Render Dynamic QR Code for Instant Check-In Scanner
-      const qrTarget = `https://www.skymultirotor.web.id/benteng-speelwijk-checkin?id=${encodeURIComponent(data.id || data.regCode)}&code=${encodeURIComponent(data.regCode)}&phone=${encodeURIComponent(data.phone)}`;
+      // Render Dynamic QR Code for Instant Check-In & Validation
+      const qrTarget = `https://www.skymultirotor.web.id/benteng-speelwijk-validasi?id=${encodeURIComponent(data.id || data.regCode)}&code=${encodeURIComponent(data.regCode)}&phone=${encodeURIComponent(data.phone)}`;
       const qrImg = document.getElementById('ticket-qr-code');
       if (qrImg) {
         qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&format=svg&data=${encodeURIComponent(qrTarget)}`;

@@ -268,7 +268,7 @@
           <div class="relative flex items-center justify-center">
             <img 
               id="poster-qr-image"
-              src="https://api.qrserver.com/v1/create-qr-code/?size=800x800&format=svg&data=https%3A%2F%2Fwww.skymultirotor.web.id%2Fbenteng-speelwijk-checkin" 
+              src="https://api.qrserver.com/v1/create-qr-code/?size=800x800&format=svg&data=https%3A%2F%2Fwww.skymultirotor.web.id%2Fbenteng-speelwijk-validasi" 
               alt="QR Code Check-In Speelwijk 2026" 
               class="w-64 h-64 sm:w-72 sm:h-72 object-contain mx-auto block"
             />
@@ -284,7 +284,7 @@
           <div class="mt-3 pt-2 border-t-2 border-dashed border-gray-300">
             <span class="text-[10px] font-mono-data text-gray-500 uppercase block tracking-wider">Atau kunjungi langsung via browser:</span>
             <span class="text-xs font-mono-data font-bold text-black tracking-wide select-all bg-gray-100 px-2 py-0.5 rounded border border-gray-300 inline-block mt-0.5">
-              skymultirotor.web.id/benteng-speelwijk-checkin
+              skymultirotor.web.id/benteng-speelwijk-validasi
             </span>
           </div>
         </div>
@@ -406,7 +406,7 @@
           <!-- Big QR Code -->
           <div class="p-2 border-2 border-black rounded-xl bg-white text-center shadow-md shrink-0">
             <img 
-              src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&format=svg&data=https%3A%2F%2Fwww.skymultirotor.web.id%2Fbenteng-speelwijk-checkin" 
+              src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&format=svg&data=https%3A%2F%2Fwww.skymultirotor.web.id%2Fbenteng-speelwijk-validasi" 
               alt="QR Code Check-In" 
               class="w-40 h-40 object-contain mx-auto"
             />
@@ -425,7 +425,7 @@
               <li>Tunjukkan layar ke Panitia di meja</li>
             </ol>
             <div class="text-[9px] font-mono-data text-gray-600 bg-gray-100 p-1.5 rounded border border-gray-300">
-              URL: skymultirotor.web.id/benteng-speelwijk-checkin
+              URL: skymultirotor.web.id/benteng-speelwijk-validasi
             </div>
           </div>
         </div>
@@ -459,7 +459,7 @@
           <!-- Big QR Code -->
           <div class="p-2 border-2 border-black rounded-xl bg-white text-center shadow-md shrink-0">
             <img 
-              src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&format=svg&data=https%3A%2F%2Fwww.skymultirotor.web.id%2Fbenteng-speelwijk-checkin" 
+              src="https://api.qrserver.com/v1/create-qr-code/?size=600x600&format=svg&data=https%3A%2F%2Fwww.skymultirotor.web.id%2Fbenteng-speelwijk-validasi" 
               alt="QR Code Check-In" 
               class="w-40 h-40 object-contain mx-auto"
             />
@@ -524,7 +524,7 @@
     // Download SVG QR Code
     document.getElementById('btn-download-svg')?.addEventListener('click', async () => {
       try {
-        const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=1200x1200&format=svg&data=https%3A%2F%2Fwww.skymultirotor.web.id%2Fbenteng-speelwijk-checkin";
+        const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=1200x1200&format=svg&data=https%3A%2F%2Fwww.skymultirotor.web.id%2Fbenteng-speelwijk-validasi";
         const res = await fetch(qrUrl);
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
@@ -536,7 +536,7 @@
         a.remove();
         URL.revokeObjectURL(url);
       } catch (err) {
-        window.open("https://api.qrserver.com/v1/create-qr-code/?size=1200x1200&format=svg&data=https%3A%2F%2Fwww.skymultirotor.web.id%2Fbenteng-speelwijk-checkin", "_blank");
+        window.open("https://api.qrserver.com/v1/create-qr-code/?size=1200x1200&format=svg&data=https%3A%2F%2Fwww.skymultirotor.web.id%2Fbenteng-speelwijk-validasi", "_blank");
       }
     });
   </script>
