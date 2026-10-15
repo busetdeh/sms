@@ -216,9 +216,9 @@
           </div>
 
           <div class="bg-surface border border-outline-variant p-4 rounded-lg md:col-span-2 flex flex-col justify-between">
-            <span class="text-[10px] font-label-caps text-tertiary-fixed uppercase tracking-wider font-bold">Fasilitas Slot OTS Termasuk:</span>
+            <span class="text-[10px] font-label-caps text-tertiary-fixed uppercase tracking-wider font-bold">Fasilitas Slot Termasuk:</span>
             <p id="ots-display-benefits" class="text-xs text-on-surface leading-relaxed mt-1">
-              Official Jersey Event, Pit Access &amp; Slot Frekuensi, Tenda Camping Ground, Konsumsi &amp; Minum 2 Hari, Medali/Sertifikat.
+              Termasuk Pit Access &amp; ID Card, Frekuensi Slot, Penginapan/Tenda Camping, dan Konsumsi makan siang 2 Hari
             </p>
           </div>
         </div>
@@ -854,15 +854,17 @@
             const feeEls = [document.getElementById('ots-display-fee'), document.getElementById('ots-qris-fee')];
             feeEls.forEach(el => { if (el) el.textContent = cachedSettings.fee; });
           }
-          if (cachedSettings.benefits) {
+          const benefitsText = cachedSettings.registrationBenefits || cachedSettings.benefits;
+          if (benefitsText) {
             const benEl = document.getElementById('ots-display-benefits');
-            if (benEl) benEl.textContent = cachedSettings.benefits;
+            if (benEl) benEl.textContent = benefitsText;
           }
-          if (cachedSettings.qrisImg) {
+          const qrisUrl = cachedSettings.qrisImageUrl || cachedSettings.qrisImg;
+          if (qrisUrl) {
             const imgWrap = document.getElementById('ots-qris-img-wrap');
             const imgEl = document.getElementById('ots-qris-img');
             if (imgWrap && imgEl) {
-              imgEl.src = cachedSettings.qrisImg;
+              imgEl.src = qrisUrl;
               imgWrap.classList.remove('hidden');
             }
           }
@@ -878,13 +880,14 @@
             const el = document.getElementById('ots-bank-name');
             if (el) el.textContent = cachedSettings.bankName;
           }
-          if (cachedSettings.bankNumber) {
+          const bankAcc = cachedSettings.bankAccount || cachedSettings.bankNumber;
+          if (bankAcc) {
             const el = document.getElementById('ots-bank-number');
-            if (el) el.textContent = cachedSettings.bankNumber;
+            if (el) el.textContent = bankAcc;
           }
           if (cachedSettings.bankHolder) {
             const el = document.getElementById('ots-bank-holder');
-            if (el) el.textContent = cachedSettings.bankHolder;
+            if (el) el.textContent = `A/N ${cachedSettings.bankHolder.toUpperCase()}`;
           }
         }
       } catch (err) {
