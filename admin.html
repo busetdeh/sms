@@ -1428,10 +1428,16 @@
         </div>
 
         <div class="pt-3 flex flex-wrap justify-between items-center gap-2 border-t border-surface-variant">
-          <a id="btn-speelwijk-reg-wa-notify" href="#" target="_blank" class="hidden bg-green-600 hover:bg-green-500 text-white font-bold px-3 py-2 rounded text-[11px] font-label-caps flex items-center gap-1">
-            <span class="material-symbols-outlined text-sm">chat</span>
-            <span>KIRIM NOTIFIKASI WA</span>
-          </a>
+          <div class="flex flex-wrap items-center gap-2">
+            <a id="btn-speelwijk-reg-wa-notify" href="#" target="_blank" class="hidden bg-green-600 hover:bg-green-500 text-white font-bold px-3 py-2 rounded text-[11px] font-label-caps flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">chat</span>
+              <span>KIRIM NOTIFIKASI WA</span>
+            </a>
+            <button type="button" id="btn-speelwijk-reg-email-approve" class="hidden bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-2 rounded text-[11px] font-label-caps flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">mark_email_read</span>
+              <span>KIRIM EMAIL TIKET RESMI</span>
+            </button>
+          </div>
           <div class="flex gap-2 ml-auto">
             <button type="button" onclick="document.getElementById('admin-speelwijk-reg-modal').classList.remove('active')" class="px-4 py-2 rounded text-on-surface-variant hover:bg-surface-container-high">Batal</button>
             <button type="submit" class="bg-primary-container text-black font-bold px-6 py-2 rounded slant-btn hover:bg-yellow-400">SIMPAN PENDAFTAR</button>

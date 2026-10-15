@@ -743,6 +743,23 @@
         currentParticipant.paymentStatus = 'LUNAS';
         currentParticipant.checkin_status = 'CHECKED_IN';
         showValidState(currentParticipant);
+
+        // Kirim email e-ticket resmi jika ada email
+        if (currentParticipant.email && currentParticipant.email.includes('@')) {
+          fetch('/api/send-approval-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: currentParticipant.name,
+              callsign: currentParticipant.callsign,
+              community: currentParticipant.community || currentParticipant.origin,
+              phone: currentParticipant.phone,
+              email: currentParticipant.email,
+              category: currentParticipant.category,
+              regCode: currentParticipant.reg_code || currentParticipant.regCode || `REG-SPW-2026-${currentParticipant.id}`
+            })
+          }).catch(e => console.warn('Approval email trigger error:', e));
+        }
       } catch (err) {
         alert(`Gagal memverifikasi: ${err.message}`);
         btn.disabled = false;

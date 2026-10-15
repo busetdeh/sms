@@ -694,6 +694,53 @@ async function loadSpeelwijkData() {
   await loadSpeelwijkReporting();
 }
 
+async function sendSpeelwijkApprovalEmail(reg, buttonElement = null) {
+  let origHtml = '';
+  if (buttonElement) {
+    origHtml = buttonElement.innerHTML;
+    buttonElement.disabled = true;
+    buttonElement.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">progress_activity</span>';
+  }
+
+  try {
+    const regCode = reg.reg_code || reg.regCode || `REG-SPW-2026-${(reg.id || '').substring(0, 6).toUpperCase()}`;
+    const payload = {
+      name: reg.name,
+      callsign: reg.callsign,
+      community: reg.community || reg.callsign || 'Independen',
+      phone: reg.phone,
+      email: reg.email,
+      category: reg.category || 'Cinematic FPV',
+      regCode: regCode,
+      eventTitle: cachedSpeelwijkSettings?.title || 'Fly Through History – Benteng Speelwijk Drone Fest 2026',
+      eventDate: cachedSpeelwijkSettings?.date || 'Sabtu – Minggu, 17 – 18 Oktober 2026',
+      eventLocation: cachedSpeelwijkSettings?.location || 'Situs Cagar Budaya Benteng Speelwijk, Kampung Pamarican, Kasemen, Banten Lama, Kota Serang'
+    };
+
+    const res = await fetch('/api/send-approval-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast(`Email tiket resmi berhasil dikirim ke ${reg.email}!`, 'success');
+      return true;
+    } else {
+      showToast(`Gagal kirim email: ${data.error || 'Terjadi kesalahan'}`, 'error');
+      return false;
+    }
+  } catch (err) {
+    showToast(`Error kirim email: ${err.message}`, 'error');
+    return false;
+  } finally {
+    if (buttonElement) {
+      buttonElement.disabled = false;
+      buttonElement.innerHTML = origHtml;
+    }
+  }
+}
+
 async function loadSpeelwijkRegistrations() {
   const tbody = document.getElementById('admin-speelwijk-regs-tbody');
   const countBadge = document.getElementById('speelwijk-regs-count-badge');
@@ -795,11 +842,27 @@ function renderSpeelwijkRegistrations() {
       </td>
       <td class="p-3.5 text-right whitespace-nowrap">
         <a href="${waUrl}" target="_blank" class="inline-flex p-1.5 text-green-400 hover:bg-green-950/40 rounded mr-1" title="Kirim Pesan WhatsApp"><span class="material-symbols-outlined text-base">chat</span></a>
+        <button data-id="${reg.id}" class="btn-email-speelwijk-reg inline-flex p-1.5 text-blue-400 hover:bg-blue-950/40 rounded mr-1" title="Kirim Email Tiket Resmi (Approval)"><span class="material-symbols-outlined text-base">mark_email_read</span></button>
         <button data-id="${reg.id}" class="btn-edit-speelwijk-reg p-1.5 text-primary-container hover:bg-surface-container rounded mr-1" title="Edit Pendaftar"><span class="material-symbols-outlined text-base">edit</span></button>
         <button data-id="${reg.id}" class="btn-delete-speelwijk-reg p-1.5 text-red-400 hover:bg-red-950/40 rounded" title="Hapus"><span class="material-symbols-outlined text-base">delete</span></button>
       </td>
     `;
     tbody.appendChild(tr);
+  });
+
+  tbody.querySelectorAll('.btn-email-speelwijk-reg').forEach(b => {
+    b.addEventListener('click', async () => {
+      const id = b.getAttribute('data-id');
+      const item = cachedSpeelwijkRegs.find(r => r.id === id);
+      if (!item) return;
+      if (!item.email || !item.email.includes('@')) {
+        showToast('Alamat email pilot belum diisi atau tidak valid.', 'error');
+        return;
+      }
+      if (confirm(`Kirim Email Tiket Resmi & Approval ke ${item.email} (${item.name})?`)) {
+        await sendSpeelwijkApprovalEmail(item, b);
+      }
+    });
   });
 
   tbody.querySelectorAll('.btn-edit-speelwijk-reg, .btn-view-proof').forEach(b => {
@@ -2425,6 +2488,38 @@ async function openSpeelwijkRegModal(regData = null) {
     }
   }
 
+  // Email Ticket (Approval) Button
+  const emailApproveBtn = document.getElementById('btn-speelwijk-reg-email-approve');
+  if (emailApproveBtn) {
+    if (regData && regData.email && regData.email.includes('@')) {
+      emailApproveBtn.classList.remove('hidden');
+      emailApproveBtn.onclick = async () => {
+        const currentName = document.getElementById('speelwijk-reg-input-name').value.trim();
+        const currentEmail = document.getElementById('speelwijk-reg-input-email').value.trim();
+        const currentCallsign = document.getElementById('speelwijk-reg-input-community').value.trim();
+        const currentCategory = Array.from(document.getElementById('speelwijk-reg-input-category').selectedOptions).map(o => o.value).join(', ') || regData.category;
+        
+        if (!currentEmail || !currentEmail.includes('@')) {
+          showToast('Alamat email belum diisi atau tidak valid.', 'error');
+          return;
+        }
+
+        if (confirm(`Kirim Email Tiket Resmi & Approval ke ${currentEmail} (${currentName})?`)) {
+          const tempReg = {
+            ...regData,
+            name: currentName,
+            email: currentEmail,
+            callsign: currentCallsign,
+            category: currentCategory
+          };
+          await sendSpeelwijkApprovalEmail(tempReg, emailApproveBtn);
+        }
+      };
+    } else {
+      emailApproveBtn.classList.add('hidden');
+    }
+  }
+
   document.getElementById('speelwijk-reg-modal-heading').textContent = regData ? 'EDIT PENDAFTAR PILOT SPEELWIJK' : 'TAMBAH PENDAFTAR PILOT MANUAL';
   modal.classList.add('active');
 }
@@ -2713,6 +2808,8 @@ function initFormSubmissions() {
     const notes = document.getElementById('speelwijk-reg-input-notes').value.trim();
 
     const foundReg = cachedSpeelwijkRegs.find(r => r.id === id);
+    const prevStatus = foundReg ? foundReg.status : 'PENDING';
+    const isNowLunas = status === 'LUNAS';
     const paymentProof = foundReg ? (foundReg.paymentProof || '') : '';
 
     const payload = { id: id || undefined, name, callsign, phone, email, category, paymentMethod, status, notes, paymentProof };
@@ -2722,6 +2819,15 @@ function initFormSubmissions() {
       showToast(id ? 'Data pendaftar diperbarui!' : 'Pendaftar baru berhasil ditambahkan!', 'success');
       document.getElementById('admin-speelwijk-reg-modal')?.classList.remove('active');
       loadSpeelwijkRegistrations();
+
+      // Jika baru diapprove menjadi LUNAS dan memiliki email valid, tawarkan kirim email tiket resmi
+      if (isNowLunas && prevStatus !== 'LUNAS' && email && email.includes('@')) {
+        setTimeout(async () => {
+          if (confirm(`Status peserta "${name}" telah diset LUNAS.\n\nKirimkan email tiket resmi & notifikasi approval ke ${email} sekarang?`)) {
+            await sendSpeelwijkApprovalEmail({ ...payload, id: id || res.data?.id });
+          }
+        }, 300);
+      }
     } else {
       showToast(res.error, 'error');
     }
