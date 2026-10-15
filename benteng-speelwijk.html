@@ -2199,6 +2199,17 @@
             paymentProof: paymentProof
           });
 
+          try {
+            localStorage.setItem('speelwijk_registered_pilot', JSON.stringify({
+              name,
+              callsign: community,
+              phone: whatsapp,
+              email,
+              category,
+              regCode: registrationResult?.reg_code || ''
+            }));
+          } catch (e) {}
+
           // Trigger automated confirmation email via Hostinger SMTP
           if (email && email.includes('@')) {
             fetch('/api/send-registration-email', {

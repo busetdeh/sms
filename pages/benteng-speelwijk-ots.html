@@ -1088,6 +1088,16 @@
           }
 
           showToast('Pendaftaran OTS berhasil tercatat! Menampilkan tiket registrasi...', 'success');
+          try {
+            localStorage.setItem('speelwijk_registered_pilot', JSON.stringify({
+              name: latestRegistrationData.name,
+              callsign: latestRegistrationData.callsign,
+              phone: latestRegistrationData.phone,
+              category: latestRegistrationData.category,
+              regCode: latestRegistrationData.regCode,
+              isOts: true
+            }));
+          } catch (e) {}
           openSuccessModal(latestRegistrationData);
 
           // Reset Form
