@@ -450,17 +450,37 @@
       stateNotFound?.classList.add('hidden');
     }
 
+    // Helper function to check if participant has paid
+    function isParticipantPaid(p) {
+      if (!p) return false;
+      const rawStatus = String(p.status || p.payment_status || p.paymentStatus || '').toUpperCase();
+      const notes = String(p.notes || '').toUpperCase();
+      const payMethod = String(p.paymentMethod || p.payment_method || '').toUpperCase();
+
+      const isOTS = Boolean(p.isOts) || 
+                    notes.includes('OTS') || 
+                    payMethod.includes('MEJA') || 
+                    payMethod.includes('TUNAI');
+
+      return isOTS || 
+             rawStatus.includes('LUNAS') || 
+             rawStatus.includes('VERIF') || 
+             rawStatus.includes('CONFIRM') || 
+             rawStatus.includes('SECURED');
+    }
+
     // Main Validation Handler
     async function showValidState(p) {
       currentParticipant = p;
       hideAllViews();
       searchBoxCard?.classList.add('hidden');
 
-      const isOTS = (p.notes || '').includes('OTS') || 
-                    (p.payment_method || '').includes('Meja') || 
-                    (p.payment_method || '').includes('Tunai');
+      const isOTS = Boolean(p.isOts) || 
+                    (p.notes || '').toUpperCase().includes('OTS') || 
+                    (p.paymentMethod || p.payment_method || '').toUpperCase().includes('MEJA') || 
+                    (p.paymentMethod || p.payment_method || '').toUpperCase().includes('TUNAI');
 
-      const isPaid = (p.payment_status || '').toUpperCase() === 'LUNAS' || isOTS;
+      const isPaid = isParticipantPaid(p);
 
       // 1. Output the exact greeting requested: "Selamat Datang, [NAMA PILOT]!"
       const pilotNameEl = document.getElementById('pilot-name-display');
@@ -668,15 +688,20 @@
       }).slice(0, 5);
 
       if (matches.length > 0) {
-        searchSuggestions.innerHTML = matches.map(m => `
-          <div class="p-3 hover:bg-surface-container-high cursor-pointer flex items-center justify-between" data-id="${m.id}">
+        searchSuggestions.innerHTML = matches.map(m => {
+          const isPaid = isParticipantPaid(m);
+          const badgeClass = isPaid ? 'bg-green-500/20 text-green-300 border-green-500/40' : 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40';
+          const badgeText = isPaid ? 'LUNAS' : 'PENDING';
+          return `
+          <div class="p-3 hover:bg-surface-container-high cursor-pointer flex items-center justify-between transition-colors" data-id="${m.id}">
             <div>
               <strong class="text-white block">${m.name} <span class="text-primary-fixed-dim">(${m.callsign || '-'})</span></strong>
               <span class="text-[10px] text-on-surface-variant">${m.reg_code || ''} • ${m.category || ''}</span>
             </div>
-            <span class="text-xs text-primary-container font-bold">&rarr;</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${badgeClass}">${badgeText}</span>
           </div>
-        `).join('');
+        `;
+        }).join('');
 
         searchSuggestions.classList.remove('hidden');
 
@@ -713,7 +738,9 @@
 
       try {
         await checkinSpeelwijkParticipant(currentParticipant.id, { markPaid: true });
+        currentParticipant.status = 'LUNAS';
         currentParticipant.payment_status = 'LUNAS';
+        currentParticipant.paymentStatus = 'LUNAS';
         currentParticipant.checkin_status = 'CHECKED_IN';
         showValidState(currentParticipant);
       } catch (err) {

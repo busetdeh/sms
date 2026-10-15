@@ -509,6 +509,12 @@ export async function getSpeelwijkRegistrations() {
         try { details = JSON.parse(c.message); } catch (e) { details = { raw: c.message }; }
         const isOts = (details.notes || '').includes('OTS') || (details.paymentMethod || '').includes('Meja') || (details.paymentMethod || '').includes('Tunai');
         const defaultCheckin = isOts ? 'CHECKED_IN' : 'NOT_CHECKED_IN';
+        const rawStatus = details.status || details.payment_status || details.paymentStatus || (isOts ? 'LUNAS' : 'PENDING');
+        const regCode = details.regCode || details.reg_code || `REG-SPW-2026-${c.id.substring(0, 6).toUpperCase()}`;
+        const vtxSys = details.vtxSystem || details.vtx_system || 'Analog';
+        const vtxCh = details.vtxChannel || details.vtx_channel || 'R1 (5658MHz)';
+        const payMethod = details.paymentMethod || details.payment_method || 'QRIS';
+
         return {
           id: c.id,
           name: c.name || details.name || 'Pilot Speelwijk',
@@ -516,8 +522,17 @@ export async function getSpeelwijkRegistrations() {
           phone: c.phone_wa || details.phone || '-',
           email: c.email || details.email || '-',
           category: details.category || 'Cinematic FPV',
-          paymentMethod: details.paymentMethod || 'QRIS',
-          status: details.status || (isOts ? 'LUNAS' : 'PENDING'),
+          paymentMethod: payMethod,
+          payment_method: payMethod,
+          status: rawStatus,
+          payment_status: rawStatus,
+          paymentStatus: rawStatus,
+          regCode: regCode,
+          reg_code: regCode,
+          vtxSystem: vtxSys,
+          vtx_system: vtxSys,
+          vtxChannel: vtxCh,
+          vtx_channel: vtxCh,
           notes: details.notes || '',
           paymentProof: details.paymentProof || '',
           checkinStatus: details.checkinStatus || defaultCheckin,
