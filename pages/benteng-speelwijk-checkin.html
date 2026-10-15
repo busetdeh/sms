@@ -382,24 +382,24 @@
 
         <!-- Footer Sponsor Row -->
         <div class="border-t border-surface-variant pt-4 mt-2">
-          <div class="flex items-center justify-between text-[10px] font-mono-data text-on-surface-variant uppercase mb-2 font-bold">
+          <div class="flex items-center justify-between text-[10px] font-mono-data text-on-surface-variant uppercase mb-2.5 font-bold">
             <span>OFFICIAL MAIN SPONSORS</span>
             <span>ORGANIZED BY SKY MULTIROTOR SQUAD (SMS)</span>
           </div>
 
-          <div class="grid grid-cols-4 gap-2 text-center">
-            <div class="py-1.5 px-2 rounded bg-surface border border-surface-variant text-[10px] font-mono-data font-bold text-white">
-              DISPARPORA BANTEN
-            </div>
-            <div class="py-1.5 px-2 rounded bg-surface border border-surface-variant text-[10px] font-mono-data font-bold text-white">
-              POKDARWIS SPEELWIJK
-            </div>
-            <div class="py-1.5 px-2 rounded bg-surface border border-surface-variant text-[10px] font-mono-data font-bold text-white">
-              THROTTLE WARRIORS
-            </div>
-            <div class="py-1.5 px-2 rounded bg-surface border border-surface-variant text-[10px] font-mono-data font-bold text-white">
-              BPK WILAYAH VIII BANTEN
-            </div>
+          <div id="checkin-sponsors-container" class="grid grid-cols-4 gap-2.5 sm:gap-3 text-center">
+            <a href="https://www.instagram.com/disparporakotaserang" target="_blank" rel="noopener noreferrer" class="h-16 sm:h-20 py-1.5 px-2 rounded-xl bg-surface-container-high/70 border border-surface-variant hover:border-primary-container transition-all flex items-center justify-center p-2 group shadow-sm">
+              <img src="/sponsors/disparpora.jpg" alt="DISPARPORA" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform" />
+            </a>
+            <a href="https://www.instagram.com/fkpokdarwis_kotaserang" target="_blank" rel="noopener noreferrer" class="h-16 sm:h-20 py-1.5 px-2 rounded-xl bg-surface-container-high/70 border border-surface-variant hover:border-primary-container transition-all flex items-center justify-center p-2 group shadow-sm">
+              <img src="/sponsors/pokdarwis.jpg" alt="POKDARWIS" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform" />
+            </a>
+            <a href="https://www.instagram.com/throttle_warriors" target="_blank" rel="noopener noreferrer" class="h-16 sm:h-20 py-1.5 px-2 rounded-xl bg-surface-container-high/70 border border-surface-variant hover:border-primary-container transition-all flex items-center justify-center p-2 group shadow-sm">
+              <img src="/sponsors/throttle-warriors.png" alt="THROTTLE WARRIORS" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform" />
+            </a>
+            <a href="https://www.instagram.com/bpkebudayaanbanten" target="_blank" rel="noopener noreferrer" class="h-16 sm:h-20 py-1.5 px-2 rounded-xl bg-surface-container-high/70 border border-surface-variant hover:border-primary-container transition-all flex items-center justify-center p-2 group shadow-sm">
+              <img src="/sponsors/bpk-banten.jpg" alt="BALAI PELESTARIAN KEBUDAYAAN BANTEN" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform" />
+            </a>
           </div>
         </div>
 
@@ -428,7 +428,36 @@
       <span>© 2026 Sky Multirotor Squad (SMS). Hak Cipta Dilindungi.</span>
       <span>Venue: Benteng Speelwijk, Banten Lama</span>
     </div>
-  </footer>
+  <!-- Dynamic Partner Sync Script -->
+  <script type="module">
+    import { getSpeelwijkPartners } from '/src/js/supabase.js';
 
+    async function syncSponsors() {
+      try {
+        const partners = await getSpeelwijkPartners();
+        if (partners && partners.length > 0) {
+          const sponsors = partners.filter(p => p.type === 'sponsor');
+          const container = document.getElementById('checkin-sponsors-container');
+          if (container && sponsors.length > 0) {
+            container.innerHTML = sponsors.map(p => {
+              const linkUrl = /^https?:\/\//i.test(String(p.link_url || '')) ? String(p.link_url).trim() : '';
+              const linkAttrs = linkUrl ? `href="${linkUrl}" target="_blank" rel="noopener noreferrer" aria-label="Buka ${p.name}"` : '';
+              const cardTag = linkUrl ? 'a' : 'div';
+              const logoSrc = p.logo_url || `/sponsors/${p.id}.jpg`;
+              return `
+                <${cardTag} ${linkAttrs} class="h-16 sm:h-20 py-1.5 px-2 rounded-xl bg-surface-container-high/70 border border-surface-variant hover:border-primary-container transition-all flex items-center justify-center p-2 group shadow-sm ${linkUrl ? 'cursor-pointer' : ''}">
+                  <img src="${logoSrc}" alt="${p.name}" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+                  <span class="text-[10px] font-mono-data font-bold text-white hidden">${p.name}</span>
+                </${cardTag}>
+              `;
+            }).join('');
+          }
+        }
+      } catch (err) {
+        console.warn('Sync sponsors notice:', err);
+      }
+    }
+    syncSponsors();
+  </script>
 </body>
 </html>
