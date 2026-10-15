@@ -507,6 +507,8 @@ export async function getSpeelwijkRegistrations() {
       return contactData.map(c => {
         let details = {};
         try { details = JSON.parse(c.message); } catch (e) { details = { raw: c.message }; }
+        const isOts = (details.notes || '').includes('OTS') || (details.paymentMethod || '').includes('Meja') || (details.paymentMethod || '').includes('Tunai');
+        const defaultCheckin = isOts ? 'CHECKED_IN' : 'NOT_CHECKED_IN';
         return {
           id: c.id,
           name: c.name || details.name || 'Pilot Speelwijk',
@@ -515,9 +517,12 @@ export async function getSpeelwijkRegistrations() {
           email: c.email || details.email || '-',
           category: details.category || 'Cinematic FPV',
           paymentMethod: details.paymentMethod || 'QRIS',
-          status: details.status || 'PENDING',
+          status: details.status || (isOts ? 'LUNAS' : 'PENDING'),
           notes: details.notes || '',
           paymentProof: details.paymentProof || '',
+          checkinStatus: details.checkinStatus || defaultCheckin,
+          checkinAt: details.checkinAt || (isOts ? c.created_at : ''),
+          isOts: isOts,
           created_at: c.created_at
         };
       });
@@ -577,6 +582,14 @@ export async function saveSpeelwijkRegistration(regData) {
   };
 
   try {
+    const isOts = Boolean(regData.isOts) || (regData.notes || '').includes('OTS') || (regData.paymentMethod || '').includes('Meja') || (regData.paymentMethod || '').includes('Tunai');
+    const checkinStatus = regData.checkinStatus || (isOts ? 'CHECKED_IN' : 'NOT_CHECKED_IN');
+    const checkinAt = regData.checkinAt || (isOts ? (regData.created_at || new Date().toISOString()) : '');
+
+    payload.checkinStatus = checkinStatus;
+    payload.checkinAt = checkinAt;
+    payload.isOts = isOts;
+
     // Save to contacts in Supabase for persistence
     const contactPayload = {
       name: regData.name,
@@ -589,7 +602,9 @@ export async function saveSpeelwijkRegistration(regData) {
         paymentMethod: regData.paymentMethod,
         status: regData.status,
         notes: regData.notes,
-        paymentProof: regData.paymentProof
+        paymentProof: regData.paymentProof,
+        checkinStatus,
+        checkinAt
       })
     };
 
@@ -648,6 +663,44 @@ export async function deleteSpeelwijkRegistration(id) {
     const filtered = current.filter(item => item.id !== id);
     localStorage.setItem('sms_speelwijk_registrations', JSON.stringify(filtered));
     return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function checkinSpeelwijkParticipant(id, { markPaid = false } = {}) {
+  try {
+    const current = await getSpeelwijkRegistrations();
+    const participant = current.find(p => p.id === id);
+    if (!participant) return { success: false, error: 'Peserta tidak ditemukan di sistem' };
+
+    const now = new Date().toISOString();
+    const updatedData = {
+      ...participant,
+      checkinStatus: 'CHECKED_IN',
+      checkinAt: participant.checkinAt || now,
+      status: markPaid ? 'LUNAS' : participant.status
+    };
+
+    return await saveSpeelwijkRegistration(updatedData);
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+}
+
+export async function cancelSpeelwijkCheckin(id) {
+  try {
+    const current = await getSpeelwijkRegistrations();
+    const participant = current.find(p => p.id === id);
+    if (!participant) return { success: false, error: 'Peserta tidak ditemukan di sistem' };
+
+    const updatedData = {
+      ...participant,
+      checkinStatus: 'NOT_CHECKED_IN',
+      checkinAt: ''
+    };
+
+    return await saveSpeelwijkRegistration(updatedData);
   } catch (err) {
     return { success: false, error: err.message };
   }

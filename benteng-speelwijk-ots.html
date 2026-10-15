@@ -174,6 +174,10 @@
           <span class="material-symbols-outlined text-sm">language</span>
           <span class="hidden sm:inline">Form</span> Online
         </a>
+        <a href="/benteng-speelwijk-checkin" class="border border-primary-container/40 hover:bg-primary-container hover:text-black text-primary-fixed-dim text-xs font-label-caps px-3 py-1.5 rounded flex items-center gap-1 transition-colors" title="Meja Check-In & Scanner QR">
+          <span class="material-symbols-outlined text-sm">qr_code_scanner</span>
+          <span class="hidden sm:inline">Meja</span> Check-In
+        </a>
         <a href="/benteng-speelwijk" class="bg-primary-container text-black font-label-caps text-xs font-bold px-3.5 py-1.5 sm:py-2 rounded slant-btn hover:bg-yellow-400 transition-all uppercase tracking-wider flex items-center gap-1 shadow-[0_0_12px_rgba(255,199,0,0.3)]">
           <span class="material-symbols-outlined text-sm">arrow_back</span>
           <span>Microsite</span>
@@ -649,6 +653,12 @@
           <span id="ticket-reg-id" class="text-2xl sm:text-3xl font-mono-data font-bold text-primary-container tracking-wider">OTS-SPW-202601</span>
         </div>
 
+        <!-- Dynamic QR Code for Check-In Scanner -->
+        <div class="flex flex-col items-center justify-center p-3 bg-white rounded-lg border border-outline-variant max-w-[150px] mx-auto text-black shadow-md">
+          <img id="ticket-qr-code" src="/logo.png" alt="QR Code Tiket" class="w-28 h-28 object-contain"/>
+          <span class="text-[9px] font-mono-data font-bold mt-1 text-black tracking-wider">SCAN CHECK-IN</span>
+        </div>
+
         <!-- Detail Data Pilot -->
         <div class="grid grid-cols-2 gap-3 text-xs font-mono-data">
           <div>
@@ -1021,7 +1031,8 @@
         const combinedNotes = `[OTS - ON THE SPOT] VTX: ${vtxSystem} (${vtxChannel}) | Radio: ${radioProtocol}${userNotes ? ` | Catatan: ${userNotes}` : ''}`;
         
         // Status: for cash OTS it is PENDING until verified by cashier, or LUNAS if cashier marks it
-        const status = paymentMethod.includes('Tunai') ? 'PENDING' : 'PENDING';
+        // OTS registrants are considered paid/cash and automatically checked in!
+        const status = 'LUNAS';
 
         submitBtn.disabled = true;
         const origBtnText = submitBtn.innerHTML;
@@ -1036,7 +1047,10 @@
           paymentMethod,
           status,
           notes: combinedNotes,
-          paymentProof: '' // Not required for in-person cash registration
+          paymentProof: '', // Not required for in-person registration
+          checkinStatus: 'CHECKED_IN',
+          checkinAt: new Date().toISOString(),
+          isOts: true
         };
 
         try {
@@ -1044,6 +1058,7 @@
           
           latestRegistrationData = {
             ...payload,
+            id: res?.data?.id || otsId,
             regCode: otsId,
             vtxSystem,
             vtxChannel,
@@ -1102,6 +1117,13 @@
       document.getElementById('ticket-pilot-category').textContent = data.category;
       document.getElementById('ticket-pilot-vtx').textContent = `${data.vtxSystem} (${data.vtxChannel})`;
       document.getElementById('ticket-pilot-payment').textContent = data.paymentMethod;
+
+      // Render Dynamic QR Code for Instant Check-In Scanner
+      const qrTarget = `https://www.skymultirotor.web.id/benteng-speelwijk-checkin?id=${encodeURIComponent(data.id || data.regCode)}&code=${encodeURIComponent(data.regCode)}&phone=${encodeURIComponent(data.phone)}`;
+      const qrImg = document.getElementById('ticket-qr-code');
+      if (qrImg) {
+        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qrTarget)}`;
+      }
 
       successModal.classList.remove('hidden');
       successModal.classList.add('flex');
