@@ -654,9 +654,9 @@
         </div>
 
         <!-- Dynamic QR Code for Check-In Scanner -->
-        <div class="flex flex-col items-center justify-center p-3 bg-white rounded-lg border border-outline-variant max-w-[150px] mx-auto text-black shadow-md">
-          <img id="ticket-qr-code" src="/logo.png" alt="QR Code Tiket" class="w-28 h-28 object-contain"/>
-          <span class="text-[9px] font-mono-data font-bold mt-1 text-black tracking-wider">SCAN CHECK-IN</span>
+        <div class="flex flex-col items-center justify-center p-3.5 bg-white rounded-xl border-2 border-black max-w-[190px] mx-auto text-black shadow-lg">
+          <img id="ticket-qr-code" src="/logo.png" alt="QR Code Tiket" class="w-36 h-36 object-contain"/>
+          <span class="text-[10px] font-mono-data font-extrabold mt-1 text-black tracking-wider uppercase">SCAN UNTUK CHECK-IN</span>
         </div>
 
         <!-- Detail Data Pilot -->
@@ -1122,7 +1122,7 @@
       const qrTarget = `https://www.skymultirotor.web.id/benteng-speelwijk-checkin?id=${encodeURIComponent(data.id || data.regCode)}&code=${encodeURIComponent(data.regCode)}&phone=${encodeURIComponent(data.phone)}`;
       const qrImg = document.getElementById('ticket-qr-code');
       if (qrImg) {
-        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qrTarget)}`;
+        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&format=svg&data=${encodeURIComponent(qrTarget)}`;
       }
 
       successModal.classList.remove('hidden');

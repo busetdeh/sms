@@ -168,6 +168,11 @@
           <span class="hidden md:inline">Audio Beep</span>
         </button>
 
+        <a href="/benteng-speelwijk-checkin-print" target="_blank" class="border border-primary-container/40 hover:bg-primary-container hover:text-black text-primary-fixed-dim font-label-caps text-xs font-bold px-3 py-1.5 rounded flex items-center gap-1.5 transition-all shadow-[0_0_10px_rgba(255,199,0,0.15)]" title="Buka Versi Cetak Poster & Standing Card QR Meja">
+          <span class="material-symbols-outlined text-sm">print</span>
+          <span class="hidden sm:inline">Cetak Poster</span> QR
+        </a>
+
         <a href="/benteng-speelwijk-ots" class="border border-tertiary-container/50 hover:bg-tertiary-container hover:text-black text-tertiary-fixed font-label-caps text-xs font-bold px-3 py-1.5 rounded flex items-center gap-1 transition-all">
           <span class="material-symbols-outlined text-sm">person_add</span>
           <span class="hidden sm:inline">Form</span> OTS
@@ -222,6 +227,30 @@
           <div class="p-3 bg-surface rounded-lg border border-cyan-500/30 bg-cyan-950/10">
             <span class="text-[10px] font-label-caps text-cyan-400 uppercase block">Peserta OTS Langsung</span>
             <span id="stat-ots-count" class="text-xl sm:text-2xl font-mono-data font-bold text-cyan-300">0</span>
+          </div>
+        </div>
+
+        <!-- Printable QR Banner Card -->
+        <div class="mt-4 p-4 bg-gradient-to-r from-primary-container/15 via-surface to-surface-container border-2 border-primary-container/40 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4 no-print shadow-lg">
+          <div class="flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-primary-container/20 border border-primary-container/50 flex items-center justify-center text-primary-container shrink-0 shadow-inner">
+              <span class="material-symbols-outlined text-2xl">qr_code_2</span>
+            </div>
+            <div>
+              <div class="text-xs sm:text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                <span>Versi Cetak (Printable) Poster QR Meja Registrasi</span>
+                <span class="px-2 py-0.5 rounded text-[9px] bg-primary-container text-black font-extrabold uppercase font-mono-data">A4 / A3 READY</span>
+              </div>
+              <p class="text-[11px] sm:text-xs text-on-surface-variant mt-0.5 max-w-2xl leading-relaxed">
+                Poster &amp; standing card dengan <strong>QR Code ukuran ekstra besar</strong> (format vector SVG tajam) agar pilot/peserta dapat melakukan scan check-in mandiri dengan cepat dari smartphone tanpa antre panjang.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 w-full sm:w-auto shrink-0">
+            <a href="/benteng-speelwijk-checkin-print" target="_blank" class="w-full sm:w-auto px-4 py-2.5 bg-primary-container hover:bg-yellow-400 text-black text-xs font-label-caps font-bold rounded-lg slant-btn transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(255,199,0,0.35)]">
+              <span class="material-symbols-outlined text-base">print</span>
+              <span>Buka Versi Cetak</span>
+            </a>
           </div>
         </div>
       </div>
