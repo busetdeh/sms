@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html class="dark scroll-smooth" lang="id">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-62QYCYTE3M"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-62QYCYTE3M');
+  </script>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Registrasi On-The-Spot (OTS) - Benteng Speelwijk Drone Fest 2026 | Sky Multirotor Squad</title>
+  <meta name="description" content="Formulir Pendaftaran On-The-Spot (OTS) khusus peserta dan pilot drone yang mendaftar langsung di venue Benteng Speelwijk, Banten Lama. Dapatkan slot terbang, verifikasi VTX, dan Race Pack di lokasi."/>
+  <meta property="og:title" content="Registrasi OTS - Benteng Speelwijk Drone Fest 2026"/>
+  <meta property="og:description" content="Pendaftaran langsung di tempat (On-The-Spot) untuk kompetisi FPV drone di Benteng Speelwijk, Banten Lama. Slot terbang, verifikasi VTX, dan jersey resmi."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:image" content="https://www.skymultirotor.web.id/logo-sms-speelwijk.png"/>
+  <link rel="icon" type="image/png" href="/logo.png"/>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-tint": "#f5bf00",
+            "tertiary-container": "#48e5cf",
+            "on-secondary-fixed": "#1c1b1b",
+            "tertiary-fixed": "#62fae3",
+            "on-error": "#690005",
+            "on-tertiary-container": "#006358",
+            "outline": "#9b9078",
+            "inverse-surface": "#e5e2e1",
+            "primary-container": "#ffc700",
+            "error-container": "#93000a",
+            "on-tertiary-fixed": "#00201c",
+            "primary": "#ffe9b9",
+            "on-error-container": "#ffdad6",
+            "on-secondary": "#313030",
+            "on-primary-fixed-variant": "#594400",
+            "primary-fixed-dim": "#f5bf00",
+            "on-secondary-fixed-variant": "#474746",
+            "surface-variant": "#353534",
+            "tertiary-fixed-dim": "#3cddc7",
+            "inverse-on-surface": "#313030",
+            "on-background": "#e5e2e1",
+            "on-tertiary-fixed-variant": "#005047",
+            "primary-fixed": "#ffdf94",
+            "on-primary-container": "#6e5400",
+            "error": "#ffb4ab",
+            "surface-container-low": "#1c1b1b",
+            "surface-dim": "#131313",
+            "inverse-primary": "#765b00",
+            "surface-container-lowest": "#0e0e0e",
+            "on-primary": "#3e2e00",
+            "tertiary": "#88ffeb",
+            "secondary-fixed": "#e5e2e1",
+            "surface-container": "#201f1f",
+            "on-primary-fixed": "#251a00",
+            "surface": "#131313",
+            "surface-bright": "#3a3939",
+            "outline-variant": "#4f4632",
+            "on-surface": "#e5e2e1",
+            "surface-container-high": "#2a2a2a",
+            "background": "#131313",
+            "secondary-fixed-dim": "#c8c6c5",
+            "on-surface-variant": "#d2c5ab",
+            "on-tertiary": "#003731",
+            "on-secondary-container": "#b7b5b4",
+            "secondary": "#c8c6c5",
+            "secondary-container": "#474746",
+            "surface-container-highest": "#353534"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          fontFamily: {
+            "headline": ["Space Grotesk", "sans-serif"],
+            "body": ["Space Grotesk", "sans-serif"],
+            "label-caps": ["Space Grotesk", "sans-serif"],
+            "mono-data": ["Space Grotesk", "sans-serif"]
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #131313;
+      color: #e5e2e1;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .hud-grid {
+      background-size: 30px 30px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 199, 0, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 199, 0, 0.04) 1px, transparent 1px);
+    }
+    .slant-btn {
+      clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #131313;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #353534;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4f4632;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #ots-print-card, #ots-print-card * {
+        visibility: visible;
+      }
+      #ots-print-card {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: white !important;
+        color: black !important;
+        border: 2px solid black !important;
+        padding: 20px !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-background text-on-background min-h-screen selection:bg-primary-container selection:text-black">
+  <!-- Top Navigation Bar -->
+  <header class="sticky top-0 z-50 bg-surface/90 backdrop-blur-md border-b border-surface-variant no-print">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <a href="/benteng-speelwijk" class="flex items-center gap-2 group" title="Kembali ke Microsite Benteng Speelwijk">
+          <img src="/logo-sms-speelwijk.png" alt="Logo Speelwijk 2026" class="h-9 sm:h-11 w-auto object-contain transition-transform group-hover:scale-105"/>
+        </a>
+        <div class="hidden sm:block border-l border-surface-variant pl-3">
+          <span class="text-[10px] font-mono-data tracking-widest text-primary-fixed-dim block uppercase font-bold">DESK REGISTRASI VENUE</span>
+          <span class="text-xs font-bold text-white tracking-wide uppercase">Benteng Speelwijk FPV 2026</span>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a href="/benteng-speelwijk#schedule" class="text-on-surface-variant hover:text-primary-fixed-dim text-xs font-label-caps px-2.5 py-1.5 rounded hidden md:flex items-center gap-1 transition-colors">
+          <span class="material-symbols-outlined text-sm">calendar_month</span> Rundown
+        </a>
+        <a href="/benteng-speelwijk#booths" class="text-on-surface-variant hover:text-primary-fixed-dim text-xs font-label-caps px-2.5 py-1.5 rounded hidden md:flex items-center gap-1 transition-colors">
+          <span class="material-symbols-outlined text-sm">map</span> Peta Venue
+        </a>
+        <a href="/benteng-speelwijk#register" class="border border-surface-variant hover:border-primary text-on-surface-variant hover:text-white text-xs font-label-caps px-3 py-1.5 rounded flex items-center gap-1 transition-colors" title="Pindah ke Formulir Pendaftaran Online">
+          <span class="material-symbols-outlined text-sm">language</span>
+          <span class="hidden sm:inline">Form</span> Online
+        </a>
+        <a href="/benteng-speelwijk" class="bg-primary-container text-black font-label-caps text-xs font-bold px-3.5 py-1.5 sm:py-2 rounded slant-btn hover:bg-yellow-400 transition-all uppercase tracking-wider flex items-center gap-1 shadow-[0_0_12px_rgba(255,199,0,0.3)]">
+          <span class="material-symbols-outlined text-sm">arrow_back</span>
+          <span>Microsite</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Hero & Registration Container -->
+  <main class="py-8 sm:py-12 px-4 sm:px-6 relative hud-grid">
+    <div class="max-w-4xl mx-auto space-y-6">
+      
+      <!-- OTS Header Card -->
+      <div class="bg-surface-container-low border border-surface-variant rounded-xl p-5 sm:p-8 shadow-2xl relative overflow-hidden">
+        <div class="absolute right-0 top-0 -mt-6 -mr-6 w-32 h-32 bg-primary/10 rounded-full blur-2xl pointer-events-none"></div>
+        
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-tertiary-container/15 border border-tertiary-container/30 text-tertiary-fixed text-[11px] font-mono-data font-bold">
+            <span class="w-2 h-2 rounded-full bg-tertiary-container animate-pulse"></span>
+            <span>ON-THE-SPOT (OTS) REGISTRATION DESK</span>
+          </div>
+          <span class="text-[11px] font-mono-data text-on-surface-variant">Venue: Benteng Speelwijk, Banten Lama</span>
+        </div>
+
+        <h1 class="text-2xl sm:text-4xl font-bold text-white uppercase tracking-tight font-headline">
+          Pendaftaran Langsung di Tempat (OTS)
+        </h1>
+        <p class="text-on-surface-variant text-xs sm:text-sm mt-2 leading-relaxed">
+          Formulir khusus bagi pilot dan peserta yang telah hadir di lokasi acara Benteng Speelwijk. Silakan isi data operator drone Anda untuk alokasi slot terbang, verifikasi channel VTX, dan pengambilan Race Pack fisik di meja panitia.
+        </p>
+
+        <!-- OTS Benefits & Fee Banner -->
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div class="bg-surface border border-outline-variant p-4 rounded-lg flex flex-col justify-between">
+            <span class="text-[10px] font-label-caps text-on-surface-variant uppercase tracking-wider">Biaya Registrasi Slot</span>
+            <div class="mt-1 flex items-baseline gap-1">
+              <span id="ots-display-fee" class="text-2xl sm:text-3xl text-primary-fixed-dim font-bold font-mono-data">Rp 200.000</span>
+              <span class="text-[10px] text-on-surface-variant font-mono-data">/ pilot</span>
+            </div>
+          </div>
+
+          <div class="bg-surface border border-outline-variant p-4 rounded-lg md:col-span-2 flex flex-col justify-between">
+            <span class="text-[10px] font-label-caps text-tertiary-fixed uppercase tracking-wider font-bold">Fasilitas Slot OTS Termasuk:</span>
+            <p id="ots-display-benefits" class="text-xs text-on-surface leading-relaxed mt-1">
+              Official Jersey Event, Pit Access &amp; Slot Frekuensi, Tenda Camping Ground, Konsumsi &amp; Minum 2 Hari, Medali/Sertifikat.
+            </p>
+          </div>
+        </div>
+
+        <!-- Walk-in Steps Bar -->
+        <div class="mt-5 pt-4 border-t border-surface-variant/70 grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] font-mono-data">
+          <div class="flex items-center gap-2 p-2 rounded bg-surface/50 border border-surface-variant/40">
+            <span class="w-5 h-5 rounded-full bg-primary-container text-black font-bold flex items-center justify-center text-[10px] shrink-0">1</span>
+            <span class="text-white">Isi Form OTS</span>
+          </div>
+          <div class="flex items-center gap-2 p-2 rounded bg-surface/50 border border-surface-variant/40">
+            <span class="w-5 h-5 rounded-full bg-primary-container text-black font-bold flex items-center justify-center text-[10px] shrink-0">2</span>
+            <span class="text-white">Bayar Kasir / QRIS</span>
+          </div>
+          <div class="flex items-center gap-2 p-2 rounded bg-surface/50 border border-surface-variant/40">
+            <span class="w-5 h-5 rounded-full bg-primary-container text-black font-bold flex items-center justify-center text-[10px] shrink-0">3</span>
+            <span class="text-white">Ambil Race Pack</span>
+          </div>
+          <div class="flex items-center gap-2 p-2 rounded bg-surface/50 border border-surface-variant/40">
+            <span class="w-5 h-5 rounded-full bg-primary-container text-black font-bold flex items-center justify-center text-[10px] shrink-0">4</span>
+            <span class="text-white">Scrutineering VTX</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="flex border-b border-surface-variant bg-surface-container-low rounded-t-lg px-2 pt-2 gap-1 overflow-x-auto no-print" role="tablist">
+        <button type="button" data-ots-tab="form" class="ots-tab-btn flex-1 min-w-[150px] px-4 py-3 text-xs font-label-caps font-bold text-primary-fixed-dim border-b-2 border-primary-container bg-surface transition-colors rounded-t flex items-center justify-center gap-1.5" role="tab" aria-selected="true">
+          <span class="material-symbols-outlined text-sm">edit_note</span>
+          <span>FORMULIR REGISTRASI OTS</span>
+        </button>
+        <button type="button" data-ots-tab="participants" class="ots-tab-btn flex-1 min-w-[150px] px-4 py-3 text-xs font-label-caps font-bold text-on-surface-variant hover:text-white border-b-2 border-transparent transition-colors rounded-t flex items-center justify-center gap-1.5" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined text-sm">group</span>
+          <span>LIST PESERTA TERDAFTAR</span>
+          <span id="ots-participants-badge" class="ml-1 px-1.5 py-0.2 rounded text-[10px] bg-primary/20 text-primary-fixed-dim">0</span>
+        </button>
+        <button type="button" data-ots-tab="guide" class="ots-tab-btn flex-1 min-w-[150px] px-4 py-3 text-xs font-label-caps font-bold text-on-surface-variant hover:text-white border-b-2 border-transparent transition-colors rounded-t flex items-center justify-center gap-1.5" role="tab" aria-selected="false">
+          <span class="material-symbols-outlined text-sm">checklist</span>
+          <span>PANDUAN SCRUTINEERING</span>
+        </button>
+      </div>
+
+      <!-- TAB 1: FORM PENDAFTARAN OTS -->
+      <div id="ots-tab-form-content" class="bg-surface-container-low border border-surface-variant rounded-b-xl p-5 sm:p-8 shadow-2xl">
+        <form id="speelwijk-ots-form" class="space-y-6 text-xs font-body">
+          
+          <!-- Section 1: Identitas Pilot -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 pb-2 border-b border-surface-variant/80">
+              <span class="material-symbols-outlined text-primary-container text-base">person</span>
+              <h2 class="font-label-caps text-xs sm:text-sm font-bold text-white uppercase tracking-wider">1. Data Operator Drone / Pilot</h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="flex flex-col gap-1">
+                <label for="ots-pilot-name" class="font-label-caps text-on-surface-variant uppercase text-[11px] font-bold">Nama Lengkap (KTP / Identitas) *</label>
+                <input id="ots-pilot-name" required type="text" class="bg-surface border border-outline-variant rounded px-3 py-2.5 text-white focus:border-primary focus:outline-none transition-colors font-mono-data text-xs" placeholder="Contoh: Muhammad Juang Pratama"/>
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <label for="ots-pilot-callsign" class="font-label-caps text-on-surface-variant uppercase text-[11px] font-bold">Callsign / Nickname FPV *</label>
+                <input id="ots-pilot-callsign" required type="text" class="bg-surface border border-outline-variant rounded px-3 py-2.5 text-white focus:border-primary focus:outline-none transition-colors font-mono-data text-xs" placeholder="Contoh: RED_FOX / SPEED_HUNTER"/>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="flex flex-col gap-1">
+                <label for="ots-pilot-community" class="font-label-caps text-on-surface-variant uppercase text-[11px]">Komunitas / Squad / Kota Asal</label>
+                <input id="ots-pilot-community" type="text" class="bg-surface border border-outline-variant rounded px-3 py-2.5 text-white focus:border-primary focus:outline-none transition-colors font-mono-data text-xs" placeholder="Contoh: SMS Banten / Independen"/>
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <label for="ots-pilot-whatsapp" class="font-label-caps text-on-surface-variant uppercase text-[11px] font-bold">Nomor WhatsApp Aktif *</label>
+                <input id="ots-pilot-whatsapp" required type="tel" class="bg-surface border border-outline-variant rounded px-3 py-2.5 text-white focus:border-primary focus:outline-none transition-colors font-mono-data text-xs" placeholder="08xxxxxxxxxx"/>
+                <span class="text-[10px] text-on-surface-variant">Untuk panggilan antrean heat &amp; marshall briefing</span>
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <label for="ots-pilot-email" class="font-label-caps text-on-surface-variant uppercase text-[11px]">Email (Opsional)</label>
+                <input id="ots-pilot-email" type="email" class="bg-surface border border-outline-variant rounded px-3 py-2.5 text-white focus:border-primary focus:outline-none transition-colors font-mono-data text-xs" placeholder="pilot@email.com"/>
+                <span class="text-[10px] text-on-surface-variant">Untuk tanda terima digital e-receipt</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Kategori Perlombaan -->
+          <div class="space-y-3 pt-2">
+            <div class="flex items-center justify-between pb-2 border-b border-surface-variant/80">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary-container text-base">military_tech</span>
+                <h2 class="font-label-caps text-xs sm:text-sm font-bold text-white uppercase tracking-wider">2. Kategori yang Diikuti *</h2>
+              </div>
+              <span class="text-[10px] text-primary-fixed-dim font-mono-data">(Centang minimal 1)</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5" id="ots-category-group">
+              <label class="flex items-start gap-2.5 p-3 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface has-[:checked]:border-primary-container has-[:checked]:bg-primary/10">
+                <input class="text-primary-container rounded focus:ring-0 bg-background border-outline-variant w-4 h-4 mt-0.5" name="ots_category" type="checkbox" value="Race Whoop Pro" checked/>
+                <div>
+                  <span class="font-mono-data text-white text-xs font-bold block">Race Whoop 2-2.5” max 4s Pro</span>
+                  <span class="text-[10px] text-on-surface-variant block mt-0.5">Klasemen pro MultiGP gate system</span>
+                </div>
+              </label>
+
+              <label class="flex items-start gap-2.5 p-3 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface has-[:checked]:border-primary-container has-[:checked]:bg-primary/10">
+                <input class="text-primary-container rounded focus:ring-0 bg-background border-outline-variant w-4 h-4 mt-0.5" name="ots_category" type="checkbox" value="Race Whoop Beginner"/>
+                <div>
+                  <span class="font-mono-data text-white text-xs font-bold block">Race Whoop 2-2.5” max 4s Beginner</span>
+                  <span class="text-[10px] text-on-surface-variant block mt-0.5">Kategori pemula &amp; hobi</span>
+                </div>
+              </label>
+
+              <label class="flex items-start gap-2.5 p-3 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface has-[:checked]:border-primary-container has-[:checked]:bg-primary/10">
+                <input class="text-primary-container rounded focus:ring-0 bg-background border-outline-variant w-4 h-4 mt-0.5" name="ots_category" type="checkbox" value="Freestyle Pro"/>
+                <div>
+                  <span class="font-mono-data text-white text-xs font-bold block">Freestyle max 5” max 6s Pro</span>
+                  <span class="text-[10px] text-on-surface-variant block mt-0.5">Manuver teknis di zona cagar budaya</span>
+                </div>
+              </label>
+
+              <label class="flex items-start gap-2.5 p-3 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface has-[:checked]:border-primary-container has-[:checked]:bg-primary/10">
+                <input class="text-primary-container rounded focus:ring-0 bg-background border-outline-variant w-4 h-4 mt-0.5" name="ots_category" type="checkbox" value="Freestyle Beginner"/>
+                <div>
+                  <span class="font-mono-data text-white text-xs font-bold block">Freestyle max 5” max 6s Beginner</span>
+                  <span class="text-[10px] text-on-surface-variant block mt-0.5">Kategori freestyle kelas beginner</span>
+                </div>
+              </label>
+
+              <label class="flex items-start gap-2.5 p-3 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface has-[:checked]:border-primary-container has-[:checked]:bg-primary/10 sm:col-span-2 lg:col-span-1">
+                <input class="text-primary-container rounded focus:ring-0 bg-background border-outline-variant w-4 h-4 mt-0.5" name="ots_category" type="checkbox" value="Cinematic FPV"/>
+                <div>
+                  <span class="font-mono-data text-white text-xs font-bold block">Cinematic FPV</span>
+                  <span class="text-[10px] text-on-surface-variant block mt-0.5">Karya sinematik udara Benteng Speelwijk</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Section 3: Data Teknis Drone & VTX (Krusial untuk OTS di Lokasi) -->
+          <div class="space-y-4 pt-2">
+            <div class="flex items-center gap-2 pb-2 border-b border-surface-variant/80">
+              <span class="material-symbols-outlined text-primary-container text-base">sensors</span>
+              <h2 class="font-label-caps text-xs sm:text-sm font-bold text-white uppercase tracking-wider">3. Spesifikasi Video Transmitter (VTX) &amp; Radio</h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="flex flex-col gap-1">
+                <label for="ots-vtx-system" class="font-label-caps text-on-surface-variant uppercase text-[11px] font-bold">Sistem Video VTX *</label>
+                <select id="ots-vtx-system" required class="bg-surface border border-outline-variant rounded px-3 py-2.5 text-white focus:border-primary focus:outline-none transition-colors font-mono-data text-xs">
+                  <option value="Analog 5.8GHz">Analog 5.8GHz</option>
+                  <option value="DJI Digital O3 / O4 / Vista" selected>DJI Digital (O3 / O4 / Vista)</option>
+                  <option value="Walksnail Avatar HD">Walksnail Avatar HD</option>
+                  <option value="HDZero">HDZero Digital</option>
+                  <option value="Campuran / Multi Drone">Campuran / Lebih dari 1 Drone</option>
+                </select>
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <label for="ots-vtx-channel" class="font-label-caps text-on-surface-variant uppercase text-[11px]">Preferensi Channel VTX</label>
+                <select id="ots-vtx-channel" class="bg-surface border border-outline-variant rounded px-3 py-2.5 text-white focus:border-primary focus:outline-none transition-colors font-mono-data text-xs">
+                  <option value="Auto / Diatur Panitia" selected>Auto / Diatur Panitia Race</option>
+                  <option value="R1 (5658 MHz)">RaceBand 1 (5658 MHz)</option>
+                  <option value="R2 (5695 MHz)">RaceBand 2 (5695 MHz)</option>
+                  <option value="R3 (5732 MHz)">RaceBand 3 (5732 MHz)</option>
+                  <option value="R4 (5769 MHz)">RaceBand 4 (5769 MHz)</option>
+                  <option value="R5 (5806 MHz)">RaceBand 5 (5806 MHz)</option>
+                  <option value="R6 (5843 MHz)">RaceBand 6 (5843 MHz)</option>
+                  <option value="R7 (5880 MHz)">RaceBand 7 (5880 MHz)</option>
+                  <option value="R8 (5917 MHz)">RaceBand 8 (5917 MHz)</option>
+                  <option value="FatShark F1-F8">FatShark F1-F8</option>
+                </select>
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <label for="ots-radio-protocol" class="font-label-caps text-on-surface-variant uppercase text-[11px]">Protokol Remote Control</label>
+                <select id="ots-radio-protocol" class="bg-surface border border-outline-variant rounded px-3 py-2.5 text-white focus:border-primary focus:outline-none transition-colors font-mono-data text-xs">
+                  <option value="ExpressLRS (ELRS) 2.4GHz" selected>ExpressLRS (ELRS) 2.4GHz</option>
+                  <option value="TBS Crossfire 915MHz">TBS Crossfire 915MHz</option>
+                  <option value="TBS Tracer 2.4GHz">TBS Tracer 2.4GHz</option>
+                  <option value="DJI FPV Remote Controller">DJI FPV Remote Controller</option>
+                  <option value="FrSky / FlySky / Lainnya">FrSky / FlySky / Lainnya</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 4: Metode Pembayaran di Tempat (OTS) -->
+          <div class="space-y-4 pt-2">
+            <div class="flex items-center justify-between pb-2 border-b border-surface-variant/80">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary-container text-base">payments</span>
+                <h2 class="font-label-caps text-xs sm:text-sm font-bold text-white uppercase tracking-wider">4. Pembayaran di Meja Registrasi (OTS) *</h2>
+              </div>
+              <span class="text-xs text-primary-fixed-dim font-mono-data font-bold">Total: Rp 200.000</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <label class="flex items-center gap-2.5 p-3 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface has-[:checked]:border-primary-container has-[:checked]:bg-primary/10">
+                <input id="ots-pay-cash" class="text-primary-container focus:ring-0 bg-background border-outline-variant" name="ots_payment_method" type="radio" value="Tunai di Meja Registrasi" checked/>
+                <div>
+                  <span class="font-mono-data text-white text-xs font-bold flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm text-green-400">payments</span>
+                    <span>Tunai / Cash (Kasir)</span>
+                  </span>
+                  <span class="text-[10px] text-on-surface-variant block mt-0.5">Bayar langsung di meja registrasi</span>
+                </div>
+              </label>
+
+              <label class="flex items-center gap-2.5 p-3 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface has-[:checked]:border-primary-container has-[:checked]:bg-primary/10">
+                <input id="ots-pay-qris" class="text-primary-container focus:ring-0 bg-background border-outline-variant" name="ots_payment_method" type="radio" value="QRIS di Meja Registrasi"/>
+                <div>
+                  <span class="font-mono-data text-white text-xs font-bold flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm text-primary-container">qr_code_scanner</span>
+                    <span>QRIS di Tempat</span>
+                  </span>
+                  <span class="text-[10px] text-on-surface-variant block mt-0.5">Scan via GoPay/OVO/BCA/BJB</span>
+                </div>
+              </label>
+
+              <label class="flex items-center gap-2.5 p-3 border border-outline-variant rounded cursor-pointer hover:border-primary transition-colors bg-surface has-[:checked]:border-primary-container has-[:checked]:bg-primary/10">
+                <input id="ots-pay-transfer" class="text-primary-container focus:ring-0 bg-background border-outline-variant" name="ots_payment_method" type="radio" value="Transfer Bank BCA"/>
+                <div>
+                  <span class="font-mono-data text-white text-xs font-bold flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm text-blue-400">account_balance</span>
+                    <span>Transfer BCA</span>
+                  </span>
+                  <span class="text-[10px] text-on-surface-variant block mt-0.5">M-Banking langsung di tempat</span>
+                </div>
+              </label>
+            </div>
+
+            <!-- Box Instruksi Bayar OTS -->
+            <div id="ots-payment-instruction-box" class="p-4 bg-surface border border-surface-variant rounded-lg space-y-3">
+              <!-- Cash View -->
+              <div id="ots-view-cash" class="space-y-2">
+                <div class="flex items-center gap-2 text-green-400">
+                  <span class="material-symbols-outlined text-base">check_circle</span>
+                  <span class="font-label-caps text-xs font-bold uppercase">Pembayaran Tunai Langsung di Meja Panitia</span>
+                </div>
+                <p class="text-on-surface-variant text-[11px] leading-relaxed">
+                  Setelah menekan tombol submit pendaftaran di bawah, silakan tunjukkan nama dan nomor registrasi Anda ke petugas kasir di meja pendaftaran untuk menyerahkan uang tunai sebesar <strong>Rp 200.000</strong> dan langsung mengambil Race Pack serta Lanyard peserta.
+                </p>
+              </div>
+
+              <!-- QRIS View -->
+              <div id="ots-view-qris" class="space-y-3 hidden">
+                <div class="flex items-center justify-between border-b border-surface-variant/60 pb-2">
+                  <span class="font-label-caps text-xs text-primary-fixed-dim font-bold flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm">qr_code_2</span>
+                    <span>Scan QRIS Resmi SMS di Meja:</span>
+                  </span>
+                  <span id="ots-qris-fee" class="font-mono-data text-primary font-bold text-xs">Rp 200.000</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] font-mono-data">
+                  <div class="p-2 bg-surface-container rounded border border-surface-variant/50">
+                    <span class="text-on-surface-variant block text-[10px]">MERCHANT:</span>
+                    <span id="ots-qris-merchant" class="text-white font-bold">Sky Multirotor Squad</span>
+                  </div>
+                  <div class="p-2 bg-surface-container rounded border border-surface-variant/50">
+                    <span class="text-on-surface-variant block text-[10px]">NMID:</span>
+                    <span id="ots-qris-nmid" class="text-white font-bold">ID1020038849502</span>
+                  </div>
+                </div>
+                <div id="ots-qris-img-wrap" class="hidden text-center p-2 bg-white rounded max-w-[170px] mx-auto">
+                  <img id="ots-qris-img" src="" alt="QRIS Code" class="w-full h-auto object-contain mx-auto"/>
+                </div>
+              </div>
+
+              <!-- Transfer View -->
+              <div id="ots-view-transfer" class="space-y-3 hidden">
+                <div class="flex items-center justify-between border-b border-surface-variant/60 pb-2">
+                  <span class="font-label-caps text-xs text-primary-fixed-dim font-bold flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm">account_balance</span>
+                    <span>Transfer Rekening Bank Resmi SMS:</span>
+                  </span>
+                  <span class="font-mono-data text-primary font-bold text-xs">Rp 200.000</span>
+                </div>
+                <div class="p-3 bg-surface-container rounded border border-surface-variant/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                  <div>
+                    <span id="ots-bank-name" class="text-xs font-bold text-white block">BCA (Bank Central Asia)</span>
+                    <div class="flex items-center gap-2 mt-0.5">
+                      <span id="ots-bank-number" class="text-base font-mono-data font-bold text-primary-container tracking-wider">883-091-2839</span>
+                      <button type="button" id="btn-copy-ots-bank" class="px-2 py-0.5 bg-surface border border-outline-variant text-[10px] rounded text-on-surface-variant hover:text-white hover:border-primary transition-colors flex items-center gap-1">
+                        <span class="material-symbols-outlined text-xs">content_copy</span> Salin
+                      </button>
+                    </div>
+                    <span id="ots-bank-holder" class="text-[10px] text-on-surface-variant block mt-0.5 uppercase">A/N SKY MULTIROTOR SQUAD</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 5: Catatan Tambahan (Opsional) -->
+          <div class="flex flex-col gap-1">
+            <label for="ots-pilot-notes" class="font-label-caps text-on-surface-variant uppercase text-[11px]">Catatan Khusus / Kebutuhan di Venue (Opsional)</label>
+            <input id="ots-pilot-notes" type="text" class="bg-surface border border-outline-variant rounded px-3 py-2 text-white focus:border-primary focus:outline-none transition-colors font-mono-data text-xs" placeholder="Contoh: Bawa tenda sendiri / butuh bantuan binding ELRS / slot meja 2"/>
+          </div>
+
+          <!-- Section 6: Math Challenge Verification -->
+          <div class="flex flex-col gap-1.5 p-4 border border-primary/30 bg-primary/5 rounded-lg">
+            <label for="ots-challenge-answer" class="font-label-caps text-on-surface-variant uppercase text-[11px] font-bold">
+              Verifikasi Pendaftaran OTS *
+            </label>
+            <div class="flex items-center gap-2 max-w-xs">
+              <span id="ots-challenge-question" class="font-mono-data text-primary-fixed-dim text-base font-bold min-w-[92px]"></span>
+              <input id="ots-challenge-answer" required inputmode="numeric" pattern="[0-9]+" type="number" min="0" class="w-28 bg-surface border border-outline-variant rounded px-3 py-2.5 text-white focus:border-primary focus:outline-none transition-colors font-mono-data text-xs" placeholder="Jawaban"/>
+            </div>
+            <p class="text-[10px] text-on-surface-variant">Selesaikan perhitungan sederhana di atas sebelum mengirim pendaftaran.</p>
+          </div>
+
+          <!-- Submit Bar -->
+          <div class="pt-4 border-t border-surface-variant flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="text-[11px] text-on-surface-variant flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-base text-green-400">verified_user</span>
+              <span>Terhubung langsung ke database &amp; antrean scrutineer panitia.</span>
+            </div>
+
+            <button id="btn-submit-ots" class="bg-primary-container text-black font-label-caps text-xs font-bold px-8 py-3.5 rounded uppercase tracking-wider hover:bg-yellow-400 transition-colors w-full sm:w-auto slant-btn flex items-center justify-center gap-2 shadow-lg cursor-pointer" type="submit">
+              <span class="material-symbols-outlined text-base">how_to_reg</span>
+              <span>KIRIM PENDAFTARAN OTS &amp; DAPATKAN NOMOR SLOT</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- TAB 2: LIST PESERTA TERDAFTAR (LIVE) -->
+      <div id="ots-tab-participants-content" class="hidden bg-surface-container-low border border-surface-variant rounded-b-xl p-5 sm:p-8 shadow-2xl">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-surface-variant">
+          <div>
+            <h2 class="text-lg sm:text-xl font-bold text-white uppercase tracking-tight">Daftar Peserta Resmi Terdaftar</h2>
+            <p class="text-xs text-on-surface-variant mt-0.5">Seluruh pilot yang terdaftar (Online maupun On-The-Spot).</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="relative">
+              <input id="ots-search-participant" type="text" placeholder="Cari nama / callsign..." class="bg-surface border border-outline-variant rounded pl-8 pr-3 py-1.5 text-xs text-white focus:border-primary focus:outline-none font-mono-data w-44 sm:w-56"/>
+              <span class="material-symbols-outlined absolute left-2 top-2 text-on-surface-variant text-sm">search</span>
+            </div>
+            <button type="button" id="btn-refresh-participants" class="p-2 bg-surface border border-outline-variant hover:border-primary rounded text-on-surface-variant hover:text-white transition-colors" title="Segarkan Data">
+              <span class="material-symbols-outlined text-base">refresh</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="ots-participants-grid" class="space-y-2.5">
+          <div class="p-8 text-center text-on-surface-variant font-mono-data text-xs">
+            <span class="material-symbols-outlined text-2xl animate-spin block mx-auto mb-2 text-primary-container">progress_activity</span>
+            Memuat data peserta terdaftar...
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: PANDUAN SCRUTINEERING & VENUE -->
+      <div id="ots-tab-guide-content" class="hidden bg-surface-container-low border border-surface-variant rounded-b-xl p-5 sm:p-8 shadow-2xl space-y-6">
+        <div class="border-b border-surface-variant pb-4">
+          <h2 class="text-lg sm:text-xl font-bold text-white uppercase tracking-tight flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary-container">verified</span>
+            <span>Panduan Scrutineering &amp; Keselamatan Terbang Speelwijk</span>
+          </h2>
+          <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">
+            Setelah menyelesaikan registrasi di meja OTS, setiap pilot wajib membawa drone ke Meja Scrutineering sebelum menyalakan daya (*plug-in* baterai) di area pit.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Card 1: VTX Rules -->
+          <div class="p-4 bg-surface rounded-lg border border-surface-variant space-y-2">
+            <div class="flex items-center gap-2 text-primary-fixed-dim">
+              <span class="material-symbols-outlined text-base">wifi_tethering</span>
+              <h3 class="font-label-caps text-xs font-bold uppercase">Aturan Frekuensi VTX Venue</h3>
+            </div>
+            <ul class="space-y-1.5 text-xs text-on-surface leading-relaxed list-disc list-inside">
+              <li><strong>Dilarang menyalakan VTX</strong> di luar jadwal heat tanpa izin Marshall Frekuensi.</li>
+              <li>Daya VTX race wajib diset ke <strong>25mW – 200mW</strong> (pit power mode saat persiapan).</li>
+              <li>Sistem analog &amp; digital dialokasikan terpisah untuk menghindari interferensi sinyal.</li>
+            </ul>
+          </div>
+
+          <!-- Card 2: Failsafe Test -->
+          <div class="p-4 bg-surface rounded-lg border border-surface-variant space-y-2">
+            <div class="flex items-center gap-2 text-tertiary-fixed">
+              <span class="material-symbols-outlined text-base">power_settings_new</span>
+              <h3 class="font-label-caps text-xs font-bold uppercase">Uji Failsafe &amp; Fisik Drone</h3>
+            </div>
+            <ul class="space-y-1.5 text-xs text-on-surface leading-relaxed list-disc list-inside">
+              <li>Uji failsafe wajib aktif: motor harus <strong>langsung mati seketika</strong> saat transmitter dimatikan.</li>
+              <li>Baling-baling (propeller) terpasang kuat tanpa retakan yang membahayakan.</li>
+              <li>Baterai terikat kencang dengan strap anti-slip (double strap disarankan).</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Heritage Zone Reminder -->
+        <div class="p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/30 flex items-start gap-3">
+          <span class="material-symbols-outlined text-yellow-400 text-xl shrink-0 mt-0.5">history_edu</span>
+          <div class="text-xs text-on-surface leading-relaxed">
+            <strong class="text-white block font-label-caps uppercase text-[11px] mb-0.5">Zona Cagar Budaya Benteng Speelwijk</strong>
+            Benteng Speelwijk dilindungi oleh UU No. 11 Tahun 2010 tentang Cagar Budaya. Pilot dilarang keras menabrakkan drone secara sengaja ke struktur dinding bata bersejarah, memaku tenda ke batu cagar budaya, atau meninggalkan sampah baterai/baut di area heritage.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- SUCCESS MODAL: KARTU TANDA REGISTRASI OTS (PRINTABLE DIGITAL PASS) -->
+  <div id="ots-success-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-surface-container-low border border-primary-container rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative my-8 animate-fade-in text-on-surface">
+      
+      <!-- Ticket Printable Body -->
+      <div id="ots-print-card" class="bg-surface border-2 border-primary/40 rounded-xl p-5 sm:p-6 space-y-4 relative overflow-hidden">
+        
+        <!-- Header Ticket -->
+        <div class="flex items-center justify-between border-b border-surface-variant/80 pb-3">
+          <div class="flex items-center gap-2">
+            <img src="/logo-sms-speelwijk.png" alt="Logo SMS" class="h-8 w-auto object-contain"/>
+            <div>
+              <span class="text-[9px] font-mono-data tracking-widest text-primary-fixed-dim block uppercase font-bold">RACE PASS • ON-THE-SPOT</span>
+              <span class="text-xs font-bold text-white uppercase">Benteng Speelwijk Drone Fest 2026</span>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded text-[10px] font-mono-data font-bold bg-green-500/20 text-green-300 border border-green-500/40">OTS VERIFIED</span>
+        </div>
+
+        <!-- Ticket Reg Number -->
+        <div class="text-center py-2 bg-surface-container-high/60 rounded-lg border border-surface-variant/50">
+          <span class="text-[10px] font-label-caps text-on-surface-variant block uppercase">Nomor Registrasi OTS Resmi:</span>
+          <span id="ticket-reg-id" class="text-2xl sm:text-3xl font-mono-data font-bold text-primary-container tracking-wider">OTS-SPW-202601</span>
+        </div>
+
+        <!-- Detail Data Pilot -->
+        <div class="grid grid-cols-2 gap-3 text-xs font-mono-data">
+          <div>
+            <span class="text-[10px] text-on-surface-variant block">NAMA OPERATOR:</span>
+            <span id="ticket-pilot-name" class="font-bold text-white text-sm block">Muhammad Juang</span>
+          </div>
+          <div>
+            <span class="text-[10px] text-on-surface-variant block">CALLSIGN / NICKNAME:</span>
+            <span id="ticket-pilot-callsign" class="font-bold text-primary-fixed-dim text-sm block">RED_FOX</span>
+          </div>
+          <div>
+            <span class="text-[10px] text-on-surface-variant block">KOMUNITAS / ASAL:</span>
+            <span id="ticket-pilot-community" class="text-white block">Sky Multirotor Squad</span>
+          </div>
+          <div>
+            <span class="text-[10px] text-on-surface-variant block">WHATSAPP:</span>
+            <span id="ticket-pilot-wa" class="text-white block">081234567890</span>
+          </div>
+          <div class="col-span-2">
+            <span class="text-[10px] text-on-surface-variant block">KATEGORI LOMBA:</span>
+            <span id="ticket-pilot-category" class="font-bold text-white block">Cinewhoop Race, Freestyle</span>
+          </div>
+          <div>
+            <span class="text-[10px] text-on-surface-variant block">SISTEM VTX:</span>
+            <span id="ticket-pilot-vtx" class="text-white block">DJI Digital O3</span>
+          </div>
+          <div>
+            <span class="text-[10px] text-on-surface-variant block">METODE PEMBAYARAN:</span>
+            <span id="ticket-pilot-payment" class="text-green-300 block">Tunai di Kasir</span>
+          </div>
+        </div>
+
+        <!-- Next Instructions in Venue -->
+        <div class="pt-3 border-t border-surface-variant/80 text-[11px] space-y-1 text-on-surface-variant">
+          <strong class="text-white block uppercase font-label-caps text-[10px]">Langkah Selanjutnya di Meja Panitia:</strong>
+          <p>1. Tunjukkan tiket ini ke kasir registrasi untuk penyerahan tunai / verifikasi.</p>
+          <p>2. Ambil Race Pack, Jersey, dan ID Lanyard di booth distribusi.</p>
+          <p>3. Lapor ke Meja Scrutineering untuk verifikasi alokasi frekuensi VTX Anda.</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons Modal -->
+      <div class="mt-5 space-y-2.5 no-print">
+        <button type="button" id="btn-ots-send-wa" class="w-full py-3 px-4 rounded bg-green-500 hover:bg-green-600 text-black font-label-caps text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg">
+          <span class="material-symbols-outlined text-base">chat</span>
+          <span>KIRIM NOTIFIKASI KE WHATSAPP MEJA PANITIA</span>
+        </button>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" id="btn-ots-print" class="py-2.5 px-3 rounded border border-surface-variant hover:border-primary text-white font-label-caps text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer bg-surface">
+            <span class="material-symbols-outlined text-sm">print</span>
+            <span>Cetak / Simpan Pass</span>
+          </button>
+          <button type="button" id="btn-ots-register-again" class="py-2.5 px-3 rounded bg-primary-container hover:bg-yellow-400 text-black font-label-caps text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+            <span class="material-symbols-outlined text-sm">person_add</span>
+            <span>Daftar Pilot Lain</span>
+          </button>
+        </div>
+
+        <button type="button" id="btn-ots-close-modal" class="w-full text-center text-xs text-on-surface-variant hover:text-white py-1">
+          Tutup Layar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="ots-toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none no-print"></div>
+
+  <!-- Footer -->
+  <footer class="mt-16 py-8 border-t border-surface-variant bg-surface-container-lowest text-center text-xs text-on-surface-variant no-print">
+    <div class="max-w-4xl mx-auto px-4 space-y-2">
+      <p class="font-bold text-white uppercase tracking-wider">Sky Multirotor Squad • Benteng Speelwijk FPV Drone Fest 2026</p>
+      <p class="text-[11px]">Kawasan Cagar Budaya Benteng Speelwijk, Banten Lama, Kota Serang, Banten</p>
+      <div class="pt-2 flex items-center justify-center gap-4 text-[11px] font-mono-data">
+        <a href="/benteng-speelwijk" class="hover:text-primary-container transition-colors">Beranda Utama</a>
+        <span>•</span>
+        <a href="/benteng-speelwijk#schedule" class="hover:text-primary-container transition-colors">Jadwal Acara</a>
+        <span>•</span>
+        <a href="/benteng-speelwijk#rules" class="hover:text-primary-container transition-colors">Do &amp; Don't Cagar Budaya</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic -->
+  <script type="module">
+    import { 
+      getSpeelwijkSettings, 
+      getSpeelwijkRegistrations,
+      saveSpeelwijkRegistration 
+    } from '/src/js/supabase.js';
+
+    // 1. Toast Notification Utility
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('ots-toast-container');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      const bgClass = type === 'success' ? 'bg-green-950/90 border-green-500 text-green-200' 
+                    : type === 'error' ? 'bg-red-950/90 border-red-500 text-red-200' 
+                    : 'bg-surface-container-high border-primary-container text-white';
+      const icon = type === 'success' ? 'check_circle' : type === 'error' ? 'error' : 'info';
+
+      toast.className = `pointer-events-auto px-4 py-3 rounded-lg border shadow-xl text-xs flex items-center gap-2 max-w-sm transition-all transform translate-y-2 opacity-0 font-body ${bgClass}`;
+      toast.innerHTML = `
+        <span class="material-symbols-outlined text-base shrink-0">${icon}</span>
+        <span class="flex-1">${message}</span>
+      `;
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 4500);
+    }
+
+    // 2. Math Anti-Spam Challenge
+    let otsChallengeAnswer = 0;
+    function initOtsChallenge() {
+      const first = Math.floor(Math.random() * 8) + 2;
+      const second = Math.floor(Math.random() * 8) + 1;
+      otsChallengeAnswer = first + second;
+      const qEl = document.getElementById('ots-challenge-question');
+      const aEl = document.getElementById('ots-challenge-answer');
+      if (qEl) qEl.textContent = `${first} + ${second} =`;
+      if (aEl) {
+        aEl.value = '';
+        aEl.setCustomValidity('');
+      }
+    }
+    initOtsChallenge();
+
+    // 3. Tab Navigation
+    const tabButtons = document.querySelectorAll('.ots-tab-btn');
+    const formTabContent = document.getElementById('ots-tab-form-content');
+    const participantsTabContent = document.getElementById('ots-tab-participants-content');
+    const guideTabContent = document.getElementById('ots-tab-guide-content');
+
+    function switchOtsTab(tabName) {
+      tabButtons.forEach(btn => {
+        const isSelected = btn.dataset.otsTab === tabName;
+        btn.setAttribute('aria-selected', isSelected);
+        if (isSelected) {
+          btn.classList.add('text-primary-fixed-dim', 'border-primary-container', 'bg-surface');
+          btn.classList.remove('text-on-surface-variant', 'border-transparent');
+        } else {
+          btn.classList.remove('text-primary-fixed-dim', 'border-primary-container', 'bg-surface');
+          btn.classList.add('text-on-surface-variant', 'border-transparent');
+        }
+      });
+
+      if (formTabContent) formTabContent.classList.toggle('hidden', tabName !== 'form');
+      if (participantsTabContent) participantsTabContent.classList.toggle('hidden', tabName !== 'participants');
+      if (guideTabContent) guideTabContent.classList.toggle('hidden', tabName !== 'guide');
+
+      if (tabName === 'participants') {
+        loadOtsParticipants();
+      }
+    }
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => switchOtsTab(btn.dataset.otsTab));
+    });
+
+    // 4. Payment Method View Toggles
+    const payRadios = document.querySelectorAll('input[name="ots_payment_method"]');
+    const viewCash = document.getElementById('ots-view-cash');
+    const viewQris = document.getElementById('ots-view-qris');
+    const viewTransfer = document.getElementById('ots-view-transfer');
+
+    function updatePaymentViews() {
+      const selected = document.querySelector('input[name="ots_payment_method"]:checked')?.value || 'Tunai di Meja Registrasi';
+      if (viewCash) viewCash.classList.toggle('hidden', !selected.includes('Tunai'));
+      if (viewQris) viewQris.classList.toggle('hidden', !selected.includes('QRIS'));
+      if (viewTransfer) viewTransfer.classList.toggle('hidden', !selected.includes('Transfer'));
+    }
+
+    payRadios.forEach(radio => radio.addEventListener('change', updatePaymentViews));
+    updatePaymentViews();
+
+    // Copy Bank Account Number
+    document.getElementById('btn-copy-ots-bank')?.addEventListener('click', () => {
+      const num = document.getElementById('ots-bank-number')?.textContent || '8830912839';
+      navigator.clipboard.writeText(num.replace(/\D/g, '')).then(() => {
+        showToast('Nomor rekening BCA berhasil disalin!', 'success');
+      }).catch(() => {
+        showToast('Gagal menyalin otomatis. Silakan catat manual.', 'error');
+      });
+    });
+
+    // 5. Load Settings from Supabase
+    let cachedSettings = null;
+    async function loadSettings() {
+      try {
+        cachedSettings = await getSpeelwijkSettings();
+        if (cachedSettings) {
+          if (cachedSettings.fee) {
+            const feeEls = [document.getElementById('ots-display-fee'), document.getElementById('ots-qris-fee')];
+            feeEls.forEach(el => { if (el) el.textContent = cachedSettings.fee; });
+          }
+          if (cachedSettings.benefits) {
+            const benEl = document.getElementById('ots-display-benefits');
+            if (benEl) benEl.textContent = cachedSettings.benefits;
+          }
+          if (cachedSettings.qrisImg) {
+            const imgWrap = document.getElementById('ots-qris-img-wrap');
+            const imgEl = document.getElementById('ots-qris-img');
+            if (imgWrap && imgEl) {
+              imgEl.src = cachedSettings.qrisImg;
+              imgWrap.classList.remove('hidden');
+            }
+          }
+          if (cachedSettings.qrisMerchant) {
+            const el = document.getElementById('ots-qris-merchant');
+            if (el) el.textContent = cachedSettings.qrisMerchant;
+          }
+          if (cachedSettings.qrisNmid) {
+            const el = document.getElementById('ots-qris-nmid');
+            if (el) el.textContent = cachedSettings.qrisNmid;
+          }
+          if (cachedSettings.bankName) {
+            const el = document.getElementById('ots-bank-name');
+            if (el) el.textContent = cachedSettings.bankName;
+          }
+          if (cachedSettings.bankNumber) {
+            const el = document.getElementById('ots-bank-number');
+            if (el) el.textContent = cachedSettings.bankNumber;
+          }
+          if (cachedSettings.bankHolder) {
+            const el = document.getElementById('ots-bank-holder');
+            if (el) el.textContent = cachedSettings.bankHolder;
+          }
+        }
+      } catch (err) {
+        console.warn('Gagal memuat pengaturan dinamis event:', err);
+      }
+    }
+    loadSettings();
+
+    // 6. Load & Render Participants for Tab 2
+    let cachedRegistrations = [];
+    async function loadOtsParticipants() {
+      const grid = document.getElementById('ots-participants-grid');
+      const badge = document.getElementById('ots-participants-badge');
+      if (!grid) return;
+
+      try {
+        cachedRegistrations = await getSpeelwijkRegistrations() || [];
+        if (badge) badge.textContent = cachedRegistrations.length;
+        renderParticipants(cachedRegistrations);
+      } catch (err) {
+        grid.innerHTML = '<div class="p-6 text-center text-red-400 font-mono-data text-xs">Gagal memuat daftar peserta. Silakan tekan tombol refresh.</div>';
+      }
+    }
+
+    function renderParticipants(list) {
+      const grid = document.getElementById('ots-participants-grid');
+      if (!grid) return;
+
+      if (!list || list.length === 0) {
+        grid.innerHTML = '<div class="p-8 text-center text-on-surface-variant font-mono-data text-xs border border-dashed border-surface-variant rounded-lg">Belum ada peserta yang terdaftar saat ini.</div>';
+        return;
+      }
+
+      grid.innerHTML = list.map((item, idx) => {
+        const isOts = (item.notes || '').includes('OTS') || (item.paymentMethod || '').includes('Meja') || (item.paymentMethod || '').includes('Tunai');
+        const badgeOts = isOts 
+          ? '<span class="px-2 py-0.5 rounded text-[9px] font-mono-data font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">OTS</span>'
+          : '<span class="px-2 py-0.5 rounded text-[9px] font-mono-data font-bold bg-yellow-500/20 text-yellow-300 border border-yellow-500/40">ONLINE</span>';
+        
+        const statusBadge = (item.status === 'LUNAS' || item.status === 'APPROVED')
+          ? '<span class="px-2 py-0.5 rounded text-[9px] font-mono-data font-bold bg-green-500/20 text-green-300 border border-green-500/40">LUNAS</span>'
+          : '<span class="px-2 py-0.5 rounded text-[9px] font-mono-data font-bold bg-yellow-500/20 text-yellow-300 border border-yellow-500/40">VERIFIKASI</span>';
+
+        return `
+          <div class="p-3.5 rounded-lg border border-surface-variant bg-surface hover:border-primary-container transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div class="flex items-center gap-3">
+              <span class="w-7 h-7 rounded bg-surface-container text-primary-fixed-dim font-mono-data text-xs font-bold flex items-center justify-center shrink-0 border border-surface-variant">
+                #${idx + 1}
+              </span>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-bold text-white text-xs sm:text-sm">${item.name || 'Pilot'}</span>
+                  ${badgeOts}
+                  ${statusBadge}
+                </div>
+                <div class="text-[11px] text-on-surface-variant font-mono-data flex flex-wrap gap-2 mt-0.5">
+                  <span>Callsign: <strong class="text-primary-fixed-dim">${item.callsign || '-'}</strong></span>
+                  <span>•</span>
+                  <span>Kategori: ${item.category || '-'}</span>
+                </div>
+              </div>
+            </div>
+            <div class="text-[10px] font-mono-data text-on-surface-variant text-right sm:self-center">
+              <span>Metode: ${item.paymentMethod || 'Tunai'}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Search filter for participants
+    document.getElementById('ots-search-participant')?.addEventListener('input', (e) => {
+      const q = (e.target.value || '').toLowerCase().trim();
+      const filtered = cachedRegistrations.filter(r => 
+        (r.name || '').toLowerCase().includes(q) || 
+        (r.callsign || '').toLowerCase().includes(q) ||
+        (r.category || '').toLowerCase().includes(q)
+      );
+      renderParticipants(filtered);
+    });
+
+    document.getElementById('btn-refresh-participants')?.addEventListener('click', () => {
+      loadOtsParticipants();
+      showToast('Data peserta berhasil disegarkan!', 'info');
+    });
+
+    // Initial participant badge count load
+    getSpeelwijkRegistrations().then(regs => {
+      if (regs && document.getElementById('ots-participants-badge')) {
+        document.getElementById('ots-participants-badge').textContent = regs.length;
+      }
+    });
+
+    // 7. Form Submission Handler
+    let latestRegistrationData = null;
+    const form = document.getElementById('speelwijk-ots-form');
+    const submitBtn = document.getElementById('btn-submit-ots');
+
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Validate Math Challenge
+        const answerInput = document.getElementById('ots-challenge-answer');
+        if (!answerInput || Number(answerInput.value) !== otsChallengeAnswer) {
+          showToast('Jawaban verifikasi hitungan belum benar. Silakan cek kembali!', 'error');
+          answerInput?.focus();
+          return;
+        }
+
+        // Validate Categories
+        const checkedCategories = Array.from(document.querySelectorAll('input[name="ots_category"]:checked')).map(cb => cb.value);
+        if (checkedCategories.length === 0) {
+          showToast('Silakan pilih minimal 1 kategori lomba yang Anda ikuti!', 'error');
+          return;
+        }
+
+        const name = document.getElementById('ots-pilot-name').value.trim();
+        const callsign = document.getElementById('ots-pilot-callsign').value.trim();
+        const community = document.getElementById('ots-pilot-community').value.trim() || 'Independen';
+        const phone = document.getElementById('ots-pilot-whatsapp').value.trim();
+        const email = document.getElementById('ots-pilot-email').value.trim() || '-';
+        const vtxSystem = document.getElementById('ots-vtx-system').value;
+        const vtxChannel = document.getElementById('ots-vtx-channel').value;
+        const radioProtocol = document.getElementById('ots-radio-protocol').value;
+        const paymentMethod = document.querySelector('input[name="ots_payment_method"]:checked')?.value || 'Tunai di Meja Registrasi';
+        const userNotes = document.getElementById('ots-pilot-notes').value.trim();
+
+        const categoryString = checkedCategories.join(', ');
+        const otsId = `OTS-SPW-${Date.now().toString().slice(-6)}`;
+        const combinedNotes = `[OTS - ON THE SPOT] VTX: ${vtxSystem} (${vtxChannel}) | Radio: ${radioProtocol}${userNotes ? ` | Catatan: ${userNotes}` : ''}`;
+        
+        // Status: for cash OTS it is PENDING until verified by cashier, or LUNAS if cashier marks it
+        const status = paymentMethod.includes('Tunai') ? 'PENDING' : 'PENDING';
+
+        submitBtn.disabled = true;
+        const origBtnText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">progress_activity</span> Mendaftarkan Slot OTS...';
+
+        const payload = {
+          name,
+          callsign,
+          phone,
+          email,
+          category: categoryString,
+          paymentMethod,
+          status,
+          notes: combinedNotes,
+          paymentProof: '' // Not required for in-person cash registration
+        };
+
+        try {
+          const res = await saveSpeelwijkRegistration(payload);
+          
+          latestRegistrationData = {
+            ...payload,
+            regCode: otsId,
+            vtxSystem,
+            vtxChannel,
+            community,
+            fee: cachedSettings?.fee || 'Rp 200.000',
+            waTarget: (cachedSettings?.waNumber || '6287772272928').replace(/\D/g, '')
+          };
+
+          // Send confirmation email via Hostinger SMTP if email is provided
+          if (email && email.includes('@')) {
+            fetch('/api/send-registration-email', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                name,
+                callsign,
+                phone,
+                email,
+                category: categoryString,
+                paymentMethod: `${paymentMethod} (OTS - On The Spot)`,
+                fee: latestRegistrationData.fee,
+                eventTitle: cachedSettings?.title || 'Fly Through History – Benteng Speelwijk Drone Fest 2026',
+                eventDate: cachedSettings?.date || '17 - 18 Oktober 2026',
+                eventLocation: cachedSettings?.location || 'Benteng Speelwijk, Banten Lama'
+              })
+            }).catch(err => console.warn('SMTP notice:', err));
+          }
+
+          showToast('Pendaftaran OTS berhasil tercatat! Menampilkan tiket registrasi...', 'success');
+          openSuccessModal(latestRegistrationData);
+
+          // Reset Form
+          form.reset();
+          initOtsChallenge();
+          updatePaymentViews();
+        } catch (err) {
+          showToast(`Terjadi kendala penyimpanan: ${err.message}`, 'error');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = origBtnText;
+        }
+      });
+    }
+
+    // 8. Success Modal & Ticket Logic
+    const successModal = document.getElementById('ots-success-modal');
+
+    function openSuccessModal(data) {
+      if (!successModal || !data) return;
+
+      document.getElementById('ticket-reg-id').textContent = data.regCode;
+      document.getElementById('ticket-pilot-name').textContent = data.name;
+      document.getElementById('ticket-pilot-callsign').textContent = data.callsign;
+      document.getElementById('ticket-pilot-community').textContent = data.community;
+      document.getElementById('ticket-pilot-wa').textContent = data.phone;
+      document.getElementById('ticket-pilot-category').textContent = data.category;
+      document.getElementById('ticket-pilot-vtx').textContent = `${data.vtxSystem} (${data.vtxChannel})`;
+      document.getElementById('ticket-pilot-payment').textContent = data.paymentMethod;
+
+      successModal.classList.remove('hidden');
+      successModal.classList.add('flex');
+    }
+
+    function closeSuccessModal() {
+      if (successModal) {
+        successModal.classList.add('hidden');
+        successModal.classList.remove('flex');
+      }
+    }
+
+    document.getElementById('btn-ots-close-modal')?.addEventListener('click', closeSuccessModal);
+
+    // Send WhatsApp notification
+    document.getElementById('btn-ots-send-wa')?.addEventListener('click', () => {
+      if (!latestRegistrationData) return;
+      const d = latestRegistrationData;
+      const msg = encodeURIComponent(
+        `Halo Panitia Meja Registrasi SMS Benteng Speelwijk 2026,\n\nSaya telah melakukan *PENDAFTARAN ON-THE-SPOT (OTS)* di lokasi:\n\n` +
+        `*No. Registrasi:* ${d.regCode}\n` +
+        `*Nama Pilot:* ${d.name}\n` +
+        `*Callsign:* ${d.callsign}\n` +
+        `*Komunitas/Asal:* ${d.community}\n` +
+        `*No. WhatsApp:* ${d.phone}\n` +
+        `*Kategori Drone:* ${d.category}\n` +
+        `*Sistem VTX:* ${d.vtxSystem} (${d.vtxChannel})\n` +
+        `*Metode Pembayaran:* ${d.paymentMethod}\n` +
+        `*Total Biaya:* ${d.fee}\n\n` +
+        `Saat ini saya sudah berada di meja registrasi venue Benteng Speelwijk untuk verifikasi pembayaran dan pengambilan Race Pack. Terima kasih!`
+      );
+      window.open(`https://wa.me/${d.waTarget}?text=${msg}`, '_blank');
+    });
+
+    // Print pass
+    document.getElementById('btn-ots-print')?.addEventListener('click', () => {
+      window.print();
+    });
+
+    // Register again
+    document.getElementById('btn-ots-register-again')?.addEventListener('click', () => {
+      closeSuccessModal();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.getElementById('ots-pilot-name')?.focus();
+    });
+
+  </script>
+</body>
+</html>
