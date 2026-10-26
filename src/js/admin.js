@@ -741,15 +741,123 @@ async function sendSpeelwijkApprovalEmail(reg, buttonElement = null) {
   }
 }
 
+function normalizeRegStatus(status) {
+  const s = String(status || '').trim().toUpperCase();
+  if (s === 'LUNAS' || s === 'APPROVED' || s === 'TERKONFIRMASI') return 'LUNAS';
+  if (s === 'BATAL' || s === 'CANCELLED' || s === 'DIBATALKAN') return 'BATAL';
+  return 'PENDING';
+}
+
+function getRegistrationBaseFee() {
+  const feeStr = cachedSpeelwijkSettings?.fee || 'Rp 200.000';
+  const parsed = Number(String(feeStr).replace(/[^0-9]/g, ''));
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 200000;
+}
+
+function getRegistrationFee(reg) {
+  if (reg && reg.fee !== undefined && reg.fee !== null && String(reg.fee).trim() !== '') {
+    const val = Number(String(reg.fee).replace(/[^0-9]/g, ''));
+    if (Number.isFinite(val) && val >= 0) return val;
+  }
+  if (reg && reg.amount !== undefined && reg.amount !== null && String(reg.amount).trim() !== '') {
+    const val = Number(String(reg.amount).replace(/[^0-9]/g, ''));
+    if (Number.isFinite(val) && val >= 0) return val;
+  }
+  return getRegistrationBaseFee();
+}
+
 async function loadSpeelwijkRegistrations() {
   const tbody = document.getElementById('admin-speelwijk-regs-tbody');
   const countBadge = document.getElementById('speelwijk-regs-count-badge');
   const statCard = document.getElementById('stat-speelwijk-count');
   
+  if (!cachedSpeelwijkSettings || Object.keys(cachedSpeelwijkSettings).length === 0) {
+    cachedSpeelwijkSettings = (await getSpeelwijkSettings({ migrateLocal: true })) || {};
+  }
+
   cachedSpeelwijkRegs = (await getSpeelwijkRegistrations()) || [];
 
   if (countBadge) countBadge.textContent = cachedSpeelwijkRegs.length;
   if (statCard) statCard.textContent = cachedSpeelwijkRegs.length;
+
+  // Calculate live financial & registration totals for the 4 KPI stat cards
+  const totalCount = cachedSpeelwijkRegs.length;
+  let lunasCount = 0;
+  let pendingCount = 0;
+  let batalCount = 0;
+  let uangLunas = 0;
+  let uangPending = 0;
+  let uangTotal = 0;
+
+  cachedSpeelwijkRegs.forEach(reg => {
+    const norm = normalizeRegStatus(reg.status);
+    const fee = getRegistrationFee(reg);
+    if (norm === 'LUNAS') {
+      lunasCount++;
+      uangLunas += fee;
+      uangTotal += fee;
+    } else if (norm === 'PENDING') {
+      pendingCount++;
+      uangPending += fee;
+      uangTotal += fee;
+    } else {
+      batalCount++;
+    }
+  });
+
+  const defaultSlotFee = getRegistrationBaseFee();
+
+  const setElText = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  };
+
+  setElText('speelwijk-stat-total-pendaftar', `${totalCount} Pilot`);
+  setElText('speelwijk-stat-lunas-pendaftar', `${lunasCount} Lunas`);
+  setElText('speelwijk-stat-pending-pendaftar', `${pendingCount} Pending`);
+  setElText('speelwijk-stat-batal-pendaftar', `${batalCount} Batal`);
+
+  setElText('speelwijk-stat-uang-lunas', formatReportingCurrency(uangLunas));
+  setElText('speelwijk-stat-uang-lunas-count', `Dari ${lunasCount} pilot terkonfirmasi`);
+
+  setElText('speelwijk-stat-uang-pending', formatReportingCurrency(uangPending));
+  setElText('speelwijk-stat-uang-pending-count', `Dari ${pendingCount} pilot menunggu verifikasi`);
+
+  setElText('speelwijk-stat-uang-total', formatReportingCurrency(uangTotal));
+  setElText('speelwijk-stat-biaya-slot', `Biaya per slot: ${formatReportingCurrency(defaultSlotFee)}`);
+
+  // Populate category filter dropdown dynamically
+  const categoryFilter = document.getElementById('speelwijk-filter-category');
+  if (categoryFilter) {
+    const currentSelected = categoryFilter.value || 'ALL';
+    const categoriesSet = new Set(['Cinewhoop Race', 'Cinematic FPV', 'Freestyle FPV']);
+    (cachedSpeelwijkPrizes || []).forEach(p => {
+      if (p.category) categoriesSet.add(p.category.trim());
+    });
+    cachedSpeelwijkRegs.forEach(r => {
+      if (r.category) {
+        r.category.split(',').forEach(c => {
+          const trimmed = c.trim();
+          if (trimmed) categoriesSet.add(trimmed);
+        });
+      }
+    });
+
+    const categories = Array.from(categoriesSet).filter(Boolean).sort();
+    categoryFilter.innerHTML = '<option value="ALL">SEMUA KATEGORI</option>' + 
+      categories.map(c => `<option value="${escapeReportingText(c)}">KATEGORI: ${escapeReportingText(c).toUpperCase()}</option>`).join('');
+
+    if (categories.includes(currentSelected)) {
+      categoryFilter.value = currentSelected;
+    } else {
+      categoryFilter.value = 'ALL';
+    }
+
+    if (!categoryFilter.dataset.hasListener) {
+      categoryFilter.dataset.hasListener = 'true';
+      categoryFilter.addEventListener('change', () => renderSpeelwijkRegistrations());
+    }
+  }
 
   if (!tbody) return;
   renderSpeelwijkRegistrations();
@@ -774,26 +882,68 @@ function renderSpeelwijkRegistrations() {
 
   const searchInput = document.getElementById('speelwijk-search-input');
   const filterSelect = document.getElementById('speelwijk-filter-status');
+  const filterCategorySelect = document.getElementById('speelwijk-filter-category');
 
   const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
   const filterStatus = filterSelect ? filterSelect.value : 'ALL';
+  const filterCategory = filterCategorySelect ? filterCategorySelect.value : 'ALL';
 
   const filtered = cachedSpeelwijkRegs.filter(reg => {
     const matchesSearch = !query || 
       (reg.name && reg.name.toLowerCase().includes(query)) ||
       (reg.callsign && reg.callsign.toLowerCase().includes(query)) ||
       (reg.phone && reg.phone.includes(query)) ||
+      (reg.email && reg.email.toLowerCase().includes(query)) ||
       (reg.category && reg.category.toLowerCase().includes(query));
 
-    const matchesStatus = filterStatus === 'ALL' || (reg.status && reg.status.toUpperCase() === filterStatus);
+    const norm = normalizeRegStatus(reg.status);
+    let matchesStatus = true;
+    if (filterStatus === 'LUNAS') matchesStatus = (norm === 'LUNAS');
+    else if (filterStatus === 'PENDING') matchesStatus = (norm === 'PENDING');
+    else if (filterStatus === 'BATAL') matchesStatus = (norm === 'BATAL');
 
-    return matchesSearch && matchesStatus;
+    let matchesCategory = true;
+    if (filterCategory !== 'ALL') {
+      const regCats = String(reg.category || '').toLowerCase().split(',').map(s => s.trim());
+      matchesCategory = regCats.some(c => c === filterCategory.toLowerCase()) || String(reg.category || '').toLowerCase().includes(filterCategory.toLowerCase());
+    }
+
+    return matchesSearch && matchesStatus && matchesCategory;
   });
 
   tbody.innerHTML = '';
 
+  // Calculate filtered totals for table footer
+  let filteredLunas = 0;
+  let filteredPending = 0;
+  let filteredBatal = 0;
+  let filteredTotalAmount = 0;
+
+  filtered.forEach(reg => {
+    const norm = normalizeRegStatus(reg.status);
+    const fee = getRegistrationFee(reg);
+    if (norm === 'LUNAS') {
+      filteredLunas++;
+      filteredTotalAmount += fee;
+    } else if (norm === 'PENDING') {
+      filteredPending++;
+      filteredTotalAmount += fee;
+    } else {
+      filteredBatal++;
+    }
+  });
+
+  const setElText = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  };
+
+  setElText('speelwijk-tfoot-count', `Total Pendaftar Ditampilkan: ${filtered.length} Pilot`);
+  setElText('speelwijk-tfoot-breakdown', `(${filteredLunas} Lunas / Terverifikasi, ${filteredPending} Pending, ${filteredBatal} Batal)`);
+  setElText('speelwijk-tfoot-total-amount', formatReportingCurrency(filteredTotalAmount));
+
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-on-surface-variant font-label-caps text-xs">Tidak ada data pendaftar pilot yang cocok dengan filter.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-on-surface-variant font-label-caps text-xs">Tidak ada data pendaftar pilot yang cocok dengan filter.</td></tr>`;
     return;
   }
 
@@ -821,6 +971,9 @@ function renderSpeelwijkRegistrations() {
       `;
     }
 
+    const fee = getRegistrationFee(reg);
+    const feeFormatted = formatReportingCurrency(fee);
+
     tr.innerHTML = `
       <td class="p-3.5">
         <div class="font-bold text-white text-sm">${reg.name}</div>
@@ -836,6 +989,10 @@ function renderSpeelwijkRegistrations() {
       <td class="p-3.5 font-label-caps text-xs text-on-surface-variant">
         <div>${reg.paymentMethod || 'QRIS'}</div>
         ${proofButton}
+      </td>
+      <td class="p-3.5">
+        <div class="font-mono-data font-bold text-white text-xs">${feeFormatted}</div>
+        <div class="text-[9px] text-on-surface-variant font-label-caps">Biaya Registrasi</div>
       </td>
       <td class="p-3.5">
         ${statusBadge}
@@ -888,6 +1045,637 @@ function renderSpeelwijkRegistrations() {
     });
   });
 }
+
+export function printSpeelwijkRegistrationsPdf() {
+  const settings = cachedSpeelwijkSettings || {};
+  const regs = Array.isArray(cachedSpeelwijkRegs) ? cachedSpeelwijkRegs : [];
+
+  const searchInput = document.getElementById('speelwijk-search-input');
+  const filterSelect = document.getElementById('speelwijk-filter-status');
+  const filterCategorySelect = document.getElementById('speelwijk-filter-category');
+  const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+  const filterStatus = filterSelect ? filterSelect.value : 'ALL';
+  const filterCategory = filterCategorySelect ? filterCategorySelect.value : 'ALL';
+
+  const filtered = regs.filter(reg => {
+    const matchesSearch = !query || 
+      (reg.name && reg.name.toLowerCase().includes(query)) ||
+      (reg.callsign && reg.callsign.toLowerCase().includes(query)) ||
+      (reg.phone && reg.phone.includes(query)) ||
+      (reg.email && reg.email.toLowerCase().includes(query)) ||
+      (reg.category && reg.category.toLowerCase().includes(query));
+
+    const norm = normalizeRegStatus(reg.status);
+    let matchesStatus = true;
+    if (filterStatus === 'LUNAS') matchesStatus = (norm === 'LUNAS');
+    else if (filterStatus === 'PENDING') matchesStatus = (norm === 'PENDING');
+    else if (filterStatus === 'BATAL') matchesStatus = (norm === 'BATAL');
+
+    let matchesCategory = true;
+    if (filterCategory !== 'ALL') {
+      const regCats = String(reg.category || '').toLowerCase().split(',').map(s => s.trim());
+      matchesCategory = regCats.some(c => c === filterCategory.toLowerCase()) || String(reg.category || '').toLowerCase().includes(filterCategory.toLowerCase());
+    }
+
+    return matchesSearch && matchesStatus && matchesCategory;
+  });
+
+  const title = settings.title || 'Fly Through History';
+  const subtitle = settings.subtitle || 'Benteng Speelwijk Drone Fest 2026';
+  const eventDate = settings.date || '17 - 18 Oktober 2026';
+  const location = settings.location || 'Benteng Speelwijk, Banten Lama';
+  const baseFee = getRegistrationBaseFee();
+
+  // Financial summary
+  let lunasCount = 0;
+  let pendingCount = 0;
+  let batalCount = 0;
+  let totalLunasAmount = 0;
+  let totalPendingAmount = 0;
+  let grandTotalAmount = 0;
+
+  filtered.forEach(reg => {
+    const norm = normalizeRegStatus(reg.status);
+    const fee = getRegistrationFee(reg);
+    if (norm === 'LUNAS') {
+      lunasCount++;
+      totalLunasAmount += fee;
+      grandTotalAmount += fee;
+    } else if (norm === 'PENDING') {
+      pendingCount++;
+      totalPendingAmount += fee;
+      grandTotalAmount += fee;
+    } else {
+      batalCount++;
+    }
+  });
+
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    alert('Popup diblokir browser. Silakan izinkan popup untuk mengunduh / mencetak laporan registrasi.');
+    return;
+  }
+
+  const escapeHtml = (str) => {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  };
+
+  const renderTableRows = () => {
+    if (filtered.length === 0) {
+      return `<tr><td colspan="8" style="text-align: center; color: #64748b; padding: 24px; font-style: italic;">Tidak ada data pendaftar yang cocok dengan kriteria filter saat ini.</td></tr>`;
+    }
+    return filtered.map((reg, idx) => {
+      const norm = normalizeRegStatus(reg.status);
+      const fee = getRegistrationFee(reg);
+      const regCode = reg.reg_code || reg.regCode || `REG-SPW-${String(reg.id || idx + 1).slice(-5).toUpperCase()}`;
+
+      let badgeStyle = 'background: #fef3c7; color: #92400e; border: 1px solid #fde68a;';
+      let statusText = 'PENDING';
+      if (norm === 'LUNAS') {
+        badgeStyle = 'background: #dcfce7; color: #166534; border: 1px solid #bbf7d0;';
+        statusText = 'LUNAS / VERIFIED';
+      } else if (norm === 'BATAL') {
+        badgeStyle = 'background: #fee2e2; color: #991b1b; border: 1px solid #fecaca;';
+        statusText = 'BATAL';
+      }
+
+      return `
+        <tr>
+          <td style="text-align: center; font-weight: bold; color: #64748b;">${idx + 1}</td>
+          <td style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; font-weight: 700; color: #003B73;">${escapeHtml(regCode)}</td>
+          <td>
+            <div style="font-weight: 700; color: #0f172a;">${escapeHtml(reg.name)}</div>
+            <div style="font-size: 10px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 700; color: #0284c7;">${escapeHtml(reg.callsign || '-')}</div>
+          </td>
+          <td>
+            <div style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10.5px; color: #1e293b;">${escapeHtml(reg.phone || '-')}</div>
+            <div style="font-size: 9.5px; color: #64748b;">${escapeHtml(reg.email || '-')}</div>
+          </td>
+          <td><span style="display: inline-block; padding: 2px 6px; border-radius: 4px; background: #f1f5f9; border: 1px solid #cbd5e1; font-size: 10px; font-weight: 600;">${escapeHtml(reg.category || 'FPV')}</span></td>
+          <td style="font-size: 10.5px; color: #334155;">${escapeHtml(reg.paymentMethod || 'QRIS')}</td>
+          <td style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 700; color: #0f172a; text-align: right;">${formatReportingCurrency(fee)}</td>
+          <td style="text-align: center;">
+            <span style="display: inline-block; padding: 2.5px 8px; border-radius: 9999px; font-size: 9.5px; font-weight: 800; letter-spacing: 0.3px; ${badgeStyle}">
+              ${statusText}
+            </span>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  };
+
+  const html = `<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Laporan Pendaftaran - ${escapeHtml(title)}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #1e293b;
+      background: #f1f5f9;
+      padding: 0;
+      margin: 0;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .no-print {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #0f172a;
+      color: #fff;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      font-size: 13px;
+    }
+    .no-print-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .no-print-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-action {
+      border: none;
+      font-weight: 700;
+      font-size: 12.5px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .btn-print {
+      background: #eab308;
+      color: #000;
+    }
+    .btn-print:hover { background: #facc15; }
+    .btn-close {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+    }
+    .btn-close:hover { background: rgba(255,255,255,0.22); }
+    .hint-text {
+      color: #94a3b8;
+      font-size: 11.5px;
+    }
+    .doc-container {
+      max-width: 1100px;
+      margin: 24px auto;
+      background: #fff;
+      padding: 32px 36px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    .header-box {
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+    .badge-org {
+      display: inline-block;
+      background: #003B73;
+      color: #fff;
+      font-size: 9.5px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+    .title {
+      font-size: 21px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+    .subtitle {
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 14px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px 16px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 10.5px;
+    }
+    .meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .meta-label { font-weight: 700; color: #64748b; font-size: 9.5px; text-transform: uppercase; }
+    .meta-val { color: #0f172a; font-weight: 600; }
+    
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+      margin-bottom: 22px;
+    }
+    .kpi-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 12px 14px;
+      background: #fafafa;
+    }
+    .kpi-card.green {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+    .kpi-card.amber {
+      background: #fffbeb;
+      border-color: #fde68a;
+    }
+    .kpi-card.blue {
+      background: #f0f9ff;
+      border-color: #bae6fd;
+    }
+    .kpi-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #64748b;
+      letter-spacing: 0.3px;
+    }
+    .kpi-value {
+      font-size: 17px;
+      font-weight: 800;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: #0f172a;
+      margin-top: 4px;
+    }
+    .kpi-sub {
+      font-size: 9.5px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      background: #fff;
+      margin-top: 10px;
+    }
+    th {
+      background: #0f172a;
+      color: #f8fafc;
+      text-transform: uppercase;
+      font-size: 9.5px;
+      letter-spacing: 0.5px;
+      padding: 8px 10px;
+      border: 1px solid #334155;
+      text-align: left;
+    }
+    td {
+      padding: 8px 10px;
+      border: 1px solid #e2e8f0;
+      vertical-align: middle;
+    }
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+    tfoot td {
+      background: #f1f5f9;
+      font-weight: 800;
+      border-top: 2px solid #0f172a;
+      border-bottom: 2px solid #0f172a;
+      color: #0f172a;
+    }
+
+    .sign-section {
+      margin-top: 36px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+      page-break-inside: avoid;
+    }
+    .sign-box {
+      border: 1px dashed #cbd5e1;
+      padding: 16px 20px;
+      border-radius: 6px;
+      background: #fafafa;
+      text-align: center;
+    }
+    .sign-title {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #475569;
+      text-transform: uppercase;
+      margin-bottom: 50px;
+    }
+    .sign-name {
+      font-weight: 800;
+      font-size: 12px;
+      color: #0f172a;
+      text-decoration: underline;
+    }
+    .sign-role {
+      font-size: 10px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .footer {
+      margin-top: 24px;
+      padding-top: 12px;
+      border-top: 1px solid #cbd5e1;
+      display: flex;
+      justify-content: space-between;
+      font-size: 9.5px;
+      color: #64748b;
+    }
+
+    @media print {
+      body { background: #fff; margin: 0; padding: 0; font-size: 10px; }
+      .no-print { display: none !important; }
+      .doc-container {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .sign-section { page-break-inside: avoid; }
+      @page { margin: 10mm; size: A4 landscape; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Print & Download Control Bar -->
+  <div class="no-print">
+    <div class="no-print-left">
+      <strong>PRINTER / PDF PREVIEW: MANIFEST &amp; KEUANGAN REGISTRASI</strong>
+      <span class="hint-text">(Pilih destination "Save as PDF" di dialog print untuk menyimpan sebagai file PDF)</span>
+    </div>
+    <div class="no-print-actions">
+      <button class="btn-action btn-print" onclick="window.print()">
+        <span>🖨️ Cetak / Download PDF</span>
+      </button>
+      <button class="btn-action btn-close" onclick="window.close()">✕ Tutup</button>
+    </div>
+  </div>
+
+  <div class="doc-container">
+    <!-- Header -->
+    <div class="header-box">
+      <div class="badge-org">Sky Multirotor Squad · Official Event Registration Manifest &amp; Financial Audit</div>
+      <h1 class="title">${escapeHtml(title)}</h1>
+      <div class="subtitle">${escapeHtml(subtitle)} — Laporan Rekapitulasi Data Pendaftaran &amp; Kas Masuk</div>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">📅 Tanggal Event:</span>
+          <span class="meta-val">${escapeHtml(eventDate)}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">📍 Lokasi Event:</span>
+          <span class="meta-val">${escapeHtml(location)}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">🔍 Filter Tampilan:</span>
+          <span class="meta-val">${filterStatus === 'ALL' ? 'Semua Status' : escapeHtml(filterStatus)} · ${filterCategory === 'ALL' ? 'Semua Kategori' : escapeHtml(filterCategory)}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">🕒 Waktu Export:</span>
+          <span class="meta-val">${new Date().toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short' })} WIB</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Executive Financial & Registration KPI Summary Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Total Pilot Terdaftar</div>
+        <div class="kpi-value">${filtered.length} <span style="font-size: 11px; font-weight: normal; color: #64748b;">Pilot</span></div>
+        <div class="kpi-sub">${lunasCount} Lunas · ${pendingCount} Pending · ${batalCount} Batal</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-label" style="color: #166534;">Uang Terkonfirmasi (Lunas)</div>
+        <div class="kpi-value" style="color: #166534;">${formatReportingCurrency(totalLunasAmount)}</div>
+        <div class="kpi-sub" style="color: #15803d;">Dari ${lunasCount} pilot diverifikasi (Kas Masuk)</div>
+      </div>
+      <div class="kpi-card amber">
+        <div class="kpi-label" style="color: #92400e;">Estimasi Uang Pending</div>
+        <div class="kpi-value" style="color: #92400e;">${formatReportingCurrency(totalPendingAmount)}</div>
+        <div class="kpi-sub" style="color: #b45309;">Dari ${pendingCount} pilot menunggu transfer</div>
+      </div>
+      <div class="kpi-card blue">
+        <div class="kpi-label" style="color: #0369a1;">Total Potensi Dana</div>
+        <div class="kpi-value" style="color: #0369a1;">${formatReportingCurrency(grandTotalAmount)}</div>
+        <div class="kpi-sub" style="color: #0284c7;">Biaya slot default: ${formatReportingCurrency(baseFee)}</div>
+      </div>
+    </div>
+
+    <!-- Participant Table -->
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 32px; text-align: center;">No</th>
+          <th style="width: 105px;">Kode Reg</th>
+          <th style="width: 180px;">Nama Pilot / Callsign</th>
+          <th style="width: 160px;">Kontak &amp; Email</th>
+          <th style="width: 120px;">Kategori</th>
+          <th style="width: 80px;">Metode</th>
+          <th style="width: 120px; text-align: right;">Biaya / Nominal</th>
+          <th style="width: 110px; text-align: center;">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${renderTableRows()}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="6" style="padding: 10px 12px;">
+            <div style="font-weight: 800; font-size: 11.5px;">TOTAL DANA &amp; PENDAFTAR (${filtered.length} PILOT DITAMPILKAN)</div>
+            <div style="font-size: 10px; font-weight: normal; color: #64748b;">Rincian: ${lunasCount} Lunas / Terverifikasi, ${pendingCount} Pending, ${batalCount} Dibatalkan</div>
+          </td>
+          <td style="font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; font-weight: 800; text-align: right; color: #003B73;">
+            ${formatReportingCurrency(grandTotalAmount)}
+          </td>
+          <td style="text-align: center; font-size: 10px; font-weight: 700; color: #166534;">
+            ${lunasCount} LUNAS
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <!-- Official Sign-off -->
+    <div class="sign-section">
+      <div class="sign-box">
+        <div class="sign-title">Diverifikasi &amp; Disetujui Oleh,<br><strong>Ketua Panitia Pelaksana</strong></div>
+        <div class="sign-name">Panitia Benteng Speelwijk 2026</div>
+        <div class="sign-role">Sky Multirotor Squad Serang</div>
+      </div>
+      <div class="sign-box">
+        <div class="sign-title">Disusun &amp; Dipertanggungjawabkan Oleh,<br><strong>Bendahara / Sie Registrasi Pilot</strong></div>
+        <div class="sign-name">Divisi Registrasi &amp; Keuangan</div>
+        <div class="sign-role">Official Registration Desk</div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <div>Fly Through History – Benteng Speelwijk FPV Drone Fest 2026 · Official Pilot Manifest</div>
+      <div>Dokumen Resmi Panitia · Halaman 1</div>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function() {
+      setTimeout(function() {
+        window.focus();
+        window.print();
+      }, 350);
+    };
+  </script>
+</body>
+</html>`;
+
+  printWindow.document.write(html);
+  printWindow.document.close();
+}
+
+export function exportSpeelwijkRegistrationsCsv() {
+  const settings = cachedSpeelwijkSettings || {};
+  const regs = Array.isArray(cachedSpeelwijkRegs) ? cachedSpeelwijkRegs : [];
+
+  const searchInput = document.getElementById('speelwijk-search-input');
+  const filterSelect = document.getElementById('speelwijk-filter-status');
+  const filterCategorySelect = document.getElementById('speelwijk-filter-category');
+  const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+  const filterStatus = filterSelect ? filterSelect.value : 'ALL';
+  const filterCategory = filterCategorySelect ? filterCategorySelect.value : 'ALL';
+
+  const filtered = regs.filter(reg => {
+    const matchesSearch = !query || 
+      (reg.name && reg.name.toLowerCase().includes(query)) ||
+      (reg.callsign && reg.callsign.toLowerCase().includes(query)) ||
+      (reg.phone && reg.phone.includes(query)) ||
+      (reg.email && reg.email.toLowerCase().includes(query)) ||
+      (reg.category && reg.category.toLowerCase().includes(query));
+
+    const norm = normalizeRegStatus(reg.status);
+    let matchesStatus = true;
+    if (filterStatus === 'LUNAS') matchesStatus = (norm === 'LUNAS');
+    else if (filterStatus === 'PENDING') matchesStatus = (norm === 'PENDING');
+    else if (filterStatus === 'BATAL') matchesStatus = (norm === 'BATAL');
+
+    let matchesCategory = true;
+    if (filterCategory !== 'ALL') {
+      const regCats = String(reg.category || '').toLowerCase().split(',').map(s => s.trim());
+      matchesCategory = regCats.some(c => c === filterCategory.toLowerCase()) || String(reg.category || '').toLowerCase().includes(filterCategory.toLowerCase());
+    }
+
+    return matchesSearch && matchesStatus && matchesCategory;
+  });
+
+  const csvCell = value => {
+    let text = String(value ?? '');
+    if (/^[=+\-@]/.test(text)) text = `'${text}`;
+    return /[",\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+  };
+
+  let lunasCount = 0;
+  let pendingCount = 0;
+  let batalCount = 0;
+  let totalLunas = 0;
+  let totalPending = 0;
+  let totalPotensi = 0;
+
+  filtered.forEach(r => {
+    const norm = normalizeRegStatus(r.status);
+    const fee = getRegistrationFee(r);
+    if (norm === 'LUNAS') {
+      lunasCount++;
+      totalLunas += fee;
+      totalPotensi += fee;
+    } else if (norm === 'PENDING') {
+      pendingCount++;
+      totalPending += fee;
+      totalPotensi += fee;
+    } else {
+      batalCount++;
+    }
+  });
+
+  const rows = [
+    ['LAPORAN REGISTRASI PILOT EVENT BENTENG SPEELWIJK 2026'],
+    ['Event', settings.title || 'Fly Through History – Benteng Speelwijk Drone Fest 2026'],
+    ['Waktu Export', new Date().toLocaleString('id-ID')],
+    ['Filter Status', filterStatus],
+    ['Filter Kategori', filterCategory],
+    [],
+    ['RINGKASAN TOTAL PENDAFTARAN & KEUANGAN'],
+    ['Total Pendaftar (Pilot)', filtered.length],
+    ['Pendaftar Lunas (Terkonfirmasi)', lunasCount],
+    ['Pendaftar Pending (Menunggu Pembayaran)', pendingCount],
+    ['Pendaftar Dibatalkan', batalCount],
+    ['Total Uang Terkonfirmasi / Lunas (Rp)', totalLunas],
+    ['Total Estimasi Uang Pending (Rp)', totalPending],
+    ['Total Potensi Dana Pendaftaran (Rp)', totalPotensi],
+    [],
+    ['DAFTAR DETAIL PESERTA PILOT'],
+    ['No', 'Kode Registrasi', 'Nama Pilot', 'Callsign', 'No HP / WhatsApp', 'Email', 'Kategori Race', 'Metode Pembayaran', 'Biaya Pendaftaran (Rp)', 'Status Verifikasi', 'Catatan']
+  ];
+
+  filtered.forEach((reg, idx) => {
+    const regCode = reg.reg_code || reg.regCode || `REG-SPW-${String(reg.id || idx + 1).slice(-5).toUpperCase()}`;
+    const fee = getRegistrationFee(reg);
+    rows.push([
+      idx + 1,
+      regCode,
+      reg.name || '',
+      reg.callsign || '',
+      reg.phone || '',
+      reg.email || '',
+      reg.category || 'FPV',
+      reg.paymentMethod || 'QRIS',
+      fee,
+      reg.status || 'PENDING',
+      reg.notes || ''
+    ]);
+  });
+
+  const csv = '\uFEFF' + rows.map(row => row.map(csvCell).join(',')).join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `pendaftar-speelwijk-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+window.printSpeelwijkRegistrationsPdf = printSpeelwijkRegistrationsPdf;
+window.exportSpeelwijkRegistrationsCsv = exportSpeelwijkRegistrationsCsv;
 
 function enableSpeelwijkDragSort(container, onReorder, enabled = true) {
   if (!container) return;
@@ -2079,6 +2867,8 @@ function initModalListeners() {
   document.getElementById('btn-add-gallery')?.addEventListener('click', () => openGalleryModal());
   document.getElementById('btn-add-article')?.addEventListener('click', () => openArticleModal());
   document.getElementById('btn-add-speelwijk-reg')?.addEventListener('click', () => openSpeelwijkRegModal());
+  document.getElementById('btn-export-speelwijk-regs-pdf')?.addEventListener('click', () => printSpeelwijkRegistrationsPdf());
+  document.getElementById('btn-export-speelwijk-regs-csv')?.addEventListener('click', () => exportSpeelwijkRegistrationsCsv());
   document.getElementById('btn-add-speelwijk-session')?.addEventListener('click', () => openSpeelwijkSessionModal());
   document.getElementById('btn-print-speelwijk-rundown')?.addEventListener('click', () => printSpeelwijkRundown());
   document.getElementById('btn-add-speelwijk-partner')?.addEventListener('click', () => openSpeelwijkPartnerModal());
@@ -2432,6 +3222,15 @@ async function openSpeelwijkRegModal(regData = null) {
   document.getElementById('speelwijk-reg-input-payment').value = regData ? (regData.paymentMethod || 'QRIS') : 'QRIS';
   document.getElementById('speelwijk-reg-input-status').value = regData ? (regData.status || 'PENDING') : 'PENDING';
   document.getElementById('speelwijk-reg-input-notes').value = regData ? (regData.notes || '') : '';
+
+  const feeInput = document.getElementById('speelwijk-reg-input-fee');
+  if (feeInput) {
+    if (regData && (regData.fee !== undefined || regData.amount !== undefined)) {
+      feeInput.value = regData.fee !== undefined ? regData.fee : regData.amount;
+    } else {
+      feeInput.value = getRegistrationBaseFee();
+    }
+  }
 
   // Payment Proof View
   const proofContainer = document.getElementById('speelwijk-reg-proof-container');
@@ -2806,13 +3605,15 @@ function initFormSubmissions() {
     const paymentMethod = document.getElementById('speelwijk-reg-input-payment').value;
     const status = document.getElementById('speelwijk-reg-input-status').value;
     const notes = document.getElementById('speelwijk-reg-input-notes').value.trim();
+    const feeVal = document.getElementById('speelwijk-reg-input-fee')?.value;
+    const fee = parseReportingAmount(feeVal) || getRegistrationBaseFee();
 
     const foundReg = cachedSpeelwijkRegs.find(r => r.id === id);
     const prevStatus = foundReg ? foundReg.status : 'PENDING';
     const isNowLunas = status === 'LUNAS';
     const paymentProof = foundReg ? (foundReg.paymentProof || '') : '';
 
-    const payload = { id: id || undefined, name, callsign, phone, email, category, paymentMethod, status, notes, paymentProof };
+    const payload = { id: id || undefined, name, callsign, phone, email, category, paymentMethod, status, notes, paymentProof, fee };
 
     const res = await saveSpeelwijkRegistration(payload);
     if (res.success) {

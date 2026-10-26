@@ -28,3 +28,7 @@ dist-ssr
 .env.*
 !.env.example
 
+# Temporary / Scratch files
+.pptx-build/
+.pptx-output/
+

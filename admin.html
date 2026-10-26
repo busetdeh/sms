@@ -553,13 +553,77 @@
 
           <!-- SUB-VIEW 1: REGISTRATIONS TABLE -->
           <div id="speelwijk-subview-regs" class="speelwijk-subview space-y-4">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-              <div class="relative w-full sm:w-72">
-                <span class="material-symbols-outlined absolute left-3 top-2 text-on-surface-variant text-base">search</span>
-                <input id="speelwijk-search-input" type="text" placeholder="Cari nama, callsign, WA..." class="w-full bg-surface-container border border-surface-variant rounded pl-9 pr-3 py-1.5 text-xs text-white focus:border-primary-container focus:outline-none"/>
+
+            <!-- STATS SUMMARY CARDS: TOTAL PENDAFTAR & JUMLAH UANG -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+              <!-- Card 1: Total Pendaftar -->
+              <div class="bg-surface-container border border-surface-variant p-4 rounded-lg relative overflow-hidden">
+                <div class="flex items-center justify-between text-on-surface-variant mb-1">
+                  <span class="font-label-caps text-[10px] tracking-wider text-primary-container font-bold">TOTAL PENDAFTAR</span>
+                  <span class="material-symbols-outlined text-primary-container text-lg">how_to_reg</span>
+                </div>
+                <div class="flex items-baseline gap-1.5">
+                  <span id="speelwijk-stat-total-pendaftar" class="font-stats-lg text-2xl sm:text-3xl font-bold text-white">0</span>
+                  <span class="text-xs text-on-surface-variant font-label-caps">Pilot</span>
+                </div>
+                <div class="text-[10px] text-on-surface-variant mt-1.5 flex flex-wrap items-center gap-1.5 font-mono-data">
+                  <span class="text-green-400 font-bold"><span id="speelwijk-stat-lunas-pendaftar">0</span> Lunas</span>
+                  <span>·</span>
+                  <span class="text-yellow-400 font-bold"><span id="speelwijk-stat-pending-pendaftar">0</span> Pending</span>
+                  <span>·</span>
+                  <span class="text-red-400"><span id="speelwijk-stat-batal-pendaftar">0</span> Batal</span>
+                </div>
               </div>
 
-              <div class="flex items-center gap-2 w-full sm:w-auto">
+              <!-- Card 2: Uang Terkonfirmasi (Lunas) -->
+              <div class="bg-surface-container border border-green-500/30 p-4 rounded-lg relative overflow-hidden bg-gradient-to-br from-green-950/20 to-transparent">
+                <div class="flex items-center justify-between text-on-surface-variant mb-1">
+                  <span class="font-label-caps text-[10px] tracking-wider text-green-400 font-bold">UANG TERKONFIRMASI (LUNAS)</span>
+                  <span class="material-symbols-outlined text-green-400 text-lg">payments</span>
+                </div>
+                <div id="speelwijk-stat-uang-lunas" class="font-stats-lg text-xl sm:text-2xl font-bold text-green-400 font-mono-data">Rp 0</div>
+                <div class="text-[10px] text-on-surface-variant mt-1.5 font-label-caps">
+                  Dana pendaftaran resmi masuk kas
+                </div>
+              </div>
+
+              <!-- Card 3: Estimasi Uang Pending -->
+              <div class="bg-surface-container border border-yellow-500/30 p-4 rounded-lg relative overflow-hidden bg-gradient-to-br from-yellow-950/20 to-transparent">
+                <div class="flex items-center justify-between text-on-surface-variant mb-1">
+                  <span class="font-label-caps text-[10px] tracking-wider text-yellow-400 font-bold">ESTIMASI UANG PENDING</span>
+                  <span class="material-symbols-outlined text-yellow-400 text-lg">pending_actions</span>
+                </div>
+                <div id="speelwijk-stat-uang-pending" class="font-stats-lg text-xl sm:text-2xl font-bold text-yellow-400 font-mono-data">Rp 0</div>
+                <div class="text-[10px] text-on-surface-variant mt-1.5 font-label-caps">
+                  Menunggu verifikasi transfer / OTS
+                </div>
+              </div>
+
+              <!-- Card 4: Total Potensi Dana -->
+              <div class="bg-surface-container border border-primary-container/40 p-4 rounded-lg relative overflow-hidden bg-gradient-to-br from-primary/10 to-transparent">
+                <div class="flex items-center justify-between text-on-surface-variant mb-1">
+                  <span class="font-label-caps text-[10px] tracking-wider text-primary-container font-bold">TOTAL POTENSI DANA</span>
+                  <span class="material-symbols-outlined text-primary-container text-lg">account_balance_wallet</span>
+                </div>
+                <div id="speelwijk-stat-uang-total" class="font-stats-lg text-xl sm:text-2xl font-bold text-white font-mono-data">Rp 0</div>
+                <div class="text-[10px] text-on-surface-variant mt-1.5 font-label-caps">
+                  Tarif: <strong id="speelwijk-stat-biaya-slot" class="text-primary-container">Rp 200.000</strong> / slot
+                </div>
+              </div>
+            </div>
+
+            <!-- Controls: Search, Filter Kategori, Filter Status, Export PDF & CSV -->
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3">
+              <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+                <div class="relative w-full sm:w-60">
+                  <span class="material-symbols-outlined absolute left-3 top-2 text-on-surface-variant text-base">search</span>
+                  <input id="speelwijk-search-input" type="text" placeholder="Cari nama, callsign, WA..." class="w-full bg-surface-container border border-surface-variant rounded pl-9 pr-3 py-1.5 text-xs text-white focus:border-primary-container focus:outline-none"/>
+                </div>
+
+                <select id="speelwijk-filter-category" class="bg-surface-container border border-surface-variant rounded px-3 py-1.5 text-xs text-white focus:border-primary-container focus:outline-none font-label-caps">
+                  <option value="ALL">SEMUA KATEGORI</option>
+                </select>
+
                 <select id="speelwijk-filter-status" class="bg-surface-container border border-surface-variant rounded px-3 py-1.5 text-xs text-white focus:border-primary-container focus:outline-none font-label-caps">
                   <option value="ALL">SEMUA STATUS</option>
                   <option value="LUNAS">STATUS: LUNAS / TERKONFIRMASI</option>
@@ -567,16 +631,28 @@
                   <option value="BATAL">STATUS: DIBATALKAN</option>
                 </select>
               </div>
+
+              <div class="flex items-center gap-2 w-full lg:w-auto justify-end">
+                <button type="button" id="btn-export-speelwijk-regs-csv" class="bg-surface-container-high border border-surface-variant hover:border-primary-container text-on-surface-variant hover:text-white font-bold font-label-caps text-xs px-3 py-1.5 rounded slant-btn flex items-center gap-1.5 transition-colors" title="Export data pendaftar ke file CSV / Excel">
+                  <span class="material-symbols-outlined text-sm">table_view</span>
+                  <span>CSV</span>
+                </button>
+                <button type="button" id="btn-export-speelwijk-regs-pdf" class="bg-surface-container-high border border-primary-container/40 text-primary-container hover:bg-primary-container hover:text-black font-bold font-label-caps text-xs px-3.5 py-1.5 rounded slant-btn flex items-center gap-1.5 transition-colors shadow-sm" title="Download / Cetak Dokumen Rekapitulasi &amp; Keuangan Pendaftar (PDF)">
+                  <span class="material-symbols-outlined text-sm">picture_as_pdf</span>
+                  <span>EXPORT / CETAK PDF</span>
+                </button>
+              </div>
             </div>
 
             <div class="bg-surface-container border border-surface-variant rounded-lg overflow-x-auto">
-              <table class="w-full text-left border-collapse min-w-[750px]">
+              <table class="w-full text-left border-collapse min-w-[850px]">
                 <thead>
                   <tr class="border-b border-surface-variant font-label-caps text-[11px] text-primary-container bg-surface-container-high/50">
                     <th class="p-3.5">OPERATOR &amp; CALLSIGN</th>
                     <th class="p-3.5">KONTAK (WA / EMAIL)</th>
                     <th class="p-3.5">KATEGORI DRONE</th>
                     <th class="p-3.5">METODE BAYAR</th>
+                    <th class="p-3.5">BIAYA / NOMINAL</th>
                     <th class="p-3.5">STATUS SLOT</th>
                     <th class="p-3.5 text-right">AKSI</th>
                   </tr>
@@ -584,6 +660,19 @@
                 <tbody id="admin-speelwijk-regs-tbody">
                   <!-- Populated via JS -->
                 </tbody>
+                <tfoot id="admin-speelwijk-regs-tfoot" class="border-t-2 border-surface-variant bg-surface-container-high/60 text-xs font-label-caps font-bold">
+                  <tr>
+                    <td colspan="4" class="p-3.5 text-white">
+                      TOTAL DITAMPILKAN: <span id="speelwijk-tfoot-count" class="text-primary-container font-mono-data text-sm">0</span> PILOT
+                    </td>
+                    <td class="p-3.5 text-primary-container font-mono-data text-sm" id="speelwijk-tfoot-total-amount">
+                      Rp 0
+                    </td>
+                    <td colspan="2" class="p-3.5 text-right font-mono-data text-xs" id="speelwijk-tfoot-breakdown">
+                      <span class="text-green-400" id="speelwijk-tfoot-lunas-amount">Lunas: Rp 0</span>
+                    </td>
+                  </tr>
+                </tfoot>
               </table>
             </div>
           </div>
@@ -1400,13 +1489,19 @@
           </div>
         </div>
 
-        <div>
-          <label class="block font-label-caps text-primary-container mb-1">STATUS PEMBAYARAN / VERIFIKASI SLOT *</label>
-          <select id="speelwijk-reg-input-status" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white font-bold focus:border-primary-container focus:outline-none">
-            <option value="LUNAS" class="text-green-400 font-bold">LUNAS / TERKONFIRMASI (SLOT SECURED)</option>
-            <option value="PENDING" class="text-yellow-400 font-bold">MENUNGGU PEMBAYARAN (PENDING)</option>
-            <option value="BATAL" class="text-red-400 font-bold">DIBATALKAN (CANCELLED)</option>
-          </select>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">STATUS PEMBAYARAN / VERIFIKASI SLOT *</label>
+            <select id="speelwijk-reg-input-status" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white font-bold focus:border-primary-container focus:outline-none">
+              <option value="LUNAS" class="text-green-400 font-bold">LUNAS / TERKONFIRMASI (SLOT SECURED)</option>
+              <option value="PENDING" class="text-yellow-400 font-bold">MENUNGGU PEMBAYARAN (PENDING)</option>
+              <option value="BATAL" class="text-red-400 font-bold">DIBATALKAN (CANCELLED)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-label-caps text-primary-container mb-1">BIAYA / NOMINAL PENDAFTARAN (RP)</label>
+            <input id="speelwijk-reg-input-fee" type="text" placeholder="Rp 200.000" class="w-full bg-surface-container-high border border-surface-variant rounded px-3 py-2 text-white font-mono-data focus:border-primary-container focus:outline-none"/>
+          </div>
         </div>
 
         <div>
